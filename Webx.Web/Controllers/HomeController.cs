@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Webx.Web.Helpers;
 using Webx.Web.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Webx.Web.Controllers
 {
@@ -25,7 +26,7 @@ namespace Webx.Web.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return View("CommingSoon", "Home");
         }
 
         public IActionResult Privacy()
