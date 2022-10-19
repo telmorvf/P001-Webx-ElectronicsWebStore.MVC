@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Webx.Web.Helpers;
 using Webx.Web.Models;
 
 namespace Webx.Web.Controllers
@@ -12,10 +13,14 @@ namespace Webx.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IBlobHelper _blobHelper;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(
+            ILogger<HomeController> logger,
+            IBlobHelper blobHelper)
         {
             _logger = logger;
+            _blobHelper = blobHelper;
         }
 
         public IActionResult Index()
