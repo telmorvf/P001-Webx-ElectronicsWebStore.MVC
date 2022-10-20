@@ -8,5 +8,9 @@ namespace Webx.Web.Data.Entities
 
         public Guid ImageId { get; set; }
 
+        public string ImageFullPath => ImageId == Guid.Empty
+    ? $"https://webx2022.blob.core.windows.net/images/NoPhoto.jpg"
+    : $"https://webx2022.blob.core.windows.net/products/{ImageId}";
+
     }
 }
