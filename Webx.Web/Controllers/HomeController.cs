@@ -26,7 +26,7 @@ namespace Webx.Web.Controllers
 
         public IActionResult Index()
         {
-            return View("CommingSoon", "Home");
+            return View(/*"CommingSoon", "Home"*/);
         }
 
         public IActionResult Privacy()
