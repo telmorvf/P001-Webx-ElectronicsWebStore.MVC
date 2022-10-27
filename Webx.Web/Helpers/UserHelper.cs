@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Webx.Web.Data.Entities;
+using Webx.Web.Models;
 
 namespace Webx.Web.Helpers
 {
@@ -109,5 +111,81 @@ namespace Webx.Web.Helpers
         {
             return (List<User>)await _userManager.GetUsersInRoleAsync(roleName);
         }
+
+        public async Task<SignInResult> LoginAsync(LoginViewModel model)
+        {
+            return await _signInManager.PasswordSignInAsync(
+                model.UserName,
+                model.Password,
+                model.RememberMe,
+                false);
+        }
+
+        public async Task LogoutAsync()
+        {
+            await _signInManager.SignOutAsync();
+        }
+
+        public async Task<IdentityResult> ChangePasswordAsync(User user, string oldPassword, string newPassword)
+        {
+            return await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+        }
+
+        public async Task<User> GetUserByNIFAsync(string nIF)
+        {
+            return await _userManager.Users.Where(u => u.NIF == nIF).FirstOrDefaultAsync();
+        }
+
+        public async Task<string> GeneratePasswordResetTokenAsync(User user)
+        {
+            return await _userManager.GeneratePasswordResetTokenAsync(user);
+        }
+
+        public async Task<IdentityResult> ResetPasswordAsync(User user, string token, string password)
+        {
+            return await _userManager.ResetPasswordAsync(user, token, password);
+        }
+
+        public AuthenticationProperties ConfigureExternalAuthenticationProperties(string provider, string redirect)
+        {
+            return _signInManager.ConfigureExternalAuthenticationProperties(provider, redirect);
+        }
+
+        public async Task<ExternalLoginInfo> GetExternalLoginInfoAsync()
+        {
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            return info;
+        }
+
+        public async Task<SignInResult> ExternalLoginSignInAsync(string loginProvider, string providerKey, bool isPersistent)
+        {
+            return await _signInManager.ExternalLoginSignInAsync(loginProvider, providerKey, isPersistent);
+        }
+
+        public async Task<IdentityResult> UpdateExternalAuthenticationTokensAsync(ExternalLoginInfo info)
+        {
+            return await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
+        }
+
+        public async Task<IdentityResult> CreateAsync(User user)
+        {
+            return await _userManager.CreateAsync(user);
+        }
+
+        public async Task<IdentityResult> AddLoginAsync(User user, ExternalLoginInfo info)
+        {
+            return await _userManager.AddLoginAsync(user, info);
+        }
+
+        public async Task SignInAsync(User user, bool isPersistent)
+        {
+            await _signInManager.SignInAsync(user, isPersistent);
+        }
+
+        public async Task<bool> HasPasswordAsync(User user)
+        {
+            return await _userManager.HasPasswordAsync(user);
+        }
+
     }
 }

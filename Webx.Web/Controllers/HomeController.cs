@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Webx.Web.Data;
 using Webx.Web.Helpers;
 using Webx.Web.Models;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -15,17 +17,21 @@ namespace Webx.Web.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IBlobHelper _blobHelper;
+        private readonly DataContext _context;
 
         public HomeController(
             ILogger<HomeController> logger,
-            IBlobHelper blobHelper)
+            IBlobHelper blobHelper,
+            DataContext context)
         {
             _logger = logger;
             _blobHelper = blobHelper;
+            _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            ViewBag.Categories = await _context.Categories.ToListAsync();
             return View(/*"CommingSoon", "Home"*/);
         }
 

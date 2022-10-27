@@ -19,7 +19,11 @@ namespace Webx.Web.Data.Entities
         [MaxLength(100, ErrorMessage = "The field {0} cannot have more then {1} characters.")]
         public string Address { get; set; }
 
-        public long NIF { get; set; }
+        [RegularExpression("^[0-9]*$", ErrorMessage = "{0} must be numeric")]
+        [MaxLength(9, ErrorMessage = "The {0} field must have {1} characters.")]
+        [MinLength(9, ErrorMessage = "The {0} field must have {1} characters.")]
+        [Display(Name = "Tax Identification number (NIF)")]
+        public string NIF { get; set; }
 
         [Display(Name = "Profile Picture")]
         public Guid ImageId { get; set; }

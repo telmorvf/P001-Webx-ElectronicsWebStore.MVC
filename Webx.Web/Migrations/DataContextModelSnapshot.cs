@@ -484,8 +484,9 @@ namespace Webx.Web.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<long>("NIF")
-                        .HasColumnType("bigint");
+                    b.Property<string>("NIF")
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -517,7 +518,8 @@ namespace Webx.Web.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("NIF")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[NIF] IS NOT NULL");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");

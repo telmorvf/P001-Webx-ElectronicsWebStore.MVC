@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Folder Include="Data\Repositories\" />
+    <Folder Include="wwwroot\assets\images\inner-page\" />
     <Folder Include="wwwroot\images\brands\" />
     <Folder Include="wwwroot\images\images\" />
     <Folder Include="wwwroot\images\users\" />
@@ -14,6 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MailKit" Version="3.4.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="5.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.17" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.17" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.17" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.17" />
@@ -22,6 +26,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 

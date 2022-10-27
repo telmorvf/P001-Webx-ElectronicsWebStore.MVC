@@ -1,0 +1,132 @@
+﻿@model Webx.Web.Models.LoginViewModel
+@using Microsoft.AspNetCore.Identity
+@using Webx.Web.Data.Entities
+@inject SignInManager<User> signInManager
+
+@{
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+
+<style>
+    .SocialMediafacebook{
+            background-color: #43609c;
+            padding: 15px calc(10px + (25 - 10) * ((100vw - 320px) / (1920 - 320)));
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgb(199 199 197 / 60%);
+            align-items: center;
+            width: 100%;
+            font-family: Rubik, sans-serif;
+            font-weight:400;
+            font-size:18px;
+            line-height:1.2;
+            color:#fff;
+    }
+
+    .SocialMediafacebook:hover{
+        color:#fff;
+    }
+
+    .socialMediaGoogle{
+            padding: 15px calc(10px + (25 - 10) * ((100vw - 320px) / (1920 - 320)));
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgb(199 199 197 / 60%);
+            align-items: center;
+            width: 100%;
+            font-family: Rubik, sans-serif;
+            font-weight:400;
+            color: #000;
+            line-height:1.2;
+            font-size:18px;
+    }
+
+    .logoRedeSocial{
+        margin-right: 20px;
+        width: calc(8% + (18 - 8) * ((100vw - 320px) / (1920 - 320)));
+    }
+
+</style>
+
+  
+    <div class="login-section">
+        <div class="materialContainer">
+            <div class="box">
+                <form method="post">
+
+                    <div class="login-title">
+                        <h2>Login</h2>
+                    </div>
+
+                    <div asp-validation-summary="ModelOnly"></div>
+
+                    <div class="input">
+                        <label for="name" style="line-height:0px">Email Address</label>
+                        <input onmouseout="mouseout" onmouseover="mouseOver" asp-for="UserName" id="name" required>
+                        <span asp-validation-for="UserName"></span>
+                    </div>
+
+                    <div class="input">
+                        <label for="pass" style="line-height:0px">Password</label>
+                        <input asp-for="Password" type="password" id="pass">
+                        <span asp-validation-for="Password"></span>
+                    </div>
+                      
+                    <div style="margin-top:10px">
+                       <input asp-for="RememberMe" type="checkbox" class="form-check-input"/>
+                       <label asp-for="RememberMe" class="form-check-label">Remember Me?</label>
+                    </div> 
+
+                    <a asp-action="RecoverPassword" class="pass-forgot">Forgot your password?</a>                                   
+                   
+
+                    <div class="button login">
+                        <button type="submit">
+                            <span>Log In</span>
+                            <i class="fa fa-check"></i>
+                        </button>
+                    </div>
+
+                </form>
+
+                <p class="sign-category">
+                    <span>Or sign in with</span>
+                </p>
+
+                @{
+                    var schemes = await signInManager.GetExternalAuthenticationSchemesAsync();
+                    var loginProviders = schemes.ToList();
+                 }
+                 @if(loginProviders.Count() > 0)
+                 {
+                    
+                        <form asp-controller="Account" asp-action="ExternalLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" role="form">
+                            <div class="row gx-md-3 gy-3">
+                                <div class="col-md-6">
+                                    
+                                         <button type="submit" class="btn btn-lg SocialMediafacebook" name="provider" value="@loginProviders[0].Name"
+                                             title="@loginProviders[0].Name"><img src="~/assets/images/inner-page/facebook.png" class="img-fluid blur-up lazyload logoRedeSocial" alt="">                                                
+                                            @loginProviders[0].Name
+                                         </button>                                   
+
+                                </div>
+
+                                <div class="col-md-6">
+
+                                     <button type="submit" class="btn btn-lg socialMediaGoogle" name="provider" value="@loginProviders[1].Name"
+                                        title="@loginProviders[1].Name"><img src="~/assets/images/inner-page/google.png" class="img-fluid blur-up lazyload logoRedeSocial"  alt="">                                                
+                                     @loginProviders[1].Name</button>
+
+                                </div>
+                            </div>
+                        </form>
+
+                    
+                 }
+
+                
+
+                <p>Not a member? <a asp-action="Register" asp-controller="Account" class="theme-color">Sign up now</a></p>
+
+            </div>
+        </div>
+    </div>
+    <!-- Log In Section End -->

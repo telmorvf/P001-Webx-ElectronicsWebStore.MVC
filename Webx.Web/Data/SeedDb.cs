@@ -228,7 +228,7 @@ namespace Webx.Web.Data
             if (!_context.Stocks.Any())
             {
                 var stores = await _context.Stores.ToListAsync();
-                var products = await _context.Products.ToListAsync();
+                var products = await _context.Products.Where(p => p.IsService == false).ToListAsync();
                 int quantity;
                 int minimumQuantity = 10;
                 Random r = new Random();                
@@ -382,7 +382,7 @@ namespace Webx.Web.Data
                 string[] FirstNames = new string[5] {"Micael", "Alexandra", "Constanca", "Simao", "Kyara"};
                 string[] LastNames = new string[5] { "Gonçalves", "Brito", "Monteiro", "Gomes", "Vicente" };
                 string[] Addresss = new string[5] { "Largo Torres, nº 9, 6º Dir. 5975-651 Albufeira", "Av. St. Matheus Barros, 121, 6º Eq. 3971 São João da Madeira", "Tv. Diogo Fonseca 1481-157 Almada", "Lg. Vicente, 1, 2º Dr. 7789 Leiria", "Rua Denis Leite 4950 Pinhel" };
-                long[] Nifs = new long[5] { 25648965, 23489756, 23456782, 23156475, 12359732 };
+                string[] Nifs = new string[5] { "256489651", "234897565", "234567826", "231564755", "123597325" };
                 string[] phoneNumbers = new string[5] { "253396376", "299722654", "260943096", "224013175", "961385758" };
                 Guid[] images = new Guid[5] {Guid.Parse("00000000-0000-0000-0000-100000000001"), Guid.Empty, Guid.Parse("00000000-0000-0000-0000-100000000002"), Guid.Empty, Guid.Parse("00000000-0000-0000-0000-100000000002") };
                 int totalCustomers = 4;
@@ -429,7 +429,7 @@ namespace Webx.Web.Data
                     FirstName = "Tatiana",
                     LastName = "Margins",
                     Address = "R. São. Edgar 6951-087 Setúbal",
-                    NIF = 13564952,
+                    NIF = "135649527",
                     PhoneNumber = "295049128",
                     Email = "tatiana@yopmail.com",
                     UserName = "tatiana@yopmail.com",
@@ -466,7 +466,7 @@ namespace Webx.Web.Data
                         FirstName = "Daniel",
                         LastName = "Almeida",
                         Address = "Lg. São. Bruno, nº 7 9931 Vila Real de Santo António",
-                        NIF = 23654897,
+                        NIF = "236548975",
                         PhoneNumber = "252337232",
                         Email = "daniel@yopmail.com",
                         UserName = "daniel@yopmail.com",
@@ -487,7 +487,7 @@ namespace Webx.Web.Data
                         FirstName = "Ivo",
                         LastName = "Lourenço",
                         Address = "Travessa de Correia 8511-536 São Mamede de Infesta",
-                        NIF = 23654329,
+                        NIF = "236543291",
                         PhoneNumber = "235131161",
                         Email = "ivo@yopmail.com",
                         UserName = "ivo@yopmail.com",
@@ -530,7 +530,7 @@ namespace Webx.Web.Data
                 string[] FirstNames = new string[3] { "Filipe", "Telmo", "Stanislav"};
                 string[] LastNames = new string[3] { "Ferreira", "Fernandes", "Govera"};
                 string[] Addresss = new string[3] { "Avenida Fialho Gouveia N521, Montijo", "Travessa São. Constança, 11, 60º Dir. 4309 Vila Nova de Famalicão", "Av. Lima, 210, 14º Dr. 1011-095 Tomar" };
-                long[] Nifs = new long[3] { 275008304, 15632147, 24532975};
+                string[] Nifs = new string[3] { "275008304", "156321473", "245329758"};
                 Guid adminImage = Guid.Parse("00000000-0000-0000-0000-100000000003");
                 string[] phoneNumbers = new string[3] { "934565985", "963214569", "963452865"};
                 int totalAdmins = 2;

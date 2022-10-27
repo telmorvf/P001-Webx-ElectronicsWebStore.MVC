@@ -1,11 +1,14 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using Webx.Web.Data;
 using Webx.Web.Data.Entities;
@@ -54,10 +57,32 @@ namespace Webx.Web
                 cfg.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+
+            services.AddAuthentication().AddFacebook(opts =>
+            {
+                opts.AppId = "498344415345898";
+                opts.AppSecret = "43c3a9dfac8b0263f7600f5df83f4e54";
+            }).AddGoogle(opts =>
+            {
+                opts.ClientId = "237686007342-5agkk9h2abuqcef2ttp383fs0ddcktom.apps.googleusercontent.com";
+                opts.ClientSecret = "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";
+            });
+
+
             services.AddTransient<SeedDb>();
 
             services.AddScoped<IUserHelper, UserHelper>();
+            services.AddScoped<IMailHelper, MailHelper>();
             services.AddScoped<IBlobHelper, BlobHelper>();
+
+            services.AddHttpContextAccessor();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/NotAuthorized";
+                options.AccessDeniedPath = "/Account/NotAuthorized";
+
+            });
 
             services.AddControllersWithViews();
         }
@@ -77,10 +102,20 @@ namespace Webx.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture(new CultureInfo("pt-PT")),
+                SupportedCultures = new List<CultureInfo> { new CultureInfo("pt-PT") },
+                SupportedUICultures = new List<CultureInfo> { new CultureInfo("pt-PT") }
+            });
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
