@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Webx.Web.Data;
 using Webx.Web.Data.Entities;
 using Webx.Web.Helpers;
 using Webx.Web.Models;
@@ -14,11 +17,13 @@ namespace Webx.Web.Controllers
     {
         private readonly IUserHelper _userHelper;
         private readonly IMailHelper _mailHelper;
+        private readonly DataContext _context;
 
-        public AccountController(IUserHelper userHelper,IMailHelper mailHelper)
+        public AccountController(IUserHelper userHelper,IMailHelper mailHelper, DataContext context)
         {
             _userHelper = userHelper;
             _mailHelper = mailHelper;
+            _context = context;
         }
 
         public IActionResult Login()
@@ -401,6 +406,35 @@ namespace Webx.Web.Controllers
             }
 
             ViewData["ReturnUrl"] = returnurl;
+            return View(model);
+        }
+
+        public async Task<IActionResult> ViewUser()
+        {
+            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var hasPassword = await _userHelper.HasPasswordAsync(user);
+
+            var model = new ChangeUserViewModel
+            {
+                PhoneNumber = user.PhoneNumber,
+                FirstName = user.FirstName,
+                Address = user.Address,
+                Email = user.Email,
+                LastName = user.LastName,
+                NIF = user.NIF,
+                ImageId = user.ImageId,
+                HasPassword = hasPassword,
+            };
+
+            ViewBag.Categories = await _context.Categories.ToListAsync();
+            ViewBag.UserFullName = user.FullName;
+
             return View(model);
         }
 
