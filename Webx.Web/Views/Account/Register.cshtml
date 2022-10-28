@@ -1,0 +1,116 @@
+﻿@model Webx.Web.Models.RegisterViewModel
+
+@{
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+
+<!-- Sign Up Section Start -->
+  
+    <div class="login-section">
+        <div class="row">            
+                <div class="materialContainer" style="max-width:1000px">                       
+                    <div class="box" style="display:flex">
+                        <div class="col-6">  
+                            <div class="login-title">
+                                <h2>Register</h2>
+                            </div>
+                            <form method="post">                                      
+
+                                      <div class="input">
+                                          <label asp-for="FirstName" style="line-height:0px"></label>
+                                          <input asp-for="FirstName">
+                                          <span asp-validation-for="FirstName" class="text-danger" style="line-height:3"></span>
+                                      </div>
+
+                                      <div class="input">
+                                          <label asp-for="LastName" style="line-height:0px"></label>
+                                          <input asp-for="LastName">
+                                          <span asp-validation-for="LastName" class="text-danger" style="line-height:3"></span>
+                                      </div>              
+
+                                      <div class="input">
+                                          <label asp-for="Address" style="line-height:0px"></label>
+                                          <input asp-for="Address">
+                                          <span asp-validation-for="Address" class="text-danger" style="line-height:3"></span>
+                                      </div> 
+                                    
+                                      <div class="input">
+                                          <label asp-for="PhoneNumber" style="line-height:0px"></label>
+                                          <input asp-for="PhoneNumber">
+                                          <span asp-validation-for="PhoneNumber" class="text-danger" style="line-height:3"></span>
+                                      </div> 
+
+                                      <div class="input">
+                                          <label asp-for="UserName" style="line-height:0px"></label>
+                                          <input asp-for="UserName">
+                                          <span asp-validation-for="UserName" class="text-danger" style="line-height:3"></span>
+                                      </div> 
+
+                                      <div class="input">
+                                          <label asp-for="NIF" style="line-height:0px"></label>
+                                          <input asp-for="NIF">
+                                          <span asp-validation-for="NIF" class="text-danger" style="line-height:3"></span>
+                                      </div> 
+                                      
+                                       <div class="row justify-content-center" style="text-align:center">
+                                             <div asp-validation-summary="ModelOnly" class="text-danger">
+
+                                             </div>
+                                       </div>
+                                       <div class="row justify-content-center" style="text-align:center">
+                                            <div class="text-success">
+                                                 <p class="text-success">
+                                                     @ViewBag.Message
+                                                 </p>
+                                            </div>
+                                       </div>
+
+                                      <div class="button login">
+                                          <button type="submit">
+                                              <span>Sign Up</span>
+                                              <i class="fa fa-check"></i>
+                                          </button>
+                                      </div>
+                            </form>
+
+                        </div> 
+                        <div class="col-6" style="margin:auto">
+
+                            <p class="sign-category">
+                                <span>Or sign up with</span>
+                            </p>
+
+                            <div class="row gx-md-3 gy-3" style="margin-top:30px">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-10">
+                                    <a href="www.facebook.html">
+                                        <div class="social-media fb-media">
+                                            <img src="~/assets/images/inner-page/facebook.png" class="img-fluid blur-up lazyload"
+                                                alt="">
+                                            <h6>Facebook</h6>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-1"></div>
+                            </div>
+                            <div class="row gx-md-3 gy-3" style="margin-top:30px">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-10">
+                                    <a href="www.gmail.html">
+                                        <div class="social-media google-media">
+                                            <img src="~/assets/images/inner-page/google.png" class="img-fluid blur-up lazyload"
+                                                alt="">
+                                            <h6>Google</h6>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-1"></div>
+                            </div>
+                            <p><a asp-action="Login" asp-controller="Account" class="theme-color">Already have an account?</a></p>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+  
+    <!-- Sign Up Section End -->

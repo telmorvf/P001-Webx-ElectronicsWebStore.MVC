@@ -1,0 +1,74 @@
+﻿@model Webx.Web.Models.AddUserPasswordViewModel
+
+@{
+    ViewData["Title"] = "Confirm Email";
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+
+<style>
+    .btnPersonalizado{
+        width: 100%;
+        left: 0%;
+        border: 1px solid #0163d2;
+        background-color: #0163d2;
+        font-weight: 900;
+        font-size: 18px;
+        color: #fff;
+        border-radius: 4px;
+        padding: calc(13px + (18 - 13) * ((100vw - 320px) / (1920 - 320)));
+        margin-top: 30px;
+    }
+</style>
+
+ <!-- Confirm Email Section Start -->
+    <div class="login-section">
+        <div class="materialContainer">
+            <div class="box">
+
+                @if (string.IsNullOrEmpty(ViewBag.Success))
+                {
+                    <form method="post">
+
+                        <div class="login-title">
+                            <h4>Your email as been confirmed!<br /><br /> To complete the proccess please add a password.</h4>
+                        </div>
+
+                        <div asp-validation-summary="ModelOnly"></div>
+
+                        <div class="input">
+                            <label asp-for="Password" style="line-height:0px"></label>
+                            <input asp-for="Password" type="password">
+                            <span asp-validation-for="Password" class="text-danger" style="line-height:3"></span>
+                        </div>
+
+                        <div class="input">
+                            <label asp-for="Confirm" style="line-height:0px"></label>
+                            <input asp-for="Confirm" type="password" id="pass">
+                            <span asp-validation-for="Confirm" class="text-danger" style="line-height:3"></span>
+                        </div>                    
+
+                        <div class="button login">
+                            <button type="submit">
+                                <span>Register Password</span>
+                                <i class="fa fa-check"></i>
+                            </button>
+                        </div>
+
+                    </form>
+                }
+                else
+                {
+                      <div class="login-title">
+                            <h4>Thank you for creating your account!<br /><br />@ViewBag.Success</h4>
+                      </div>
+                      <div class="btn btnPersonalizado">
+                            <a  asp-action="Login" asp-controller="Account" style="color: #fff;">
+                                Log In                              
+                            </a>
+                      </div>
+                }    
+
+            </div>
+        </div>
+    </div>
+    <!-- Confirm Email Section End -->

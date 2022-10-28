@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using MailKit.Search;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 using Webx.Web.Data.Entities;
 
 namespace Webx.Web.Data
@@ -36,7 +38,23 @@ namespace Webx.Web.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(builder);          
+            base.OnModelCreating(builder);
+
+            builder.Entity<OrderDetail>()
+           .Property(p => p.Price)
+           .HasColumnType("decimal(18,2)");
+
+            builder.Entity<OrderDetailTemp>()
+            .Property(p => p.Price)
+            .HasColumnType("decimal(18,2)");
+
+            builder.Entity<Order>()
+            .Property(p => p.TotalPrice)
+            .HasColumnType("decimal(18,2)");
+
+            builder.Entity<Product>()
+            .Property(p => p.Price)
+            .HasColumnType("decimal(18,2)");
 
             builder.Entity<User>().HasIndex(u => u.NIF).IsUnique();
         }

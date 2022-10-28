@@ -332,6 +332,7 @@ namespace Webx.Web.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
@@ -470,6 +471,9 @@ namespace Webx.Web.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("ImageId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -480,8 +484,9 @@ namespace Webx.Web.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<long>("NIF")
-                        .HasColumnType("bigint");
+                    b.Property<string>("NIF")
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -500,9 +505,6 @@ namespace Webx.Web.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("Photo")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -516,7 +518,8 @@ namespace Webx.Web.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("NIF")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[NIF] IS NOT NULL");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");

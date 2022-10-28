@@ -1,0 +1,55 @@
+﻿@model Webx.Web.Models.ExternalLoginViewModel
+
+@{
+    ViewData["Title"] = "ExternalLoginConfirmation";
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+
+<!-- Recover password Section Start -->
+    <div class="login-section">
+        <div class="materialContainer">
+            <div class="box">    
+                     <form asp-controller="Account" asp-action="ExternalLoginConfirmation" method="post" asp-route-returnurl="@ViewData["ReturnUrl"]">
+                                                     
+
+                             <div class="login-title">
+                                 <h2>Register and associate your @ViewData["ProviderDisplayName"] account.</h2>
+                                 <h4><br /><br /> Please add additional information to make your account better!</h4><br/>
+                                 <p class="text-success">You have successfully authenticated to your @ViewData["ProviderDisplayName"] account </p>
+                             </div>                        
+
+                             <div class="input">
+                                 <label asp-for="Email" style="line-height:0px"></label>
+                                 <input asp-for="Email" readonly>
+                                 <span asp-validation-for="Email" class="text-danger" style="line-height:3"></span>
+                             </div> 
+                             
+                             <div class="input">
+                                 <label asp-for="FirstName" style="line-height:0px"></label>
+                                 <input asp-for="FirstName" >
+                                 <span asp-validation-for="FirstName" class="text-danger" style="line-height:3"></span>
+                             </div> 
+
+                             <div class="input">
+                                 <label asp-for="LastName" style="line-height:0px"></label>
+                                 <input asp-for="LastName" >
+                                 <span asp-validation-for="LastName" class="text-danger" style="line-height:3"></span>
+                             </div> 
+
+                             <div style="text-align:center;margin-top:20px">                                 
+                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                             </div>
+
+                             <div class="button login">
+                                 <button type="submit">
+                                     <span>Log In</span>
+                                     <i class="fa fa-check"></i>
+                                 </button>
+                             </div>
+                     </form>                
+            </div>
+                 
+        </div>
+    </div>
+    <!-- Recover password Section End -->
+
