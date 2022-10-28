@@ -8,6 +8,7 @@ using Webx.Web.Data.Entities;
 using MailKit.Net.Smtp;
 using MimeKit.Utils;
 using Microsoft.AspNetCore.Razor.Language.Intermediate;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Webx.Web.Helpers
 {
@@ -16,17 +17,18 @@ namespace Webx.Web.Helpers
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IHttpContextAccessor _httpContext;
+        
 
         public MailHelper(IConfiguration configuration,IWebHostEnvironment webHostEnvironment,
             IHttpContextAccessor httpContext)
         {
            _configuration = configuration;
            _webHostEnvironment = webHostEnvironment;
-           _httpContext = httpContext;
+           _httpContext = httpContext;           
         }
 
 
-        public async Task<Response> SendConfirmationEmail(string to, string tokenLink,User customer)
+        public async Task<Response> SendConfirmationEmail(string to, string tokenLink,User customer, string returnLink)
         {
             var nameFrom = _configuration["OnlineStoreMail:NameFrom"];
             var from = _configuration["OnlineStoreMail:From"];
@@ -42,9 +44,7 @@ namespace Webx.Web.Helpers
             var pathToTemplate = _webHostEnvironment.WebRootPath + Path.DirectorySeparatorChar.ToString() +
                 "assets" + Path.DirectorySeparatorChar.ToString() +
                 "templates" + Path.DirectorySeparatorChar.ToString() +
-                "emailTemplate.html";
-
-            var pathToMainPage = _httpContext.HttpContext.Request.ToString();
+                "emailTemplate.html";            
 
             string htmlBody = "";
 
@@ -76,7 +76,7 @@ namespace Webx.Web.Helpers
             var instaImage = bodybuilder.LinkedResources.Add($"{_webHostEnvironment.WebRootPath}{Path.DirectorySeparatorChar}assets{Path.DirectorySeparatorChar}templates{Path.DirectorySeparatorChar}images{Path.DirectorySeparatorChar}insta.png");
             instaImage.ContentId = MimeUtils.GenerateMessageId();
             // -----------------------------------------------{0}--------------{1}-------------{2}------------{3}-------------------{4}----------------{5}-----------------{6}-------------------{7}-------------------{8}---------
-            string messageBody = string.Format(htmlBody, pathToMainPage,customer.FullName, tokenLink,titleImage.ContentId,logoImage.ContentId,welcomeImage.ContentId,fbImage.ContentId,twitterImage.ContentId,instaImage.ContentId);
+            string messageBody = string.Format(htmlBody,returnLink,customer.FullName, tokenLink,titleImage.ContentId,logoImage.ContentId,welcomeImage.ContentId,fbImage.ContentId,twitterImage.ContentId,instaImage.ContentId);
 
             bodybuilder.HtmlBody = messageBody;            
 
@@ -109,7 +109,7 @@ namespace Webx.Web.Helpers
 
         }
 
-        public async Task<Response> SendResetPasswordEmail(string to, string link, User customer)
+        public async Task<Response> SendResetPasswordEmail(string to, string link, User customer, string returnLink)
         {
             var nameFrom = _configuration["OnlineStoreMail:NameFrom"];
             var from = _configuration["OnlineStoreMail:From"];
@@ -125,9 +125,7 @@ namespace Webx.Web.Helpers
             var pathToTemplate = _webHostEnvironment.WebRootPath + Path.DirectorySeparatorChar.ToString() +
                 "assets" + Path.DirectorySeparatorChar.ToString() +
                 "templates" + Path.DirectorySeparatorChar.ToString() +
-                "reset-password.html";        
-
-            var pathToMainPage = _httpContext.HttpContext.Request.ToString();
+                "reset-password.html";           
 
             string htmlBody = "";
 
@@ -169,7 +167,7 @@ namespace Webx.Web.Helpers
             instaImage.ContentId = MimeUtils.GenerateMessageId();
 
             // ---------------------------------------------------{0}----------------{1}---------------{2}------------------{3}----------{4}----------{5}------------{6}-------------------{7}-------------------{8}----------
-            string messageBody = string.Format(htmlBody, titleImage.ContentId, pathToMainPage, logoImage.ContentId, resetImage.ContentId,link, customer.Email, fbImage.ContentId, twitterImage.ContentId, instaImage.ContentId);
+            string messageBody = string.Format(htmlBody, titleImage.ContentId, returnLink, logoImage.ContentId, resetImage.ContentId,link, customer.Email, fbImage.ContentId, twitterImage.ContentId, instaImage.ContentId);
 
             bodybuilder.HtmlBody = messageBody;        
 

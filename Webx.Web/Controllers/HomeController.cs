@@ -17,21 +17,30 @@ namespace Webx.Web.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IBlobHelper _blobHelper;
+        private readonly IUserHelper _userHelper;
         private readonly DataContext _context;
 
         public HomeController(
             ILogger<HomeController> logger,
-            IBlobHelper blobHelper,
+            IBlobHelper blobHelper, IUserHelper userHelper,
             DataContext context)
         {
             _logger = logger;
             _blobHelper = blobHelper;
+            _userHelper = userHelper;
             _context = context;
         }
 
         public async Task<IActionResult> Index()
         {
             ViewBag.Categories = await _context.Categories.ToListAsync();
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+                ViewBag.UserFullName = user.FullName;
+            }
+
             return View(/*"CommingSoon", "Home"*/);
         }
 

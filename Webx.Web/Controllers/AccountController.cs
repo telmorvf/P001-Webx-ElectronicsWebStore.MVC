@@ -134,8 +134,9 @@ namespace Webx.Web.Controllers
                             userId = user.Id,
                             token = userToken
                         }, protocol: HttpContext.Request.Scheme);
+                        var returnLink = Url.Action("Index", "Home", null, protocol: HttpContext.Request.Scheme);
 
-                        Response response = await _mailHelper.SendConfirmationEmail(model.UserName, tokenLink, user);
+                        Response response = await _mailHelper.SendConfirmationEmail(model.UserName, tokenLink, user,returnLink);
 
                         if (response.IsSuccess)
                         {
@@ -231,8 +232,9 @@ namespace Webx.Web.Controllers
 
                 var userToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
                 var link = Url.Action("ResetPassword", "Account", new { token = userToken, userId = user.Id }, protocol: HttpContext.Request.Scheme);
+                var returnLink = Url.Action("Index", "Home",null, protocol: HttpContext.Request.Scheme);
 
-                Response response = await _mailHelper.SendResetPasswordEmail(model.Email, link, user);
+                Response response = await _mailHelper.SendResetPasswordEmail(model.Email, link, user,returnLink);
 
                 if (response.IsSuccess)
                 {
