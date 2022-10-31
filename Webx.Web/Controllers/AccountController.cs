@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -10,6 +12,8 @@ using Webx.Web.Data;
 using Webx.Web.Data.Entities;
 using Webx.Web.Helpers;
 using Webx.Web.Models;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace Webx.Web.Controllers
 {
@@ -18,12 +22,14 @@ namespace Webx.Web.Controllers
         private readonly IUserHelper _userHelper;
         private readonly IMailHelper _mailHelper;
         private readonly DataContext _context;
+        private readonly IBlobHelper _blobHelper;
 
-        public AccountController(IUserHelper userHelper,IMailHelper mailHelper, DataContext context)
+        public AccountController(IUserHelper userHelper,IMailHelper mailHelper, DataContext context,IBlobHelper blobHelper)
         {
             _userHelper = userHelper;
             _mailHelper = mailHelper;
             _context = context;
+            _blobHelper = blobHelper;
         }
 
         public IActionResult Login()
@@ -409,6 +415,7 @@ namespace Webx.Web.Controllers
             return View(model);
         }
 
+        [Authorize]
         public async Task<IActionResult> ViewUser()
         {
             var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
@@ -432,11 +439,188 @@ namespace Webx.Web.Controllers
                 HasPassword = hasPassword,
             };
 
-            ViewBag.Categories = await _context.Categories.ToListAsync();
+            ViewBag.JsonModel = JsonConvert.SerializeObject(model);
             ViewBag.UserFullName = user.FullName;
-
+            ViewBag.Categories = await _context.Categories.ToListAsync();
+          
             return View(model);
         }
 
+        
+        [HttpPost]
+        [Route("Account/UpdateUser")]
+        public async Task<JsonResult> UpdateUser(string email, long phoneNumber, long nif)
+        {
+            bool isValid = false;
+            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+
+            if (user == null)
+            {
+                return Json(isValid);
+            }                
+                
+            user.Email = email;
+            user.UserName = email;            
+            user.PhoneNumber = phoneNumber.ToString();            
+            user.NIF = nif.ToString();           
+
+            try
+            {
+                await _userHelper.UpdateUserAsync(user);
+
+                isValid = true;
+            }
+            catch (Exception)
+            {
+                return Json(isValid);
+            }
+
+            return Json(isValid);
+        }
+
+        [HttpPost]
+        [Route("Account/UpdateUserAddress")]
+        public async Task<JsonResult> UpdateUserAddress(string address)
+        {
+            bool isValid = false;
+            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+
+            if (user == null)
+            {
+                return Json(isValid);
+            }
+            
+            user.Address = address;         
+
+            try
+            {
+                await _userHelper.UpdateUserAsync(user);
+
+                isValid = true;
+            }
+            catch (Exception)
+            {
+                return Json(isValid);
+            }
+
+            return Json(isValid);
+        }
+
+        [HttpPost]
+        [Route("Account/ChangePassword")]
+        public async Task<JsonResult> ChangePassword(string oldPassword, string newPassword, string repeatedPassword)
+        {
+
+            Response response;
+
+            if (newPassword != repeatedPassword)
+            {
+                response = new Response
+                {
+                    IsSuccess = false,
+                    Message = "New password is not equivalent to the repeated password."
+                };
+
+                return Json(response);
+            }
+
+            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+
+            if (user == null)
+            {
+                return Json(new Response
+                {
+                    IsSuccess = false,
+                    Message = "User is not valid",
+                });
+            }
+
+            var isActualUser = await _userHelper.CheckPasswordAsync(user, oldPassword);
+
+            if (isActualUser.Succeeded)
+            {
+
+                var result = await _userHelper.ChangePasswordAsync(user, oldPassword, newPassword);
+                if (result.Succeeded)
+                {
+                    return Json(new Response { IsSuccess = true, Message = "Password was succefully changed!" });
+                }
+                else
+                {
+                    return Json(new Response
+                    {
+                        IsSuccess = false,
+                        Message = "There was a problem changing the password.",
+                    });
+                }
+            }
+
+            return Json(new Response
+            {
+                IsSuccess = false,
+                Message = "The old password is not correct.",
+            });
+
+        }
+
+        [HttpPost]
+        [Route("Account/GetProfilePicturePath")]
+        public async Task<JsonResult> GetProfilePicturePath()
+        {
+            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            var json = Json(user);
+            return json;
+        }
+
+        [HttpPost]
+        [Route("Account/ChangeProfilePic")]
+        public async Task<IActionResult> ChangeProfilePic(IFormFile file)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+
+            if (user != null && file != null)
+            {
+
+                Guid imageId = user.ImageId;
+
+                if (file != null && file.Length > 0)
+                {
+
+
+                    using var image = Image.Load(file.OpenReadStream());
+                    image.Mutate(img => img.Resize(512, 0));
+
+                    using (MemoryStream m = new MemoryStream())
+                    {
+                        image.SaveAsJpeg(m);
+                        byte[] imageBytes = m.ToArray();
+                        imageId = await _blobHelper.UploadBlobAsync(imageBytes, "users");
+                    }
+                }
+
+                user.ImageId = imageId;
+                
+                var response = await _userHelper.UpdateUserAsync(user);
+
+                if (!response.Succeeded)
+                {
+                    //_flashMessage.Danger("There was an error updating the profile picture.");
+
+                    return new ObjectResult(new { Status = "fail" });
+                }
+
+                return new ObjectResult(new { Status = "success" });
+            }
+
+
+            return new ObjectResult(new { Status = "fail" });
+        }
+
+        public async Task<IActionResult> NotAuthorized()
+        {
+            ViewBag.Categories = await _context.Categories.ToListAsync();
+
+            return View();
+        }
     }
 }

@@ -8567,24 +8567,7 @@ hr {
         right: 0;
         -webkit-transform: rotate(180deg) translateY(-50%);
                 transform: rotate(180deg) translateY(-50%); }
-    .custome-nav-tabs .nav-item .nav-link:before {
-      content: "\f101";
-      font-family: "Font Awesome 5 Free";
-      font-weight: 900;
-      position: absolute;
-      left: 0;
-      top: 50%;
-      -webkit-transform: translateY(-50%);
-              transform: translateY(-50%);
-      -webkit-transition: all 0.3s ease-in-out;
-      transition: all 0.3s ease-in-out;
-      opacity: 0; }
-      [dir="rtl"] .custome-nav-tabs .nav-item .nav-link:before {
-        left: unset;
-        right: 0;
-        top: 0;
-        -webkit-transform: rotate(180deg) translateY(-50%);
-                transform: rotate(180deg) translateY(-50%); }
+    
     .custome-nav-tabs .nav-item .nav-link:hover {
       padding-left: 20px;
       color: var(--theme-color) !important; }

@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "WebX";
 }
 
     <!-- home slider start -->
@@ -2712,3 +2712,11 @@
         </div>
     </div>
     <!-- Coockie Section End -->   
+
+
+     @section Scripts{
+       @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+       <!-- Timer js -->
+        <script src="~/assets/js/timer1.js"></script>
+     }

@@ -4,13 +4,13 @@
 
 <!-- Mirrored from themes.pixelstrap.com/voxo/front-end/electronic-demo.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 12 Oct 2022 15:23:07 GMT -->
 <head>    
-    <link rel="icon" href="~/assets/images/favicon/4.png" type="image/x-icon">
-    <link rel="apple-touch-icon" href="~/assets/images/favicon/4.png">
+    <link rel="icon" href="~/assets/images/favicon/1.png" type="image/x-icon">
+    <link rel="apple-touch-icon" href="~/assets/images/favicon/1.png">
     <meta name="theme-color" content="#0163d2">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Voxo">
-    <meta name="msapplication-TileImage" content="~/assets/images/favicon/4.png">
+    <meta name="apple-mobile-web-app-title" content="WebX">
+    <meta name="msapplication-TileImage" content="~/assets/images/favicon/1.png">
     <meta name="msapplication-TileColor" content="#FFFFFF">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="preconnect" href="https://fonts.googleapis.com/" />
@@ -22,11 +22,11 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Voxo">
-    <meta name="keywords" content="Voxo">
-    <meta name="author" content="Voxo">
+    <meta name="description" content="WebX">
+    <meta name="keywords" content="WebX">
+    <meta name="author" content="WebX">
     <link rel="icon" href="~/assets/images/favicon/1.png" type="image/x-icon" />
-    <title>Electronic Store</title>
+    <title>@ViewData["Title"]</title>
 
     <!-- google font -->
     <link rel="preconnect" href="https://fonts.gstatic.com/">
@@ -37,6 +37,12 @@
 
     <!-- font-awesome css -->
     <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@4cac1a6/css/all.css" rel="stylesheet" type="text/css" />
+
+    <!-- Syncfusion ASP.NET Core controls styles -->
+    <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/20.3.47/fluent.css" /> 
+    
+    <!-- Syncfusion ASP.NET Core controls scripts -->
+    <script src="https://cdn.syncfusion.com/ej2/20.3.47/dist/ej2.min.js"></script>
 
     <!-- feather icon css -->
     <link rel="stylesheet" type="text/css" href="~/assets/css/vendors/feather-icon.css">
@@ -50,6 +56,9 @@
 
     <!-- Theme css -->
     <link id="color-link" rel="stylesheet" type="text/css" href="~/assets/css/demo1.css">
+
+    <!-- Custom css-->
+    <link rel="stylesheet" type="text/css" href="~/css/site.css">
 
 </head>
 
@@ -110,9 +119,7 @@
                                   </li>
                                 </ul>
                               
-                            }                           
-                                                                                    
-                        
+                            }                          
                     </div>
                 </div>
             </div>
@@ -129,6 +136,7 @@
                                             <use class="fill-color" xlink:href="~/assets/svg/icons.svg#logo"></use>
                                         </svg>
                                         <img src="~/assets/images/logo.png" class="img-fluid blur-up lazyload" alt="logo">
+                                        <img src="~/assets/images/logoloop.gif" class="img-fluid blur-up lazyload" alt="logo">
                                     </a>
                                 </div>
                                 <div class="category-menu">
@@ -437,7 +445,7 @@
                                     <svg class="svg-icon">
                                         <use class="fill-color" xlink:href="~/assets/svg/icons.svg#logo"></use>
                                     </svg>
-                                    <img src="~/assets/images/logo.png" class="img-fluid blur-up lazyload" alt="logo">
+                                    <img src="~/assets/images/logofooter.png" class="img-fluid blur-up lazyload" alt="logo">
                                 </a>
                             </div>
                             <ul class="contact-lists">
@@ -887,6 +895,8 @@
 
     <!-- feather icon js-->
     <script src="~/assets/js/feather/feather.min.js"></script>
+    <!-- Custom JS -->
+    <script src="~/js/site.js" asp-append-version="true"></script>  
 
     <!-- lazyload js-->
     <script src="~/assets/js/lazysizes.min.js"></script>
@@ -899,8 +909,7 @@
     <script src="~/assets/js/slick/slick-animation.min.js"></script>
     <script src="~/assets/js/slick/custom_slick.js"></script>
 
-    <!-- Timer js -->
-    <script src="~/assets/js/timer1.js"></script>
+    
 
     <!-- newsletter js -->
     <script src="~/assets/js/newsletter.js"></script>
@@ -913,8 +922,11 @@
     <script src="~/assets/js/script.js"></script>
     <script src="~/assets/js/home-script.js"></script>
 
+    <!-- Syncfusion ASP.NET Core Script Manager -->
+    <ejs-scripts></ejs-scripts>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 
 
-<!-- Mirrored from themes.pixelstrap.com/voxo/front-end/electronic-demo.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 12 Oct 2022 15:23:15 GMT -->
+
 </html>
