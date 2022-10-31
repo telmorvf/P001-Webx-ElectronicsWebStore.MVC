@@ -117,8 +117,7 @@
                                           <a asp-action="Logout" asp-controller="Account">Logout</a>
                                       </div>
                                   </li>
-                                </ul>
-                              
+                                </ul>                              
                             }                          
                     </div>
                 </div>
@@ -930,6 +929,7 @@
     <!-- Syncfusion ASP.NET Core Script Manager -->
     <ejs-scripts></ejs-scripts>
     @await RenderSectionAsync("Scripts", required: false)
+    @await Component.InvokeAsync("Notyf")
 </body>
 
 
