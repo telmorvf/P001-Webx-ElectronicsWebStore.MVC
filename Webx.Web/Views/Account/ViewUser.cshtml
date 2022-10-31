@@ -1,44 +1,86 @@
 ﻿@model Webx.Web.Models.ChangeUserViewModel
+@using Webx.Web.Models
 
 @{
-    ViewData["Title"] = "ViewUser";
+    ViewData["Title"] = "User Profile";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var updateButton = new ButtonModel() { content = "Update", cssClass = "e-flat" };
+    var changeButton = new ButtonModel() { content = "Update", cssClass = "e-flat" };
 }
 
+<style>
+    .e-footer-content .e-btn.e-flat:not([DISABLED])
+    {
+         background-color: #0163D2 !important;
+         border-color: #fff !important;
+         color: #fff !important;
+         font-weight:400 !important;
+         transition:ease-in-out 0.5s;
+    }
 
-<!-- Breadcrumb section start -->
-    <section class="breadcrumb-section section-b-space">
-        <ul class="circles">
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-        </ul>
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <h3>User Dashboard</h3>
-                    <nav>
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item">
-                                <a href="index.html">
-                                    <i class="fas fa-home"></i>
-                                </a>
-                            </li>
-                            <li class="breadcrumb-item active" aria-current="page">User Dashboard</li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-        </div>
-    </section>
-<!-- Breadcrumb section end -->
+    .e-footer-content .e-btn.e-flat:not([DISABLED]):hover{
+        background-color: #fff !important;
+        border-color: #0163D2 !important;
+        color: #0163D2 !important;
+        border-radius:0px !important;
+    }
+
+    .fontawesome{
+        font-size:18px;
+        color:grey;
+        cursor:pointer;
+    }
+
+    .fontawesome:hover .fa-eye-slash:before{
+        content:"\f06e";
+        color:#0163D2;
+        opacity:0.4;
+    }
+
+    .my_file{    
+    bottom:0px;
+    outline:none;
+    color: transparent;
+    width: 100%;      
+    height:350px;
+    padding: 15px 100px;
+    cursor: pointer;
+    transition: 1s;
+    background: rgba(0,0,0,0.5);
+    opacity:0;
+    border-radius:50%;
+    margin:auto;
+    }
+    .my_file::-webkit-file-upload-button{
+        visibility: hidden;
+    }
+    .my_file::before {
+        content: 'Update';    
+        font-size: 14px;
+        font-family:Arial;
+        font-weight:bold;
+        color: rgba(85, 150, 223,0.8);
+        display:block; 
+        text-align: center;
+    }
+    .my_file:hover{
+        opacity:1;
+    }
+
+    .imageStyle {
+         height: 350px;
+         width: auto;
+         position: relative;       
+         overflow: hidden;  
+         box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+    }
+
+    .pad{
+        padding: 15px;
+    }
+
+
+</style>
 
 <!-- user dashboard section start -->
     <section class="section-b-space">
@@ -49,7 +91,7 @@
                         <li class="nav-item mb-2">
                             <button class="nav-link font-light active" id="tab" data-bs-toggle="tab"
                                 data-bs-target="#dash" type="button"><i
-                                    class="fas fa-angle-right"></i>Dashboard</button>
+                                    class="fas fa-angle-right"></i>Profile</button>
                         </li>
 
                         <li class="nav-item mb-2">
@@ -61,31 +103,16 @@
                             <button class="nav-link font-light" id="2-tab" data-bs-toggle="tab"
                                 data-bs-target="#wishlist" type="button"><i
                                     class="fas fa-angle-right"></i>Wishlist</button>
-                        </li>
-
-                        <li class="nav-item mb-2">
-                            <button class="nav-link font-light" id="3-tab" data-bs-toggle="tab" data-bs-target="#save"
-                                type="button"><i class="fas fa-angle-right"></i>Saved
-                                Address</button>
-                        </li>
+                        </li>                        
 
                         <li class="nav-item mb-2">
                             <button class="nav-link font-light" id="4-tab" data-bs-toggle="tab" data-bs-target="#pay"
                                 type="button"><i class="fas fa-angle-right"></i>Payment</button>
-                        </li>
-
-                        <li class="nav-item mb-2">
-                            <button class="nav-link font-light" id="5-tab" data-bs-toggle="tab"
-                                data-bs-target="#profile" type="button"><i
-                                    class="fas fa-angle-right"></i>Profile</button>
-                        </li>
-
-                        <li class="nav-item">
-                            <button class="nav-link font-light" id="6-tab" data-bs-toggle="tab"
-                                data-bs-target="#security" type="button"><i
-                                    class="fas fa-angle-right"></i>Security</button>
-                        </li>
+                        </li>                           
+                       
+                        
                     </ul>
+
                 </div>
 
                 <div class="col-lg-9">
@@ -98,10 +125,10 @@
                             <div class="dashboard-right">
                                 <div class="dashboard">
                                     <div class="page-title title title1 title-effect">
-                                        <h2>My Dashboard</h2>
+                                        <h2>My Profile</h2>
                                     </div>
                                     <div class="welcome-msg">
-                                        <h6 class="font-light">Hello, <span>MARK JECNO !</span></h6>
+                                        <h6 class="font-light">Hello, <span>@Model.FullName!</span></h6>
                                         <p class="font-light">From your My Account Dashboard you have the ability to
                                             view a snapshot of your recent account activity and update your account
                                             information. Select a link below to view or edit information.</p>
@@ -119,7 +146,7 @@
                                                         <img src="~/assets/images/svg/box1.png"
                                                             class="img-fluid blur-up lazyload" alt="">
                                                         <div>
-                                                            <h5 class="font-light">total order</h5>
+                                                            <h5 class="font-light">total orders</h5>
                                                             <h3>3648</h3>
                                                         </div>
                                                     </div>
@@ -170,60 +197,62 @@
                                             <div class="col-sm-6">
                                                 <div class="box">
                                                     <div class="box-title">
-                                                        <h4>Contact Information</h4><a
-                                                            href="javascript:void(0)">Edit</a>
+                                                        <h4>Contact & Billing Information</h4>
+                                                        <a class="btn" style="padding:0;font-weight:400;color:#0163D2" onclick="editUser()">Edit</a>
                                                     </div>
                                                     <div class="box-content">
-                                                        <h6 class="font-light">MARK JECNO</h6>
-                                                        <h6 class="font-light">MARk-JECNO@gmail.com</h6>
-                                                        <a href="javascript:void(0)">Change Password</a>
+                                                        <h6 class="font-light" style="text-transform:uppercase">@Model.FullName</h6>
+                                                        <h6 class="font-light">Email: @Model.Email</h6>
+                                                        <h6 class="font-light">Phone: @Model.PhoneNumber</h6>
+                                                        <h6 class="font-light">NIF: @Model.NIF</h6>
+                                                    @if(Model.HasPassword == true)
+                                                    {
+                                                        <a class="btn" style="padding:0;font-weight:400;color:#0163D2" onclick="changePassword()">Change Password</a>
+                                                    }                                                    
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-sm-6">
                                                 <div class="box">
                                                     <div class="box-title">
-                                                        <h4>Newsletters</h4><a href="javascript:void(0)">Edit</a>
+                                                        <h4>Address Book</h4>
                                                     </div>
                                                     <div class="box-content">
-                                                        <h6 class="font-light">You are currently not subscribed to any
-                                                            newsletter.</h6>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="box address-box">
-                                                <div class="box-title">
-                                                    <h4>Address Book</h4><a href="javascript:void(0)">Manage
-                                                        Addresses</a>
-                                                </div>
-                                                <div class="box-content">
-                                                    <div class="row g-4">
+                                                        <div class="row g-4">
                                                         <div class="col-sm-6">
                                                             <h6 class="font-light">Default Billing Address</h6>
-                                                            <h6 class="font-light">You have not set a default
-                                                                billing address.</h6>
-                                                            <a href="javascript:void(0)">Edit Address</a>
-                                                        </div>
-                                                        <div class="col-sm-6">
-                                                            <h6 class="font-light">Default Shipping Address</h6>
-                                                            <h6 class="font-light">You have not set a default
-                                                                shipping address.</h6>
-                                                            <a href="javascript:void(0)">Edit Address</a>
-                                                        </div>
+                                                            <h6 class="font-light">
+                                                                @if (!string.IsNullOrEmpty(Model.Address))
+                                                                {
+                                                                    @Model.Address
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Html.Raw("You have not set a default billing address.")
+                                                                }
+                                                            </h6>
+                                                            <a class="btn" style="padding:0;font-weight:400;color:#0163D2" onclick="changeAddress()">Edit Address</a>
+                                                        </div>                                                        
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                            </div>  
+                                            <div class="col-sm-6">
+                                                <div class="box">
+                                                    <!--Profile Picture -->
+                                                    <div class="custome-nab-tabs imageStyle" id="profilePictureBackground" style="background:Url('https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg') no-repeat center;margin:auto;margin-left:125px;margin-bottom:0px;border-radius:50%;">               
+                                                                 <input class="form-control my_file" id="file" name="file" type="file" onchange="changeProfilePicture('file')"/>                            
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div>                                                                              
                                     </div>
                                 </div>
                             </div>
                         </div>
 
+                        
                         <div class="tab-pane fade table-dashboard dashboard wish-list-section" id="order">
                             <div class="box-head mb-3">
-                                <h3>My Order</h3>
+                                <h3>My Orders</h3>
                             </div>
                             <div class="table-responsive">
                                 <table class="table cart-table">
@@ -400,7 +429,7 @@
 
                         <div class="tab-pane fade table-dashboard dashboard wish-list-section" id="wishlist">
                             <div class="box-head mb-3">
-                                <h3>My Wishlish</h3>
+                                <h3>My Wishlist</h3>
                             </div>
                             <div class="table-responsive">
                                 <table class="table cart-table">
@@ -543,97 +572,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
-
-                        <div class="tab-pane fade dashboard" id="save">
-                            <div class="box-head">
-                                <h3>Save Address</h3>
-                                <button class="btn btn-solid-default btn-sm fw-bold ms-auto" data-bs-toggle="modal"
-                                    data-bs-target="#addAddress"><i class="fas fa-plus"></i>
-                                    Add New Address</button>
-                            </div>
-                            <div class="save-details-box">
-                                <div class="row g-3">
-                                    <div class="col-xl-4 col-md-6">
-                                        <div class="save-details">
-                                            <div class="save-name">
-                                                <h5>Mark Jugal</h5>
-                                                <div class="save-position">
-                                                    <h6>Home</h6>
-                                                </div>
-                                            </div>
-
-                                            <div class="save-address">
-                                                <p class="font-light">549 Sulphur Springs Road</p>
-                                                <p class="font-light">Downers Grove, IL</p>
-                                                <p class="font-light">60515</p>
-                                            </div>
-
-                                            <div class="mobile">
-                                                <p class="font-light mobile">Mobile No. +1-123-456-7890</p>
-                                            </div>
-
-                                            <div class="button">
-                                                <a href="javascript:void(0)" class="btn btn-sm">Edit</a>
-                                                <a href="javascript:void(0)" class="btn btn-sm">Remove</a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-xl-4 col-md-6">
-                                        <div class="save-details">
-                                            <div class="save-name">
-                                                <h5>Method Zaki</h5>
-                                                <div class="save-position">
-                                                    <h6>Office</h6>
-                                                </div>
-                                            </div>
-
-                                            <div class="save-address">
-                                                <p class="font-light">549 Sulphur Springs Road</p>
-                                                <p class="font-light">Downers Grove, IL</p>
-                                                <p class="font-light">60515</p>
-                                            </div>
-
-                                            <div class="mobile">
-                                                <p class="font-light mobile">Mobile No. +1-123-456-7890</p>
-                                            </div>
-
-                                            <div class="button">
-                                                <a href="javascript:void(0)" class="btn btn-sm">Edit</a>
-                                                <a href="javascript:void(0)" class="btn btn-sm">Remove</a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-xl-4 col-md-6">
-                                        <div class="save-details">
-                                            <div class="save-name">
-                                                <h5>Mark Jugal</h5>
-                                                <div class="save-position">
-                                                    <h6>Home</h6>
-                                                </div>
-                                            </div>
-
-                                            <div class="save-address">
-                                                <p class="font-light">549 Sulphur Springs Road</p>
-                                                <p class="font-light">Downers Grove, IL</p>
-                                                <p class="font-light">60515</p>
-                                            </div>
-
-                                            <div class="mobile">
-                                                <p class="font-light mobile">Mobile No. +1-123-456-7890</p>
-                                            </div>
-
-                                            <div class="button">
-                                                <a href="javascript:void(0)" class="btn btn-sm">Edit</a>
-                                                <a href="javascript:void(0)" class="btn btn-sm">Remove</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        </div>                        
 
                         <div class="tab-pane fade dashboard" id="pay">
                             <div class="box-head">
@@ -787,160 +726,434 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="tab-pane fade dashboard-profile dashboard" id="profile">
-                            <div class="box-head">
-                                <h3>Profile</h3>
-                                <a href="javascript:void(0)" data-bs-toggle="modal"
-                                    data-bs-target="#resetEmail">Edit</a>
-                            </div>
-                            <ul class="dash-profile">
-                                <li>
-                                    <div class="left">
-                                        <h6 class="font-light">Company Name</h6>
-                                    </div>
-                                    <div class="right">
-                                        <h6>Voxo Fashion</h6>
-                                    </div>
-                                </li>
-
-                                <li>
-                                    <div class="left">
-                                        <h6 class="font-light">Country / Region</h6>
-                                    </div>
-                                    <div class="right">
-                                        <h6>Downers Grove, IL</h6>
-                                    </div>
-                                </li>
-
-                                <li>
-                                    <div class="left">
-                                        <h6 class="font-light">Year Established</h6>
-                                    </div>
-                                    <div class="right">
-                                        <h6>2018</h6>
-                                    </div>
-                                </li>
-
-                                <li>
-                                    <div class="left">
-                                        <h6 class="font-light">Total Employees</h6>
-                                    </div>
-                                    <div class="right">
-                                        <h6>101 - 200 People</h6>
-                                    </div>
-                                </li>
-
-                                <li>
-                                    <div class="left">
-                                        <h6 class="font-light">Category</h6>
-                                    </div>
-                                    <div class="right">
-                                        <h6>Clothing</h6>
-                                    </div>
-                                </li>
-
-                                <li>
-                                    <div class="left">
-                                        <h6 class="font-light">Street Address</h6>
-                                    </div>
-                                    <div class="right">
-                                        <h6>549 Sulphur Springs Road</h6>
-                                    </div>
-                                </li>
-
-                                <li>
-                                    <div class="left">
-                                        <h6 class="font-light">City/State</h6>
-                                    </div>
-                                    <div class="right">
-                                        <h6>Downers Grove, IL</h6>
-                                    </div>
-                                </li>
-
-                                <li>
-                                    <div class="left">
-                                        <h6 class="font-light">Zip</h6>
-                                    </div>
-                                    <div class="right">
-                                        <h6>60515</h6>
-                                    </div>
-                                </li>
-                            </ul>
-
-                            <div class="box-head mt-lg-5 mt-3">
-                                <h3>Login Details</h3>
-                                <a href="javascript:void(0)" data-bs-toggle="modal"
-                                    data-bs-target="#resetEmail">Edit</a>
-                            </div>
-
-                            <ul class="dash-profile">
-                                <li>
-                                    <div class="left">
-                                        <h6 class="font-light">Email Address</h6>
-                                    </div>
-                                    <div class="right">
-                                        <h6>mark.jugal@gmail.com</h6>
-                                    </div>
-                                    <a href="javascript:void(0)" data-bs-toggle="modal"
-                                        data-bs-target="#resetEmail">Edit</a>
-                                </li>
-
-                                <li>
-                                    <div class="left">
-                                        <h6 class="font-light">Phone No.</h6>
-                                    </div>
-                                    <div class="right">
-                                        <h6>+1-202-555-0198</h6>
-                                    </div>
-                                    <a href="javascript:void(0)" data-bs-toggle="modal"
-                                        data-bs-target="#resetEmail">Edit</a>
-                                </li>
-
-                                <li class="mb-0">
-                                    <div class="left">
-                                        <h6 class="font-light">Password</h6>
-                                    </div>
-                                    <div class="right">
-                                        <h6>●●●●●●</h6>
-                                    </div>
-                                    <a href="javascript:void(0)" data-bs-toggle="modal"
-                                        data-bs-target="#resetEmail">Edit</a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="tab-pane fade dashboard-security dashboard" id="security">
-                            <div class="box-head">
-                                <h3>Delete Your Account</h3>
-                            </div>
-                            <div class="security-details">
-                                <h5 class="font-light mt-3">Hi <span> Mark Enderess,</span>
-                                </h5>
-                                <p class="font-light mt-1">We Are Sorry To Here You Would Like To Delete Your Account.
-                                </p>
-                            </div>
-
-                            <div class="security-details-1 mb-0">
-                                <div class="page-title">
-                                    <h4 class="fw-bold">Note</h4>
-                                </div>
-                                <p class="font-light">Deleting your account will permanently remove your profile,
-                                    personal settings, and all other associated information. Once your account is
-                                    deleted, You will be logged out and will be unable to log back in.</p>
-
-                                <p class="font-light mb-4">If you understand and agree to the above statement, and would
-                                    still like to delete your account, than click below</p>
-
-                                <button class="btn btn-solid-default btn-sm fw-bold rounded" data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal">Delete Your
-                                    Account</button>
-                            </div>
-                        </div>
+                        </div>                                               
                     </div>
                 </div>
             </div>
         </div>
     </section>
     <!-- user dashboard section end -->
+
+    <script type="text/javascript">
+    function onThisOverlayClick() {
+      debugger;
+      var dialog = document.getElementById("dialog").ej2_instances[0];  
+      dialog.hide();
+     
+    };   
+    
+    function editUser(){
+        
+        debugger;
+        var model = @Html.Raw(ViewBag.JsonModel);        
+     
+        var dialog = document.getElementById("dialog").ej2_instances[0];
+        
+                    
+        var currentEmail = document.getElementById("email");
+        currentEmail.Value = model.Email;
+
+        var currentNif = document.getElementById("nif");
+        currentNif.Value = model.NIF;
+
+        var currentAddress = document.getElementById("address");
+        currentAddress.Value = model.Address;           
+
+        var currentPhone = document.getElementById("phone");
+        currentPhone.Value = model.PhoneNumber;
+
+        dialog.show();
+    };
+
+    function ondlgUpdateClick() {
+       
+        var dialogObj = document.getElementById("dialog").ej2_instances[0];        
+        var isOk = true;
+
+        document.getElementById("spanPhone").innerHTML = "";       
+        document.getElementById("spanNif").innerHTML = "";
+        document.getElementById("spanEmail").innerHTML = "";
+
+        var oldEmail = document.getElementById("dialog").querySelector('#email').Value;
+        var email = document.getElementById("dialog").querySelector('#email').value;      
+        var phone = document.getElementById("dialog").querySelector('#phone').value;        
+        var nif = document.getElementById("dialog").querySelector('#nif').value;
+
+        if (email === "") {
+        document.getElementById("spanEmail").innerHTML = "Please insert an email.";
+            isOk = false;
+        }
+
+        var checkedEmail = isEmail(email);
+       
+        if (!checkedEmail) {
+            document.getElementById("spanEmail").innerHTML = "The email is not valid.";
+            isOk = false;
+        }       
+
+        let phoneNum = parseInt(phone);
+
+        if (isNaN(phone) && phone !== "") {
+            document.getElementById("spanPhone").innerHTML = "Only numbers are allowed.";
+            isOk = false;
+        }
+
+        let phoneLenght = phoneNum.toString().length;
+
+        if (phoneLenght > 14) {
+            document.getElementById("spanPhone").innerHTML = "Phone number can only have 14 characters max.";
+            isOk = false;
+        }        
+
+        let nifNum;
+
+        
+       debugger;
+
+       nifNum = parseInt(nif);
+
+       if (nif !== "" && isNaN(nif)) {
+           document.getElementById("spanNif").innerHTML = "Only numbers are allowed.";
+           isOk = false;
+       }
+
+       let nifLenght = nifNum.toString().length;
+
+       if (nifLenght > 9) {
+           document.getElementById("spanNif").innerHTML = "Nif can only have 9 characters max.";
+          isOk = false;
+       }
+
+       if (nifLenght < 9) {
+           document.getElementById("spanNif").innerHTML = "Nif must have 9 characters.";
+          isOk = false;
+       }
+
+       if (!isOk) {
+           return;
+       }
+
+       $.ajax({
+           url: '@Url.Action("UpdateUser","Account")',
+           type: 'POST',
+           dataType: 'json',
+           data: { email: email, phoneNumber: phoneNum, nif: nifNum},
+           success: function(data) {
+               if (data) {
+
+                   if (oldEmail == email) {
+                       window.location.reload();
+                   }
+                   else {
+                       window.location.href = '@Url.Action("Logout", "Account")';
+                   }
+               }
+               else {
+                   document.getElementById("notValidated").innerHTML = "There was an error updating your data!";
+               }
+           },
+           error: function(ex) {
+
+               console.log(ex);
+           }
+       });      
+    };
+
+    function isEmail(emailAdress){
+        let regex = /^\w+([\.-]?\w+)*@@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+        if (emailAdress.match(regex)) {
+            return true; 
+        }
+        else 
+        return false; 
+    };
+
+    function changePassword() {
+        
+        var dialog = document.getElementById("passwordDialog").ej2_instances[0];
+        dialog.show();
+
+    };
+
+    function onPasswordOverlayClick() {
+        var dialog = document.getElementById("passwordDialog").ej2_instances[0];
+        dialog.hide();
+    };
+
+
+    function changeAddress() {
+        var dialog = document.getElementById("addressDialog").ej2_instances[0];
+        dialog.show();
+    }
+
+
+    function onAddressOverlayClick() {
+        var dialog = document.getElementById("addressDialog").ej2_instances[0];
+        dialog.hide();
+    }
+
+    function ondlgUpdateAddressClick() {
+    
+       var dialogObj = document.getElementById("addressDialog").ej2_instances[0];        
+         
+
+       var address = document.getElementById("addressDialog").querySelector('#address').value;
+
+       $.ajax({
+           url: '@Url.Action("UpdateUserAddress","Account")',
+           type: 'POST',
+           dataType: 'json',
+           data: { address: address},
+           success: function(data) {
+               if (data) {                                      
+                   window.location.reload();                   
+               }
+               else {
+                   document.getElementById("addressNotValidated").innerHTML = "There was an error updating your data!";
+               }
+           },
+           error: function(ex) {
+
+               console.log(ex);
+           }
+       });      
+
+    }
+
+    function ondlgChangeClick() {
+        debugger;
+        let isValid = true;
+
+        document.getElementById("spanOldPassword").innerHTML = "";
+        document.getElementById("spanNewPassword").innerHTML = "";
+        document.getElementById("spanRepeatPassword").innerHTML = "";
+        document.getElementById("passwordValidated").innerHTML = "";
+        document.getElementById("passwordNotValidated").innerHTML = "";
+
+        var oldPassword = document.getElementById("passwordDialog").querySelector('#oldPassword').value;
+        var newPassword = document.getElementById("passwordDialog").querySelector('#newPassword').value;
+        var repeatedPassword = document.getElementById("passwordDialog").querySelector('#repeatPassword').value;
+
+        if (oldPassword === "") {
+            document.getElementById("spanOldPassword").innerHTML = "Insert the Old Password field.";
+            isValid = false;
+        }
+
+        if (newPassword === "") {
+            document.getElementById("spanNewPassword").innerHTML = "Insert the New Password field.";
+            isValid = false;
+        }
+
+        if (repeatedPassword === "") {
+            document.getElementById("spanRepeatPassword").innerHTML = "Insert the Repeat Password field.";
+            isValid = false;
+        }
+
+        if (newPassword.length < 6) {
+            document.getElementById("spanNewPassword").innerHTML = "New password must have more than 6 characters.";
+            isValid = false;
+        }
+
+        if (isValid) {
+
+            $.ajax({
+                url: '@Url.Action("ChangePassword","Account")',
+                type: 'POST',
+                dataType: 'json',
+                data: { oldPassword: oldPassword, newPassword: newPassword, repeatedPassword: repeatedPassword },
+                success: function(data) {
+                    console.log(data);
+                    debugger;
+                    if (data.isSuccess == true) {                       
+                        
+                        document.getElementById("passwordValidated").innerHTML = data.message;
+                        document.getElementById("oldPassword").value = "";
+                        document.getElementById("newPassword").value = "";
+                        document.getElementById("repeatPassword").value = "";
+
+                    }
+                    else {
+                         document.getElementById("passwordNotValidated").innerHTML = data.message;
+                    }
+                },
+                error: function(ex) {
+
+                    console.log(ex);
+                }
+            });
+
+        }
+        else {
+            return;
+        }
+           
+    };
+
+</script>
+
+
+    <div id='container'>
+
+        <ejs-dialog id='dialog' visible="false" isModal="true" width="450px" minheight="550px" showCloseIcon="true" allowDragging="true" overlayClick="onThisOverlayClick" target="#container" header="Edit Contact & Billing Information">
+    
+            <e-dialog-animationsettings effect="Fade" duration="400" delay="0"></e-dialog-animationsettings>
+            <e-dialog-position Y="150"> </e-dialog-position>
+           <e-content-template>
+               <form>
+               
+               <div class="form-group pad">
+               <span style="color:#0163D2">*If the email is changed you will be required to login again.</span>
+               <input asp-for="Email" class="form-control" style="padding:5px" id="email"/>
+               <label asp-for="Email"></label><br/>
+               <span asp-validation-for="Email" class="text-danger" id="spanEmail"></span>
+               </div>                              
+
+               <div class="form-group pad">
+                   <input asp-for="PhoneNumber" class="form-control" style="padding:5px" id="phone"/>
+                   <label asp-for="PhoneNumber"></label><br/>
+                   <span asp-validation-for="PhoneNumber" class="text-danger" id="spanPhone"></span>
+               </div>
+               
+               
+               <div class="form-group pad">                       
+                   <input asp-for="NIF" class="form-control" style="padding:5px" id="nif"/>
+                   <label asp-for="NIF"></label><br/>
+                   <span asp-validation-for="NIF" class="text-danger" id="spanNif"></span>
+               </div>
+               
+               <div>                    
+                   <span class="text-danger" id="notValidated"></span>
+               </div>
+               </form>
+           </e-content-template>   
+            <e-dialog-buttons>
+              
+                <e-dialog-dialogbutton buttonModel="@updateButton" click="ondlgUpdateClick"></e-dialog-dialogbutton>
+               
+            </e-dialog-buttons>
+    
+        </ejs-dialog>
+
+        <ejs-dialog id='passwordDialog' visible="false" isModal="true" width="450px" minHeight="450px" showCloseIcon="true" allowDragging="true" overlayClick="onPasswordOverlayClick" target="#container" header="Change Password">
+            <e-dialog-animationsettings effect="Fade" duration="400" delay="0"></e-dialog-animationsettings>    
+            <e-dialog-position Y="150"> </e-dialog-position>
+            <e-content-template>
+                <form>
+                
+                <div class="form-group pad">    
+                    <div class="row">
+                        <div class="col-10">
+                            <input type="password" class="form-control" style="padding:5px" id="oldPassword"/>
+                        </div>
+                        <div class="col fontawesome" style="margin:auto" id="showOld">
+                            <i class="fas fa-eye-slash" ></i>
+                        </div>                        
+                    </div>                    
+                    <label>Old Password</label><br/>
+                    <span class="text-danger" id="spanOldPassword"></span>
+                </div>
+                <div class="form-group pad">
+                    <div class="row">
+                        <div class="col-10">
+                            <input type="password" class="form-control" style="padding:5px" id="newPassword"/>
+                        </div>
+                        <div class="col fontawesome" style="margin:auto" id="showNew">
+                            <i class="fas fa-eye-slash" ></i>
+                        </div>  
+                    </div>
+                    <label>New Password</label><br/>
+                    <span class="text-danger" id="spanNewPassword"></span>
+                </div>
+                 <div class="form-group pad"> 
+                     <div class="row">
+                        <div class="col-10">
+                               <input type="password" class="form-control" style="padding:5px" id="repeatPassword"/>
+                        </div>
+                        <div class="col fontawesome" style="margin:auto" id="showRepeat">
+                            <i class="fas fa-eye-slash" ></i>
+                        </div>
+                     </div>
+                    <label>Repeat Password</label><br/>
+                    <span class="text-danger" id="spanRepeatPassword"></span>
+                </div>
+                <div> 
+                    <span class="text-success" id="passwordValidated"></span>
+                    <span class="text-danger" id="passwordNotValidated"></span>
+                </div>
+
+                </form>
+            </e-content-template>
+    
+            <e-dialog-buttons>               
+                <e-dialog-dialogbutton buttonModel="@changeButton" click="ondlgChangeClick"></e-dialog-dialogbutton>                
+            </e-dialog-buttons>           
+        </ejs-dialog>
+
+        <ejs-dialog id='addressDialog' visible="false" isModal="true" width="450px" minheight="300px" showCloseIcon="true" allowDragging="true" overlayClick="onAddressOverlayClick" target="#container" header="Edit Address">
+    
+            <e-dialog-animationsettings effect="Fade" duration="400" delay="0"></e-dialog-animationsettings>
+            <e-dialog-position Y="150"> </e-dialog-position>
+           <e-content-template>
+               <form>               
+               
+                               
+               <div class="form-group pad">                    
+                   <input asp-for="Address" class="form-control" style="padding:5px" id="address"/>
+                   <label asp-for="Address"></label><br/>
+                   <span asp-validation-for="Address" class="text-danger" id="spanAddress"></span>
+               </div>                           
+              
+               <div>                    
+                   <span class="text-danger" id="addressNotValidated"></span>
+               </div>
+               </form>
+           </e-content-template>   
+            <e-dialog-buttons>
+              
+                <e-dialog-dialogbutton buttonModel="@updateButton" click="ondlgUpdateAddressClick"></e-dialog-dialogbutton>
+               
+            </e-dialog-buttons>
+    
+        </ejs-dialog>
+
+    </div>
+  
+
+   @section Scripts{
+       @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script type="text/Javascript">
+        window.onload = getBackgroundProfilePicture();    
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+            
+        $("#showOld").on('mouseenter', function() {
+                document.getElementById("oldPassword").type = 'text';
+        });
+        $("#showOld").on('mouseleave', function() {
+           document.getElementById("oldPassword").type = 'password';
+        });
+
+        $("#showNew").on('mouseenter', function() {
+                document.getElementById("newPassword").type = 'text';
+        });
+        $("#showNew").on('mouseleave', function() {
+           document.getElementById("newPassword").type = 'password';
+        });
+
+        $("#showRepeat").on('mouseenter', function() {
+                document.getElementById("repeatPassword").type = 'text';
+        });
+        $("#showRepeat").on('mouseleave', function() {
+           document.getElementById("repeatPassword").type = 'password';
+        });
+
+    });
+    </script>
+
+
+   }

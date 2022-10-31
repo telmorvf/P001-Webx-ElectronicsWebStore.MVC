@@ -58,5 +58,7 @@ namespace Webx.Web.Helpers
         Task<IdentityResult> AddLoginAsync(User user, ExternalLoginInfo info);
         Task SignInAsync(User user, bool isPersistent);
         Task<bool> HasPasswordAsync(User user);
+
+        Task<SignInResult> CheckPasswordAsync(User user, string oldPassword);
     }
 }

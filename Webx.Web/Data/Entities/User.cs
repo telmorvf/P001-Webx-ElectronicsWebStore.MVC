@@ -38,8 +38,8 @@ namespace Webx.Web.Data.Entities
         public string FullName => $"{FirstName} {LastName}";
 
          public string ImageFullPath => ImageId == Guid.Empty
-    ? $"https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg"
-    : $"https://webx2022.blob.core.windows.net/users/{ImageId}";
+            ? $"https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg"
+            : $"https://webx2022.blob.core.windows.net/users/{ImageId}";
 
     }
 }

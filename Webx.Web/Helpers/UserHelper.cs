@@ -187,5 +187,9 @@ namespace Webx.Web.Helpers
             return await _userManager.HasPasswordAsync(user);
         }
 
+        public async Task<SignInResult> CheckPasswordAsync(User user, string oldPassword)
+        {
+            return await _signInManager.CheckPasswordSignInAsync(user, oldPassword, false);
+        }
     }
 }
