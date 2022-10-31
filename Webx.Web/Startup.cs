@@ -13,6 +13,8 @@ using System.Text;
 using Webx.Web.Data;
 using Webx.Web.Data.Entities;
 using Webx.Web.Helpers;
+using AspNetCoreHero.ToastNotification;
+using AspNetCoreHero.ToastNotification.Extensions;
 
 namespace Webx.Web
 {
@@ -69,6 +71,13 @@ namespace Webx.Web
             });
 
 
+            services.AddNotyf(cfg =>
+            {
+                cfg.DurationInSeconds = 5;
+                cfg.IsDismissable = true;
+                cfg.Position = NotyfPosition.TopRight;
+            });
+
             services.AddTransient<SeedDb>();
 
             services.AddScoped<IUserHelper, UserHelper>();
@@ -122,6 +131,8 @@ namespace Webx.Web
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            app.UseNotyf();
 
             app.UseEndpoints(endpoints =>
             {

@@ -14,6 +14,7 @@ using Webx.Web.Helpers;
 using Webx.Web.Models;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using AspNetCoreHero.ToastNotification.Abstractions;
 
 namespace Webx.Web.Controllers
 {
@@ -23,13 +24,16 @@ namespace Webx.Web.Controllers
         private readonly IMailHelper _mailHelper;
         private readonly DataContext _context;
         private readonly IBlobHelper _blobHelper;
+        private readonly INotyfService _toastNotification;
 
-        public AccountController(IUserHelper userHelper,IMailHelper mailHelper, DataContext context,IBlobHelper blobHelper)
+        public AccountController(IUserHelper userHelper,IMailHelper mailHelper, DataContext context,IBlobHelper blobHelper
+            , INotyfService toastNotification)
         {
             _userHelper = userHelper;
             _mailHelper = mailHelper;
             _context = context;
             _blobHelper = blobHelper;
+            _toastNotification = toastNotification;
         }
 
         public IActionResult Login()
@@ -602,8 +606,7 @@ namespace Webx.Web.Controllers
 
                 if (!response.Succeeded)
                 {
-                    //_flashMessage.Danger("There was an error updating the profile picture.");
-
+                    _toastNotification.Error("There was an error uploading the picture.", 7);
                     return new ObjectResult(new { Status = "fail" });
                 }
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -19,16 +20,18 @@ namespace Webx.Web.Controllers
         private readonly IBlobHelper _blobHelper;
         private readonly IUserHelper _userHelper;
         private readonly DataContext _context;
+        private readonly INotyfService _toastNotification;
 
         public HomeController(
             ILogger<HomeController> logger,
             IBlobHelper blobHelper, IUserHelper userHelper,
-            DataContext context)
+            DataContext context, INotyfService toastNotification)
         {
             _logger = logger;
             _blobHelper = blobHelper;
             _userHelper = userHelper;
             _context = context;
+            _toastNotification = toastNotification;
         }
 
         public async Task<IActionResult> Index()
@@ -40,7 +43,7 @@ namespace Webx.Web.Controllers
                 var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
                 ViewBag.UserFullName = user.FullName;
             }
-
+            
             return View(/*"CommingSoon", "Home"*/);
         }
 
