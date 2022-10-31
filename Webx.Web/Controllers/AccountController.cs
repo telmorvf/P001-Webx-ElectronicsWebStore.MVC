@@ -449,7 +449,7 @@ namespace Webx.Web.Controllers
         
         [HttpPost]
         [Route("Account/UpdateUser")]
-        public async Task<JsonResult> UpdateUser(string email, long phoneNumber, long nif)
+        public async Task<JsonResult> UpdateUser(string email, long phoneNumber, string nif)
         {
             bool isValid = false;
             var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
@@ -461,8 +461,8 @@ namespace Webx.Web.Controllers
                 
             user.Email = email;
             user.UserName = email;            
-            user.PhoneNumber = phoneNumber.ToString();            
-            user.NIF = nif.ToString();           
+            user.PhoneNumber = phoneNumber.ToString();
+            user.NIF = nif;           
 
             try
             {
@@ -585,8 +585,6 @@ namespace Webx.Web.Controllers
 
                 if (file != null && file.Length > 0)
                 {
-
-
                     using var image = Image.Load(file.OpenReadStream());
                     image.Mutate(img => img.Resize(512, 0));
 

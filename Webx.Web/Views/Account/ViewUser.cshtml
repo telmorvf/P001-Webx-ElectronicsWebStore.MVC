@@ -735,11 +735,14 @@
     <!-- user dashboard section end -->
 
     <script type="text/javascript">
+
+  
+
     function onThisOverlayClick() {
       debugger;
       var dialog = document.getElementById("dialog").ej2_instances[0];  
       dialog.hide();
-     
+       
     };   
     
     function editUser(){
@@ -805,26 +808,26 @@
             isOk = false;
         }        
 
-        let nifNum;
+        //let nifNum;
 
         
        debugger;
 
-       nifNum = parseInt(nif);
+       //nifNum = parseInt(nif);
 
        if (nif !== "" && isNaN(nif)) {
            document.getElementById("spanNif").innerHTML = "Only numbers are allowed.";
            isOk = false;
        }
 
-       let nifLenght = nifNum.toString().length;
+       //let nifLenght = nifNum.toString().length;
 
-       if (nifLenght > 9) {
+       if (nif.length > 9) {
            document.getElementById("spanNif").innerHTML = "Nif can only have 9 characters max.";
           isOk = false;
        }
 
-       if (nifLenght < 9) {
+       if (nif.length < 9) {
            document.getElementById("spanNif").innerHTML = "Nif must have 9 characters.";
           isOk = false;
        }
@@ -837,10 +840,9 @@
            url: '@Url.Action("UpdateUser","Account")',
            type: 'POST',
            dataType: 'json',
-           data: { email: email, phoneNumber: phoneNum, nif: nifNum},
+           data: { email: email, phoneNumber: phoneNum, nif: nif},
            success: function(data) {
                if (data) {
-
                    if (oldEmail == email) {
                        window.location.reload();
                    }
@@ -1035,7 +1037,7 @@
     
         </ejs-dialog>
 
-        <ejs-dialog id='passwordDialog' visible="false" isModal="true" width="450px" minHeight="450px" showCloseIcon="true" allowDragging="true" overlayClick="onPasswordOverlayClick" target="#container" header="Change Password">
+        <ejs-dialog id='passwordDialog' visible="false" isModal="true" width="450px" minHeight="500px" showCloseIcon="true" allowDragging="true" overlayClick="onPasswordOverlayClick" target="#container" header="Change Password">
             <e-dialog-animationsettings effect="Fade" duration="400" delay="0"></e-dialog-animationsettings>    
             <e-dialog-position Y="150"> </e-dialog-position>
             <e-content-template>
