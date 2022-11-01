@@ -15,6 +15,7 @@ using Webx.Web.Models;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using AspNetCoreHero.ToastNotification.Abstractions;
+using Webx.Web.Data.Repositories;
 
 namespace Webx.Web.Controllers
 {
@@ -22,16 +23,16 @@ namespace Webx.Web.Controllers
     {
         private readonly IUserHelper _userHelper;
         private readonly IMailHelper _mailHelper;
-        private readonly DataContext _context;
+        private readonly ICategoryRepository _categoryRepository;
         private readonly IBlobHelper _blobHelper;
         private readonly INotyfService _toastNotification;
 
-        public AccountController(IUserHelper userHelper,IMailHelper mailHelper, DataContext context,IBlobHelper blobHelper
+        public AccountController(IUserHelper userHelper,IMailHelper mailHelper, ICategoryRepository categoryRepository,IBlobHelper blobHelper
             , INotyfService toastNotification)
         {
             _userHelper = userHelper;
             _mailHelper = mailHelper;
-            _context = context;
+            _categoryRepository = categoryRepository;            
             _blobHelper = blobHelper;
             _toastNotification = toastNotification;
         }
@@ -445,8 +446,8 @@ namespace Webx.Web.Controllers
 
             ViewBag.JsonModel = JsonConvert.SerializeObject(model);
             ViewBag.UserFullName = user.FullName;
-            ViewBag.Categories = await _context.Categories.ToListAsync();
-          
+            ViewBag.Categories = await _categoryRepository.GetAllCategoriesAsync();
+
             return View(model);
         }
 
@@ -619,7 +620,7 @@ namespace Webx.Web.Controllers
 
         public async Task<IActionResult> NotAuthorized()
         {
-            ViewBag.Categories = await _context.Categories.ToListAsync();
+            ViewBag.Categories = await _categoryRepository.GetAllCategoriesAsync();
 
             return View();
         }

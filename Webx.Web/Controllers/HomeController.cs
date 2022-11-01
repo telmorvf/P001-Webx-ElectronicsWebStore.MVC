@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Webx.Web.Data;
+using Webx.Web.Data.Repositories;
 using Webx.Web.Helpers;
 using Webx.Web.Models;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -19,24 +20,24 @@ namespace Webx.Web.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IBlobHelper _blobHelper;
         private readonly IUserHelper _userHelper;
-        private readonly DataContext _context;
+        private readonly ICategoryRepository _categoryRepository;        
         private readonly INotyfService _toastNotification;
 
         public HomeController(
             ILogger<HomeController> logger,
             IBlobHelper blobHelper, IUserHelper userHelper,
-            DataContext context, INotyfService toastNotification)
+            ICategoryRepository categoryRepository, INotyfService toastNotification)
         {
             _logger = logger;
             _blobHelper = blobHelper;
             _userHelper = userHelper;
-            _context = context;
+            _categoryRepository = categoryRepository;            
             _toastNotification = toastNotification;
         }
 
         public async Task<IActionResult> Index()
         {
-            ViewBag.Categories = await _context.Categories.ToListAsync();
+            ViewBag.Categories = await _categoryRepository.GetAllCategoriesAsync();
 
             if (User.Identity.IsAuthenticated)
             {
@@ -63,7 +64,7 @@ namespace Webx.Web.Controllers
         [Route("error/404")]
         public async Task<IActionResult> Error404()
         {
-            ViewBag.Categories = await _context.Categories.ToListAsync();
+            ViewBag.Categories = await _categoryRepository.GetAllCategoriesAsync();
             return View();
         }
     }

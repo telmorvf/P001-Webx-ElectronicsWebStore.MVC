@@ -15,6 +15,7 @@ using Webx.Web.Data.Entities;
 using Webx.Web.Helpers;
 using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
+using Webx.Web.Data.Repositories;
 
 namespace Webx.Web
 {
@@ -83,6 +84,14 @@ namespace Webx.Web
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<IMailHelper, MailHelper>();
             services.AddScoped<IBlobHelper, BlobHelper>();
+
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+            services.AddScoped<IBrandRepository, BrandRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IStockRepository, StockRepository>();
+            services.AddScoped<IStoreRepository, StoreRepository>();
 
             services.AddHttpContextAccessor();
 
