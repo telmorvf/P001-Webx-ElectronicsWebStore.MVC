@@ -166,6 +166,7 @@ namespace Webx.Web.Controllers
 
                 ModelState.AddModelError(string.Empty, "The user couldn't be created, probably Email is alredy registered.");
                 return View(model);
+                
             }                        
 
             return View(model);

@@ -16,12 +16,12 @@ namespace Webx.Web.Data.Entities
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
-        [MaxLength(100, ErrorMessage = "The field {0} cannot have more then {1} characters.")]
+        [MaxLength(100, ErrorMessage = "The field Address cannot have more then 100 characters.")]
         public string Address { get; set; }
 
-        [RegularExpression("^[0-9]*$", ErrorMessage = "{0} must be numeric")]
-        [MaxLength(9, ErrorMessage = "The {0} field must have {1} characters.")]
-        [MinLength(9, ErrorMessage = "The {0} field must have {1} characters.")]
+        [RegularExpression("^[0-9]*$", ErrorMessage = "Tax Identification Number must be numeric")]
+        [MaxLength(9, ErrorMessage = "The Tax Identification Number field must have 9 characters.")]
+        [MinLength(9, ErrorMessage = "The Tax Identification Number field must have 9 characters.")]
         [Display(Name = "Tax Identification number (NIF)")]
         public string NIF { get; set; }
 
@@ -31,11 +31,15 @@ namespace Webx.Web.Data.Entities
         public bool Active { get; set; }        
 
         [Display(Name = "Phone Number")]
+        [RegularExpression("^[0-9]*$", ErrorMessage = "Phone Number must be numeric")]
         [DataType(DataType.PhoneNumber)]
         public override string PhoneNumber { get; set; }
 
         [Display(Name = "Full Name")]
         public string FullName => $"{FirstName} {LastName}";
+
+        [DataType(DataType.EmailAddress)]
+        public override string Email { get; set; }
 
          public string ImageFullPath => ImageId == Guid.Empty
             ? $"https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg"

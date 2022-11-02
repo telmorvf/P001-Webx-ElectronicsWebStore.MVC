@@ -112,9 +112,19 @@
                                       
                                   </li>
 
+                                    @if (!this.User.IsInRole("Customer"))
+                                    {
+                                        <li>
+                                            <div class="top-header-dropdown">
+                                                <a asp-action="Index" asp-controller="AdminPanel" style="padding: 5px;"><i class="fas fa-tools" style="font-size:20px;margin-right: 10px;"></i> Admin Panel</a>
+                                            </div>
+                                        </li>
+                                    }
+
+
                                   <li>
                                       <div class="top-header-dropdown">
-                                          <a asp-action="Logout" asp-controller="Account">Logout</a>
+                                          <a asp-action="Logout" asp-controller="Account"><i class="fal fa-sign-out" style="font-size:20px;margin-right: 10px;"></i> Logout</a>
                                       </div>
                                   </li>
                                 </ul>                              
@@ -130,10 +140,7 @@
                         <div class="main-menu">
                             <div class="menu-left">
                                 <div class="brand-logo">
-                                    <a asp-action="Index" asp-controller="Home">
-                                        <svg class="svg-icon">
-                                            <use class="fill-color" xlink:href="~/assets/svg/icons.svg#logo"></use>
-                                        </svg>
+                                    <a asp-action="Index" asp-controller="Home">                                       
                                         <img src="~/assets/images/logo.png" class="img-fluid blur-up lazyload" alt="logo">
                                         <img src="~/assets/images/logoloop.gif" class="img-fluid blur-up lazyload" alt="logo">
                                     </a>
@@ -445,10 +452,7 @@
                     <div class="col-xl-3 col-lg-4 col-md-6">
                         <div class="footer-contact">
                             <div class="brand-logo">
-                                <a href="index.html" class="footer-logo">
-                                    <svg class="svg-icon">
-                                        <use class="fill-color" xlink:href="~/assets/svg/icons.svg#logo"></use>
-                                    </svg>
+                                <a href="index.html" class="footer-logo">                                    
                                     <img src="~/assets/images/logofooter.png" class="img-fluid blur-up lazyload" alt="logo">
                                 </a>
                             </div>

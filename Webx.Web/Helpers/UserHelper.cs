@@ -191,5 +191,15 @@ namespace Webx.Web.Helpers
         {
             return await _signInManager.CheckPasswordSignInAsync(user, oldPassword, false);
         }
+
+        public async Task<IEnumerable<User>> GetAllEmployeesAsync()
+        {
+            var employees = new List<User>();
+            employees.AddRange(await _userManager.GetUsersInRoleAsync("Technician"));
+            employees.AddRange(await _userManager.GetUsersInRoleAsync("Product Manager"));
+            employees.AddRange(await _userManager.GetUsersInRoleAsync("Admin"));
+
+            return employees;
+        }
     }
 }

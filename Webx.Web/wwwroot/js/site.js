@@ -53,3 +53,36 @@ function changeProfilePicture(inputId) {
         }
     });
 }
+
+//carrega funções ao entrar no painel de administração
+
+function onLoadFunctions() {
+
+    loadProfile();
+
+
+}
+
+
+//carrega foto de perfil do utilizador no painel de administração
+function loadProfile() {
+
+
+    var host = window.location.host;
+    var url = 'https://' + host + '/Account/GetProfilePicturePath';
+
+    $.ajax({
+        url: url,
+        type: 'Post',
+        dataType: 'json',
+        success: function (user) {
+
+           document.getElementById('userProfilePicture').src = user.imageFullPath;          
+           document.getElementById("userFullName").innerHTML = user.fullName;
+
+        },
+        error: function (ex) {
+            console.log(ex);
+        }
+    });
+}

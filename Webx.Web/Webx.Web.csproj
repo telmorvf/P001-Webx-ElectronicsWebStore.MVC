@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\assets\images\inner-page\" />
+    <Folder Include="wwwroot\assets\adminlte\" />
     <Folder Include="wwwroot\images\brands\" />
     <Folder Include="wwwroot\images\images\" />
     <Folder Include="wwwroot\images\users\" />

@@ -1,0 +1,65 @@
+﻿@model IEnumerable<Webx.Web.Data.Entities.User>
+
+@{
+    ViewData["Title"] = "View All Employees";
+    ViewData["Breadcrumb"] = null;
+    Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
+    List<Object> toolbarItems = new List<Object>();
+    toolbarItems.Add("Search");
+    toolbarItems.Add(new { text = "Edit", tooltipText = "Edit employee", prefixIcon = "e-expand", id = "editEmployee" });
+}
+
+<style>
+    .image img {
+        height: 75px;
+        width: 75px;
+        border-radius: 50px;
+        box-shadow: inset 0 0 1px #e0e0e0, inset 0 0 14px rgba(0, 0, 0, 0.2);
+    }
+
+    .e-expand::before {           
+            content: '\e730' !important;      //put icon id here which will be available on resource file, attached this 
+    } 
+</style>
+
+<!--Div que permite dar espaçamento entre ejs grid e topo-->
+<div class="container-fluid" style="min-height:25px;background-color: #f4f6f9;">
+   
+</div>
+
+<div class="container-fluid">
+    <ejs-grid id="grid" TValue="@ViewBag.Type" dataSource="Model" rowSelected="rowSelected" allowSelection="true" allowPaging="true" allowSorting="true" allowFiltering="false" toolbar="toolbarItems">
+        <e-grid-selectionsettings type="Single" mode="Row"></e-grid-selectionsettings>
+        <e-grid-pagesettings pageSize="10"></e-grid-pagesettings>        
+        <e-grid-columns>
+            <e-grid-column headerText="Profile Picture" template="#template" width="150" textAlign="Center" allowEditing="false"></e-grid-column>
+            <e-grid-column field="Id" isPrimaryKey="true" width="0px"></e-grid-column>
+            <e-grid-column field="FullName" textAlign="Left" allowEditing="false" width="200px"></e-grid-column>
+            <e-grid-column field="Email" textAlign="Left" width="250px"></e-grid-column>
+            <e-grid-column field="PhoneNumber" textAlign="Left" width="150px"></e-grid-column>
+            <e-grid-column field="NIF" headerText="Tax Id. Number (NIF)" textAlign="Left" width="150px"></e-grid-column>
+            <e-grid-column field="Address" textAlign="Left" width="500px"></e-grid-column>
+        </e-grid-columns>
+    </ejs-grid>
+
+</div>
+
+<script id="template" type="text/x-template">
+    <div class="image">        
+        <img src="${ImageFullPath}" />
+    </div>
+</script>
+
+<script>
+
+ function rowSelected(args){
+    var selectedrowindex= this.getSelectedRowIndexes();  // get the selected row indexes.
+    console.log(selectedrowindex); // to alert the selected row indexes.
+    var selectedrecords = this.getSelectedRecords();  // get the selected records.
+     console.log(selectedrecords);
+     var id = selectedrecords[0].Id;
+     console.log(id);
+ }
+
+
+ </script>
