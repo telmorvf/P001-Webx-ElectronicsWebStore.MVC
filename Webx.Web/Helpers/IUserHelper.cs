@@ -17,6 +17,8 @@ namespace Webx.Web.Helpers
 
         Task<IdentityResult> UpdateUserAsync(User user);
 
+        Task<IEnumerable<User>> GetAllEmployeesAsync();
+
         Task<User> GetUserByIdAsync(string userId);
 
         Task<bool> CheckUserInRoleAsync(User user, string roleName);
