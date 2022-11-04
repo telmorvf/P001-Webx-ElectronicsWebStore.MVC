@@ -38,7 +38,7 @@ namespace Webx.Web.Data.Entities
         [Display(Name = "Full Name")]
         public string FullName => $"{FirstName} {LastName}";
 
-        [DataType(DataType.EmailAddress)]
+        [DataType(DataType.EmailAddress)]        
         public override string Email { get; set; }
 
          public string ImageFullPath => ImageId == Guid.Empty

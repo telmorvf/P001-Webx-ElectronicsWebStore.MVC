@@ -84,6 +84,7 @@ namespace Webx.Web
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<IMailHelper, MailHelper>();
             services.AddScoped<IBlobHelper, BlobHelper>();
+            services.AddScoped<IConverterHelper, ConverterHelper>();
 
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();

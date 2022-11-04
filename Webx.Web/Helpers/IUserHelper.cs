@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Webx.Web.Data.Entities;
@@ -15,9 +16,13 @@ namespace Webx.Web.Helpers
 
         Task<IdentityResult> AddUserAsync(User user, string password);
 
+        Task<IdentityRole>GetUserRoleAsync(User user);
+
         Task<IdentityResult> UpdateUserAsync(User user);
 
         Task<IEnumerable<User>> GetAllEmployeesAsync();
+
+        Task<IEnumerable<User>> GetAllActiveEmployeesAsync();
 
         Task<User> GetUserByIdAsync(string userId);
 
@@ -37,7 +42,10 @@ namespace Webx.Web.Helpers
 
         Task<List<User>> GetUsersInRoleAsync(string roleName);
 
+        
+
         Task LogoutAsync();
+
 
         Task<IdentityResult> ChangePasswordAsync(User user, string oldPassword, string newPassword);
        
@@ -62,5 +70,9 @@ namespace Webx.Web.Helpers
         Task<bool> HasPasswordAsync(User user);
 
         Task<SignInResult> CheckPasswordAsync(User user, string oldPassword);
+
+        IEnumerable<SelectListItem> GetEmployeesComboRoles();
+        Task<IdentityRole> GetRoleByIdAsync(string roleId);
+        Task<IdentityResult> RemoveFromCurrentRoleAsync(User user,string currentRole);
     }
 }

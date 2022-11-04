@@ -399,6 +399,7 @@ namespace Webx.Web.Data
                         Email = $"{FirstNames[i]}@yopmail.com",
                         UserName = $"{FirstNames[i]}@yopmail.com",
                         ImageId = images[i],
+                        Active = true
                     };                    
 
                     users.Add(user);
@@ -434,6 +435,7 @@ namespace Webx.Web.Data
                     Email = "tatiana@yopmail.com",
                     UserName = "tatiana@yopmail.com",
                     ImageId = Guid.Parse("00000000-0000-0000-0000-100000000002"),
+                    Active = true
                 };
 
                 await _userHelper.AddUserAsync(user1, "123456");
@@ -470,7 +472,8 @@ namespace Webx.Web.Data
                         PhoneNumber = "252337232",
                         Email = "daniel@yopmail.com",
                         UserName = "daniel@yopmail.com",
-                        ImageId = Guid.Empty
+                        ImageId = Guid.Empty,
+                        Active = true
                     };
 
                     await _userHelper.AddUserAsync(user1, "123456");
@@ -491,7 +494,8 @@ namespace Webx.Web.Data
                         PhoneNumber = "235131161",
                         Email = "ivo@yopmail.com",
                         UserName = "ivo@yopmail.com",
-                        ImageId = Guid.Parse("00000000-0000-0000-0000-100000000004")
+                        ImageId = Guid.Parse("00000000-0000-0000-0000-100000000004"),
+                        Active = true
                     };
 
                     await _userHelper.AddUserAsync(user2, "123456");
@@ -546,7 +550,8 @@ namespace Webx.Web.Data
                         NIF = Nifs[i],
                         Email = $"{FirstNames[i]}@yopmail.com",
                         UserName = $"{FirstNames[i]}@yopmail.com",
-                        ImageId = adminImage
+                        ImageId = adminImage,
+                        Active = true
                     };
 
                     admins.Add(user);

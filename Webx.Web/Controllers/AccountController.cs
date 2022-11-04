@@ -126,6 +126,7 @@ namespace Webx.Web.Controllers
                             Address = model.Address,
                             PhoneNumber = model.PhoneNumber,
                             NIF = model.NIF,
+                            Active = true
                         };
 
                         var result = await _userHelper.AddUserAsync(user, "DefaultPassword123");
@@ -386,6 +387,7 @@ namespace Webx.Web.Controllers
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     UserName = model.Email,
+                    Active = true
                 };
 
                 var result = await _userHelper.CreateAsync(user);
