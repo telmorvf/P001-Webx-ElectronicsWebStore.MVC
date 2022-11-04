@@ -43,8 +43,9 @@ namespace Webx.Web.Controllers
             {
                 var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
                 ViewBag.UserFullName = user.FullName;
+                ViewBag.IsActive = user.Active;
             }
-            
+
             return View(/*"CommingSoon", "Home"*/);
         }
 

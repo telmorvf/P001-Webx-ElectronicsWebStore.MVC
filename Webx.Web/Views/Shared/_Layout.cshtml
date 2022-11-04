@@ -112,7 +112,7 @@
                                       
                                   </li>
 
-                                    @if (!this.User.IsInRole("Customer"))
+                                    @if (!this.User.IsInRole("Customer") && ViewBag.IsActive == true)
                                     {
                                         <li>
                                             <div class="top-header-dropdown">

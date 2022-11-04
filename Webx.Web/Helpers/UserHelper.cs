@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace Webx.Web.Helpers
 
         public async Task<IdentityResult> AddUserToRoleAsync(User user, string roleName)
         {
-            return await _userManager.AddToRoleAsync(user, roleName);
+            return await _userManager.AddToRoleAsync(user, roleName);            
         }
 
         public async Task<bool> CheckUserInRoleAsync(User user, string roleName)
@@ -200,6 +201,60 @@ namespace Webx.Web.Helpers
             employees.AddRange(await _userManager.GetUsersInRoleAsync("Admin"));
 
             return employees;
+        }
+
+        public async Task<IEnumerable<User>> GetAllActiveEmployeesAsync()
+        {
+            var employees = new List<User>();
+            employees.AddRange(await _userManager.GetUsersInRoleAsync("Technician"));
+            employees.AddRange(await _userManager.GetUsersInRoleAsync("Product Manager"));
+            employees.AddRange(await _userManager.GetUsersInRoleAsync("Admin"));
+
+            return employees.Where(e => e.Active == true);
+        }
+
+        public IEnumerable<SelectListItem> GetEmployeesComboRoles()
+        {
+            var list = _roleManager.Roles;
+            var comboRolesList = new List<SelectListItem>();
+
+            foreach(var role in list)
+            {
+                if(role.Name != "Customer")
+                {
+                    comboRolesList.Add(new SelectListItem
+                    {
+                        Text = role.Name,
+                        Value = role.Id
+                    });
+                }
+            }
+
+            comboRolesList.Add(new SelectListItem
+            {
+                Text = "[Select Role]",
+                Value = "0"
+            });
+
+            return comboRolesList.OrderBy(l => l.Text);
+            
+        }
+
+        public async Task<IdentityRole> GetUserRoleAsync(User user)
+        {
+            var userRole = await _userManager.GetRolesAsync(user);
+
+            return await _roleManager.Roles.Where(role => role.Name == userRole.FirstOrDefault()).FirstOrDefaultAsync();
+        }
+
+        public async Task<IdentityRole> GetRoleByIdAsync(string roleId)
+        {
+            return await _roleManager.FindByIdAsync(roleId);
+        }
+
+        public async Task<IdentityResult> RemoveFromCurrentRoleAsync(User user,string currentRole)
+        {
+            return await _userManager.RemoveFromRoleAsync(user, currentRole);
         }
     }
 }
