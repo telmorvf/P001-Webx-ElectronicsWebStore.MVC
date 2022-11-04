@@ -139,11 +139,11 @@
                                     </a>
                                 </div>
                                 <div class="category-menu">
-                                    <button type="button" 
+                                    <a type="button" asp-action="Index" asp-controller="Products"
                                         class="btn btn-solid-default toggle-category d-sm-block d-none">
                                         All categories
                                         <i class="fas fa-chevron-down d-xl-inline-block d-none"></i>
-                                    </button>
+                                    </a>
                                     <div class="category-dropdown">
                                         <div class="close-btn d-xl-none">
                                             Category List
@@ -154,7 +154,8 @@
                                             @foreach(var item in ViewBag.Categories)
                                             {
                                                 <li>
-                                                    <a href="javascript:void(0)">@item.Name</a>
+                                                    @*<a href="javascript:void(0)">@item.Name</a>*@
+                                                    <a href="@Url.Action("Index","Products", new{categoryString = item.Name})">@item.Name</a>
                                                 </li>
                                             }                                            
                                         </ul>
@@ -899,6 +900,7 @@
 
     <!-- feather icon js-->
     <script src="~/assets/js/feather/feather.min.js"></script>
+    
     <!-- Custom JS -->
     <script src="~/js/site.js" asp-append-version="true"></script>  
 
