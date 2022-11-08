@@ -35,6 +35,9 @@ namespace Webx.Web.Data.Repositories
             return list;
         }
 
+        /// <summary>
+        /// Return all products to the Shop by id (when i click one product)
+        /// </summary>
         public async Task<Product> GetFullProduct(int id)
         {
             var product =
@@ -53,6 +56,9 @@ namespace Webx.Web.Data.Repositories
             return product;
         }
 
+        /// <summary>
+        /// Return all products to the Shop
+        /// </summary>
 #nullable enable
         public async Task<IEnumerable<Product>> GetFullProducts(string? category)
         {
@@ -83,6 +89,18 @@ namespace Webx.Web.Data.Repositories
         }
 #nullable disable
 
+        /// <summary>
+        /// Return all product to the Views of Product CRUD Controller
+        /// </summary>
+        public async Task<IEnumerable<Product>> GetAllProductsControllerAsync()
+        {
+            IEnumerable<Product> productAll;
 
+            productAll = await _context.Products
+                .OrderBy(p => p.Id)
+                .ToListAsync();
+
+            return productAll;
+        }
     }
 }

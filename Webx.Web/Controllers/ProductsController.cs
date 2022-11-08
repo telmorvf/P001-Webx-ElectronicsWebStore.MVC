@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Webx.Web.Data.Entities;
 using Webx.Web.Data.Repositories;
 using Webx.Web.Helpers;
 using Webx.Web.Models;
@@ -9,8 +10,6 @@ namespace Webx.Web.Controllers
 {
     public class ProductsController : Controller
     {
-
-
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
 
@@ -68,7 +67,6 @@ namespace Webx.Web.Controllers
 
 #nullable disable
 
-
         public async Task<IActionResult> Details(int? id)
         {
             var product = await _productRepository.GetFullProduct(id.Value);
@@ -77,14 +75,10 @@ namespace Webx.Web.Controllers
             {
                 return new NotFoundViewResult("ProductNotFound");
             }
-
             //var model = _converterHelper.ToDetailProductViewModel(product);
             //return View(model);
             return View(product);
         }
-
-
-
 
         public IActionResult ProductNotFound()
         {
@@ -92,5 +86,21 @@ namespace Webx.Web.Controllers
             return View();
         }
 
+        /// <summary>
+        /// CRUD View All Products
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> ViewAll()
+        {
+            IEnumerable<Product> products;
+
+            // Get all Brands from the company:
+            products = await _productRepository.GetAllProductsControllerAsync();
+
+            //vai buscar as dataAnnotations da class User para injectar na tabela do syncfusion
+            ViewBag.Type = typeof(Product);
+
+            return View(products);
+        }
     }
 }

@@ -7,6 +7,8 @@ namespace Webx.Web.Data.Repositories
 {
     public interface IProductRepository : IGenericRepository<Product>
     {
+        Task<IEnumerable<Product>> GetAllProductsControllerAsync();
+
         IEnumerable<SelectListItem> GetComboProdBrands();
 
         Task<Product> GetFullProduct(int id);

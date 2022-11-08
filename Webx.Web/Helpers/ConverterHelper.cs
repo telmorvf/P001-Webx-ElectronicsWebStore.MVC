@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using Microsoft.CodeAnalysis.CSharp;
+using System.Threading.Tasks;
 using Webx.Web.Data.Entities;
 using Webx.Web.Models;
 
@@ -40,5 +41,23 @@ namespace Webx.Web.Helpers
                 CurrentRole = userRole.Name
             };
         }
+
+        public StoreViewModel StoreToViewModel(Store store)
+        {
+            return new StoreViewModel
+            {
+                Id = store.Id,
+                Name = store.Name,
+                PhoneNumber = store.PhoneNumber,
+                Address = store.Address,
+                IsActive = store.IsActive,
+                City = store.City,
+                Country = store.Country,
+                Email = store.Email,
+                IsOnlineStore = store.IsOnlineStore,
+                ZipCode = store.ZipCode,
+            };
+        }
+
     }
 }

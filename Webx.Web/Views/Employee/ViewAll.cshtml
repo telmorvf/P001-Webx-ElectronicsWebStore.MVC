@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Webx.Web.Data.Entities.User>
+﻿@using Webx.Web.Models
+@model IEnumerable<Webx.Web.Data.Entities.User>
 
 @{
     ViewData["Title"] = "View All Employees";
@@ -14,8 +15,8 @@
         toolbarItems.Add(new { text = "Hide Inactive", tooltipText = "Hide inactive Employees", prefixIcon = "e-expand", id = "hideEmployee",align ="Right"});
     }
     toolbarItems.Add("Search");
-    toolbarItems.Add(new { text = "Edit", tooltipText = "Edit employee", prefixIcon = "e-expand", id = "editEmployee" });
     toolbarItems.Add(new { text = "Info", tooltipText = "Employee Details", prefixIcon = "e-expand", id = "infoEmployee" });
+    toolbarItems.Add(new { text = "Edit", tooltipText = "Edit employee", prefixIcon = "e-expand", id = "editEmployee" });
     toolbarItems.Add(new { text = "Delete", tooltipText = "Delete Employee", prefixIcon = "e-expand", id = "deleteEmployee" });
 
 
@@ -70,7 +71,8 @@
         <e-grid-columns>            
             <e-grid-column headerText="Profile Picture" template="#template" width="160" textAlign="Center" allowEditing="false"></e-grid-column>
             <e-grid-column field="Id" isPrimaryKey="true" width="0px"></e-grid-column>
-            <e-grid-column field="Active" template="#templateCheckbox" textAlign="Center" width="80px"></e-grid-column>
+            <e-grid-column headerText="Active" template="#templateCheckbox" textAlign="Center" width="80px"></e-grid-column>
+            <e-grid-column field="" textAlign="Left" allowEditing="false" width="20px"></e-grid-column>
             <e-grid-column field="FullName" textAlign="Left" allowEditing="false" width="200px"></e-grid-column>
             <e-grid-column field="Email" textAlign="Left" width="250px"></e-grid-column>
             <e-grid-column field="PhoneNumber" textAlign="Left" width="150px"></e-grid-column>
