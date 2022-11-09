@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -136,8 +137,11 @@ namespace Webx.Web.Data
                     });
                 }
 
-                //Adiciona encomendas de/para produtos sem marcações
-                //for(int i = 0; i <= 2; i++)
+                //Adiciona encomendas de / para produtos sem marcações
+
+                //TODO comentado por telmo há vezes que dá erro no formato da data, nem sempre - perceber o que se passa com o Filipe
+
+                //for (int i = 0; i <= 2; i++)
                 //{
                 //    var orderDate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, r.Next(DateTime.DaysInMonth(DateTime.UtcNow.Year, DateTime.UtcNow.Month)));
 
@@ -147,7 +151,7 @@ namespace Webx.Web.Data
                 //        Store = stores[r.Next(stores.Count)],
                 //        Appointment = null,
                 //        OrderDate = orderDate,
-                //        DeliveryDate = orderDate.AddDays(r.Next(0,4)),
+                //        DeliveryDate = orderDate.AddDays(r.Next(0, 4)),
                 //    });
                 //}
 
@@ -265,8 +269,9 @@ namespace Webx.Web.Data
                 string[] storesEmails = new string[3] { "webxOnline@gmail.com", "webxLisbon@gmail.com", "webxPorto@gmail.com" };
                 string[] storesPhones = new string[3] { "244835530", "213645895", "229448521" };
                 bool[] storesAreOnline = new bool[3] { true, false, false };
+                bool[] storesAreActive = new bool[3] { true, true, true };
 
-                for(int i = 0; i <= 2; i++)
+                for (int i = 0; i <= 2; i++)
                 {
                     _context.Stores.Add(new Store
                     {
@@ -278,7 +283,7 @@ namespace Webx.Web.Data
                          Email = storesEmails[i],
                          PhoneNumber = storesPhones[i],
                          IsOnlineStore = storesAreOnline[i],
-                         IsActive = false
+                         IsActive = storesAreActive[i]
                     });
                 }
 
@@ -339,18 +344,22 @@ namespace Webx.Web.Data
 
         private async Task AddCategoriesAsync()
         {
+            //var categories = new List<Category>();
             if (!_context.Categories.Any())
             {
-                string[] categories = new string[6] { "Motherboards", "Memory", "Cases", "CPU Coolers","CPU Processors","Services"};
+                int nTimes = 6;
+                string[] categ = new string[6] { "Motherboards", "Memory", "Cases", "CPU Coolers", "CPU Processors", "Services" };
+                Guid[] images = new Guid[6] { Guid.Parse("00000000-0000-0000-0000-900000000006"), Guid.Parse("00000000-0000-0000-0000-900000000005"), Guid.Parse("00000000-0000-0000-0000-900000000004"), Guid.Parse("00000000-0000-0000-0000-900000000003"), Guid.Parse("00000000-0000-0000-0000-900000000002"), Guid.Parse("00000000-0000-0000-0000-900000000001") };
 
-                foreach(string category in categories)
+                for (int i = 0; i < nTimes; i++)
                 {
-                    _context.Categories.Add(new Category
+                    var category = new Category
                     {
-                        Name = category,
-                    });
+                        Name = categ[i],
+                        ImageId = images[i]
+                    };
+                    _context.Categories.Add(category);
                 }
-
                 await _context.SaveChangesAsync();
             }
         }

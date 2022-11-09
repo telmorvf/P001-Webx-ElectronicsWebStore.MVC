@@ -41,7 +41,6 @@ namespace Webx.Web.Controllers
             //TO DO:
             // Alinhar headers text da tabela do syncfusion ao centro
 
-
             IEnumerable<User> employees;
 
             //vai buscar os empregados da empresa (Admins/technicians/product managers)
@@ -59,8 +58,7 @@ namespace Webx.Web.Controllers
             ViewBag.Type = typeof(User);
 
             return View(employees);
-        }
-                
+        }    
         
         public async Task<IActionResult> Update(string id)
         {
@@ -87,7 +85,6 @@ namespace Webx.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(EditEmployeeViewModel model)
         {                      
-
             if (ModelState.IsValid)
             {
                 var user = await _userHelper.GetUserByIdAsync(model.Id);
@@ -179,6 +176,7 @@ namespace Webx.Web.Controllers
                 user.PhoneNumber = model.PhoneNumber;
                 user.NIF = model.NIF;
                 user.Address = model.Address;
+                user.Active = model.Active;
                 model.Roles = _userHelper.GetEmployeesComboRoles();
                 
                 try
@@ -196,7 +194,7 @@ namespace Webx.Web.Controllers
                 }
                 catch (Exception ex)
                 {
-                    _toastNotification.Error($"There was a problem updating the employee! {ex.InnerException}");
+                    _toastNotification.Error($"There was a problem updating the employee! {ex.InnerException.Message} ");
                     return View(model);
                 }
 
@@ -385,7 +383,6 @@ namespace Webx.Web.Controllers
             var json = Json(model);
             return json;
         }
-
 
         [HttpPost]
         [Route("Employee/Delete")]

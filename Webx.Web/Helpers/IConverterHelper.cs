@@ -8,6 +8,17 @@ namespace Webx.Web.Helpers
     {
         Task<EditEmployeeViewModel> ToEditEmployeeViewModelAsync(User user);
 
+        public StoreViewModel StoreToViewModel(Store store);
+
+        BrandViewModel BrandToViewModel(Brand brand);
+
+        CategoryViewModel CategoryToViewModel(Category category);
+
+        ProductViewModel ProductToViewModel(Product product);
+
+        StockViewModel StockToViewModel(Stock stock);
+
         EditCustomerViewModel ToEditCustomerViewModel(User user);
+
     }
 }

@@ -17,7 +17,7 @@ namespace Webx.Web.Data.Repositories
             _context = context;
         }
 
-        public IEnumerable<SelectListItem> GetComboProdBrands()
+        public IEnumerable<SelectListItem> GetBrandsCombo()
         {
             var list = _context.Brands.Select(b => new SelectListItem
             {
@@ -35,6 +35,27 @@ namespace Webx.Web.Data.Repositories
             return list;
         }
 
+        public IEnumerable<SelectListItem> GetCategoriesCombo()
+        {
+            var list = _context.Categories.Select(b => new SelectListItem
+            {
+                Text = b.Name,
+                Value = b.Id.ToString()
+
+            }).OrderBy(b => b.Text).ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "(Select a category...)",
+                Value = "0"
+            });
+
+            return list;
+        }
+
+        /// <summary>
+        /// Return all products to the Shop by id (when i click one product)
+        /// </summary>
         public async Task<Product> GetFullProduct(int id)
         {
             var product =
@@ -53,6 +74,9 @@ namespace Webx.Web.Data.Repositories
             return product;
         }
 
+        /// <summary>
+        /// Return all products to the Shop
+        /// </summary>
 #nullable enable
         public async Task<IEnumerable<Product>> GetFullProducts(string? category)
         {
@@ -83,6 +107,18 @@ namespace Webx.Web.Data.Repositories
         }
 #nullable disable
 
+        /// <summary>
+        /// Return all product to the Views of Product CRUD Controller
+        /// </summary>
+        public async Task<IEnumerable<Product>> GetAllProductsControllerAsync()
+        {
+            IEnumerable<Product> productAll;
 
+            productAll = await _context.Products
+                .OrderBy(p => p.Id)
+                .ToListAsync();
+
+            return productAll;
+        }
     }
 }

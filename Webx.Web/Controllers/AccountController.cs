@@ -367,6 +367,7 @@ namespace Webx.Web.Controllers
             }
         }
 
+#nullable enable
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -394,7 +395,6 @@ namespace Webx.Web.Controllers
 
                 if (result.Succeeded)
                 {
-                    
                     result = await _userHelper.AddUserToRoleAsync(user, "Customer");
 
                     if (!result.Succeeded)
@@ -422,6 +422,7 @@ namespace Webx.Web.Controllers
             ViewData["ReturnUrl"] = returnurl;
             return View(model);
         }
+#nullable disable
 
         [Authorize]
         public async Task<IActionResult> ViewUser()
