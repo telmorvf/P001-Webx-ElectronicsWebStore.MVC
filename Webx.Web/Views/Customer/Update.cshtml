@@ -1,0 +1,197 @@
+﻿@model Webx.Web.Models.EditCustomerViewModel
+
+@{
+    ViewData["Title"] = "Update";
+    ViewData["BreadCrumb"] = "Edit Customer";
+    Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
+}
+
+<style>
+    .gridView{
+        border-color:#edebe9;
+        border-radius: 1px;
+        border-style: none solid solid;
+        border-width: 1px;
+        display: block;
+        position: relative;
+        width:auto;
+        background-color:#fff;
+    }
+
+    .form-group{
+        display: grid;
+    }
+
+   #submit{
+       border: solid 1px;
+       border-color: #46BAED;
+       color:#fff;
+       background-color:#46BAED;
+       width:100%;
+       transition:ease-in-out 0.3s;
+   }
+
+   #submit:hover{
+       background-color:#edebe9;
+       color:#000;
+   }  
+
+   #return{
+       border: solid 1px;
+       border-color: #46BAED;
+       color:#fff;
+       background-color:#46BAED;
+       width:100%;
+       transition:ease-in-out 0.3s;
+   }
+
+   #return:hover{
+       background-color:#edebe9;
+       color:#000;
+   }
+    .imageStyle {
+         min-height: 500px;
+         min-width: 500px;
+         position: Absolute;       
+         overflow: hidden;  
+         margin:auto;
+         top:50%;
+         left:50%;
+         transform: translate(-50%,-50%);
+         border-radius: 0%;
+         display: flex;         
+         box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+    }
+</style>
+
+<!--Div que permite dar espaçamento entre ejs grid e topo-->
+<div class="container-fluid" style="min-height:25px;background-color: #f4f6f9;">
+   
+</div>
+
+<div class="container-fluid gridView" style="min-height:90%">
+
+    <div class="row">
+        <div class="col-md-12" style="margin-top: 15px;">
+            <h4 style="text-align:center">Edit @Model.FullName </h4>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row" style="padding:25px;min-height: 715px;">
+
+        <div class="col-md-6">       
+
+            <form enctype="multipart/form-data" asp-action="Update">
+
+                  <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                         
+                         <input type="hidden" asp-for="Id"/> 
+                         <input type="hidden" asp-for="ImageId" />
+                         <input type="hidden" asp-for="Active" />
+
+                <div class="row">                   
+                                         
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label asp-for="FirstName" class="control-label"></label>                                
+                                <input asp-for="FirstName" class="form-control" />
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label asp-for="LastName" class="control-label"></label>                                
+                                <input asp-for="LastName" class="form-control" />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                        </div>                       
+                        <div class="col-md-3"></div>
+                        <div class="col-md-3"> 
+                            <div class="form-group">
+                                <label asp-for="PhoneNumber" class="control-label"></label>                                
+                                <input asp-for="PhoneNumber" class="form-control" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div> 
+                        </div>                       
+                </div>     
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                                <label asp-for="Email" class="control-label"></label>                                
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+                     <div class="col-md-3">
+                             
+                     </div>                   
+                    
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                           <div class="form-group">
+                                <label asp-for="NIF" class="control-label"></label>                                
+                                <input asp-for="NIF" class="form-control" />
+                                <span asp-validation-for="NIF" class="text-danger"></span>
+                           </div> 
+                    </div>
+                    <div class="col-md-9"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                          <div class="form-group">
+                             <label asp-for="Address" class="control-label"></label>                            
+                             <input asp-for="Address" class="form-control" />
+                             <span asp-validation-for="Address" class="text-danger"></span>
+                         </div>    
+                    </div>
+                </div>                               
+                                                            
+                <div class="row">                    
+                    <div class="col-md-12" style="margin-top:100px;">
+                        
+                    </div>                    
+                </div>                
+             
+                <div class="row" style="margin-top: 60px;"> 
+                    <div class="col-md-3">
+                        @if(Model.Active == false)
+                        {
+                           <div class="form-group" >
+                                <a id="return" asp-action="Reactivate" asp-controller="Customer" asp-route-id="@Model.Id" class="btn"><i class="fas fa-power-off"></i> Re-activate Account</a>
+                           </div> 
+                        }
+                    </div>
+                    <div class="col-md-3"></div>
+                     <div class="col-md-3">
+                        <div class="form-group" >
+                           <a id="return" asp-action="ViewAll" asp-controller="Customer" asp-route-isActive="true" class="btn"><i class="fas fa-arrow-left"></i> Back</a>
+                        </div>
+                    </div>  
+                    <div class="col-md-3">
+                        <div class="form-group">
+                           <input id="submit" type="submit" value="Save" class="btn" />
+                        </div>
+                    </div>                                     
+                </div> 
+
+            </form>
+
+
+        </div>
+        <div class="col-md-6">
+
+            <div class="box">
+                <div class="imageStyle" style="background:Url(@Model.ImageFullPath) no-repeat center;background-size: cover;"></div> 
+            </div>
+
+        </div>
+
+
+    </div>
+</div>

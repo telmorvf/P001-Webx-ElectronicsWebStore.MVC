@@ -7,5 +7,7 @@ namespace Webx.Web.Helpers
     public interface IConverterHelper
     {
         Task<EditEmployeeViewModel> ToEditEmployeeViewModelAsync(User user);
+
+        EditCustomerViewModel ToEditCustomerViewModel(User user);
     }
 }

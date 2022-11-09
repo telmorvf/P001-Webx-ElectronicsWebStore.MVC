@@ -40,5 +40,29 @@ namespace Webx.Web.Helpers
                 CurrentRole = userRole.Name
             };
         }
+
+        public EditCustomerViewModel ToEditCustomerViewModel(User user)
+        {
+            return new EditCustomerViewModel
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Address = user.Address,
+                AccessFailedCount = user.AccessFailedCount,
+                Active = user.Active,
+                ConcurrencyStamp = user.ConcurrencyStamp,
+                Email = user.Email,
+                EmailConfirmed = user.EmailConfirmed,
+                Id = user.Id,
+                ImageId = user.ImageId,
+                LockoutEnabled = user.LockoutEnabled,
+                LockoutEnd = user.LockoutEnd,
+                NIF = user.NIF,
+                NormalizedEmail = user.NormalizedEmail,
+                NormalizedUserName = user.NormalizedUserName,
+                PhoneNumber = user.PhoneNumber,
+                UserName = user.UserName,
+            };
+        }
     }
 }

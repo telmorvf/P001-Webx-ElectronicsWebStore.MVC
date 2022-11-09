@@ -82,6 +82,13 @@ namespace Webx.Web.Helpers
             return customers;
         }
 
+        public async Task<IEnumerable<User>> GetAllActiveCustomersAsync()
+        {
+            var customers = await GetAllCustomersUsersAsync();
+
+            return customers.Where(c => c.Active == true);
+        }
+
         public async Task<List<User>> GetAllAdminUsersAsync()
         {
             var users = await _userManager.Users.ToListAsync();
@@ -250,6 +257,11 @@ namespace Webx.Web.Helpers
         public async Task<IdentityRole> GetRoleByIdAsync(string roleId)
         {
             return await _roleManager.FindByIdAsync(roleId);
+        }
+
+        public async Task<IdentityRole> GetRoleByNameAsync(string roleName)
+        {
+            return await _roleManager.FindByNameAsync(roleName);
         }
 
         public async Task<IdentityResult> RemoveFromCurrentRoleAsync(User user,string currentRole)
