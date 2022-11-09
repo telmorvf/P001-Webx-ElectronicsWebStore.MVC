@@ -17,7 +17,7 @@ namespace Webx.Web.Data.Repositories
             _context = context;
         }
 
-        public IEnumerable<SelectListItem> GetComboProdBrands()
+        public IEnumerable<SelectListItem> GetBrandsCombo()
         {
             var list = _context.Brands.Select(b => new SelectListItem
             {
@@ -29,6 +29,24 @@ namespace Webx.Web.Data.Repositories
             list.Insert(0, new SelectListItem
             {
                 Text = "(Select a brand...)",
+                Value = "0"
+            });
+
+            return list;
+        }
+
+        public IEnumerable<SelectListItem> GetCategoriesCombo()
+        {
+            var list = _context.Categories.Select(b => new SelectListItem
+            {
+                Text = b.Name,
+                Value = b.Id.ToString()
+
+            }).OrderBy(b => b.Text).ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "(Select a category...)",
                 Value = "0"
             });
 

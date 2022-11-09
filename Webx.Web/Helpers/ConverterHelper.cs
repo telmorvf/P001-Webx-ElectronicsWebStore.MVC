@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
 using System.Threading.Tasks;
 using Webx.Web.Data.Entities;
+using Webx.Web.Data.Repositories;
 using Webx.Web.Models;
 
 namespace Webx.Web.Helpers
@@ -8,10 +9,15 @@ namespace Webx.Web.Helpers
     public class ConverterHelper : IConverterHelper
     {
         private readonly IUserHelper _userHelper;
+        private readonly IProductRepository _productRepository;
 
-        public ConverterHelper(IUserHelper userHelper)
+        public ConverterHelper(
+            IUserHelper userHelper,
+            IProductRepository productRepository
+            )
         {
             _userHelper = userHelper;
+            _productRepository = productRepository;
         }
 
         public async Task<EditEmployeeViewModel> ToEditEmployeeViewModelAsync(User user)
@@ -36,7 +42,7 @@ namespace Webx.Web.Helpers
                 NormalizedEmail = user.NormalizedEmail,
                 NormalizedUserName = user.NormalizedUserName,
                 PhoneNumber = user.PhoneNumber,
-                UserName = user.UserName,               
+                UserName = user.UserName,
                 Roles = _userHelper.GetEmployeesComboRoles(),
                 CurrentRole = userRole.Name
             };
@@ -56,6 +62,54 @@ namespace Webx.Web.Helpers
                 Email = store.Email,
                 IsOnlineStore = store.IsOnlineStore,
                 ZipCode = store.ZipCode,
+            };
+        }
+
+        public BrandViewModel BrandToViewModel(Brand brand)
+        {
+            return new BrandViewModel
+            {
+                Id = brand.Id,
+                Name = brand.Name
+            };
+        }
+
+        public CategoryViewModel CategoryToViewModel(Category category)
+        {
+            return new CategoryViewModel()
+            {
+                Id = category.Id,
+                Name = category.Name,
+                ImageId = category.ImageId,
+            };
+        }
+
+        public ProductViewModel ProductToViewModel(Product product)
+        {
+            return new ProductViewModel()
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                IsService = product.IsService,
+                Brand = product.Brand,
+                Category = product.Category,
+                Brands = _productRepository.GetBrandsCombo(),
+                Categories = _productRepository.GetCategoriesCombo(),
+                Images = product.Images,
+            };
+        }
+
+        public StockViewModel StockToViewModel(Stock stock)
+        {
+            return new StockViewModel()
+            {
+                Id = stock.Id,
+                Product = stock.Product,
+                Store = stock.Store,
+                MinimumQuantity = stock.MinimumQuantity,
+                Quantity = stock.Quantity,
             };
         }
 

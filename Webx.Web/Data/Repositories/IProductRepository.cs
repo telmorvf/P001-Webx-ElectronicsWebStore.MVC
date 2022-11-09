@@ -9,7 +9,9 @@ namespace Webx.Web.Data.Repositories
     {
         Task<IEnumerable<Product>> GetAllProductsControllerAsync();
 
-        IEnumerable<SelectListItem> GetComboProdBrands();
+        IEnumerable<SelectListItem> GetBrandsCombo();
+
+        IEnumerable<SelectListItem> GetCategoriesCombo();
 
         Task<Product> GetFullProduct(int id);
 

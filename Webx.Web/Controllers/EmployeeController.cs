@@ -85,7 +85,6 @@ namespace Webx.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(EditEmployeeViewModel model)
         {                      
-
             if (ModelState.IsValid)
             {
                 var user = await _userHelper.GetUserByIdAsync(model.Id);
@@ -195,7 +194,7 @@ namespace Webx.Web.Controllers
                 }
                 catch (Exception ex)
                 {
-                    _toastNotification.Error($"There was a problem updating the employee! {ex.InnerException}");
+                    _toastNotification.Error($"There was a problem updating the employee! {ex.InnerException.Message} ");
                     return View(model);
                 }
 

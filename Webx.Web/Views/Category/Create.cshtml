@@ -1,11 +1,12 @@
-﻿@model Webx.Web.Models.StoreViewModel
+﻿@* CATEGORY *@
+
+@model Webx.Web.Models.CategoryViewModel
 
 @{
-    ViewData["Title"] = "Update";
-    ViewData["BreadCrumb"] = "Edit Store";
+    ViewData["Title"] = "Create";
+    ViewData["BreadCrumb"] = "Add Category";
     Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
 }
-
 
 <style>
     .gridView {
@@ -74,99 +75,37 @@
 
     <div class="row">
         <div class="col-md-12" style="margin-top: 15px;">
-            <h4 style="text-align:center">Edit Store @Model.Name</h4>
+            <h4 style="text-align:center">Add New Category</h4>
             <hr />
         </div>
     </div>
-
 
     <div class="row" style="padding:25px;min-height: 715px;">
 
         <div class="col-md-6">
 
-            <form enctype="multipart/form-data" asp-action="Update">
+            <form enctype="multipart/form-data" asp-action="Create">
 
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
                 <input type="hidden" asp-for="Id" />
-                <input type="hidden" asp-for="IsActive" />
 
                 <div class="row">
-                    <div class="col-md-7">
+                    <div class="col-md-8">
                         <div class="form-group">
                             <label asp-for="Name" class="control-label"></label>
                             <input asp-for="Name" class="form-control" />
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="col-md-1">
-                        <div class="form-group">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label asp-for="IsOnlineStore" class="control-label"></label>
-                            <input type="checkbox" asp-for="IsOnlineStore" class="form-control" />
-                            <span asp-validation-for="IsOnlineStore" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <label asp-for="IsActive" class="control-label"></label>
-                        <input type="checkbox" asp-for="IsActive" class="form-control" disabled="disabled"/>
-                        <span asp-validation-for="IsActive" class="text-danger"></span>
-                        <div class="form-group">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-7">
-                        <div class="form-group">
-                            <label asp-for="Email" class="control-label"></label>
-                            <input asp-for="Email" class="form-control" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-1">
-                        <div class="form-group">
-                        </div>
-                    </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label asp-for="PhoneNumber" class="control-label"></label>
-                            <input asp-for="PhoneNumber" class="form-control" />
-                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-7">
+                    <div class="col-md-8">
                         <div class="form-group">
-                            <label asp-for="Address" class="control-label"></label>
-                            <input asp-for="Address" class="form-control" />
-                            <span asp-validation-for="Address" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-5">
-                        <div class="form-group">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-5">
-                        <div class="form-group">
-                            <label asp-for="City" class="control-label"></label>
-                            <input asp-for="City" class="form-control" />
-                            <span asp-validation-for="City" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label asp-for="ZipCode" class="control-label"></label>
-                            <input asp-for="ZipCode" class="form-control" />
-                            <span asp-validation-for="ZipCode" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -176,18 +115,38 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-5">
+                    <div class="col-md-8">
                         <div class="form-group">
-                            <label asp-for="Country" class="control-label"></label>
-                            <input asp-for="Country" class="form-control" />
-                            <span asp-validation-for="Country" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="col-md-7">
+                    <div class="col-md-4">
                         <div class="form-group">
                         </div>
                     </div>
                 </div>
+
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">  
+                    <div class="col-md-12">
+                        <div class="form-group">
+                           <label asp-for="ImageId" class="control-label"></label>
+                           <input asp-for="PictureFile"/>
+                           <span asp-validation-for="PictureFile" class="text-danger"></span>                                    
+                        </div>
+                    </div>                    
+                </div>   
 
 
                 <div class="row">
@@ -205,40 +164,35 @@
 
                 @* style="margin-top: 60px;*@
 
-                <div class="row" style="margin-top: 60px">
-                    <div class="col-md-3">
-                        @if (Model.IsActive == false)
-                        {
-                            <div class="form-group">
-                                <a id="return" asp-action="Reactivate" asp-controller="Store" asp-route-id="@Model.Id" class="btn"><i class="fas fa-power-off"></i> Re-activate Account</a>
-                            </div>
-                        }
-                    </div>
+                <div class="row">
+                    <div class="col-md-3"></div>
                     <div class="col-md-3"></div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <a id="return" asp-action="ViewAll" asp-controller="Store" asp-route-isActive="true" class="btn"><i class="fas fa-arrow-left"></i> Back</a>
+                            <a id="return" asp-action="ViewAll" asp-controller="Category" asp-route-isActive="true" class="btn"><i class="fas fa-arrow-left"></i> Back</a>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <input id="submit" type="submit" value="Save" class="btn" />
+                            <input id="submit" type="submit" value="Create" class="btn" />
                         </div>
                     </div>
                 </div>
 
             </form>
-
         </div>
+
+
 
         <div class="col-md-6">
 
             <div class="box">
-                <div class="imageStyle" style="background:Url(@Model.ImageFullPath) no-repeat center;background-size: cover;"></div>
                 @*<div class="imageStyle" style="background-size: cover;"></div>*@
+                <div class="imageStyle" style="background:Url(@Model.ImageFullPath) no-repeat center;background-size: cover;"></div>
             </div>
 
         </div>
 
     </div>
 </div>
+

@@ -24,7 +24,7 @@ namespace Webx.Web.Controllers
             // Get all Brands from the company:
             brands = await _brandRepository.GetAllBrandsAsync();
 
-            //vai buscar as dataAnnotations da class User para injectar na tabela do syncfusion
+            //vai buscar as dataAnnotations da class Brand para injectar na tabela do syncfusion
             ViewBag.Type = typeof(Brand);
 
             return View(brands);

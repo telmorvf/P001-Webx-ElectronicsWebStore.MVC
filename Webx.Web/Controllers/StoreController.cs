@@ -91,6 +91,23 @@ namespace Webx.Web.Controllers
         {
             if (this.ModelState.IsValid)
             {
+                
+                // TODO Remover duplicados no update
+                //var storePrev = model.Name;
+                //var storeName = _storeRepository.GetAllStoreByNameAsync(model.Name);
+                //if (storeName.Result != null && storePrev != model.Name)
+                //{
+                //    _toastNotification.Error("This Store Name Already Exists, Please try again...");
+                //    return View(model);
+                //}
+
+                var store = await _storeRepository.GetAllStoreByIdAsync(model.Id);
+                if (store == null)
+                {
+                    _toastNotification.Error("Error, the store was not found");
+                    return RedirectToAction(nameof(ViewAll));
+                }
+
                 try
                 {
                     await _storeRepository.UpdateStoreAsync(model);

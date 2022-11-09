@@ -59,7 +59,6 @@ namespace Webx.Web.Data.Repositories
         {
             Store store = new Store
             {
-                Id = model.Id,
                 Name = model.Name,
                 Address = model.Address,
                 City = model.City,
@@ -79,7 +78,6 @@ namespace Webx.Web.Data.Repositories
         {
             Store store = new Store
             {
-                Id = model.Id,
                 Name = model.Name,
                 Address = model.Address,
                 City = model.City,
