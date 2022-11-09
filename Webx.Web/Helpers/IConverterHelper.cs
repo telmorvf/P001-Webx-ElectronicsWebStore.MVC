@@ -17,5 +17,8 @@ namespace Webx.Web.Helpers
         ProductViewModel ProductToViewModel(Product product);
 
         StockViewModel StockToViewModel(Stock stock);
+
+        EditCustomerViewModel ToEditCustomerViewModel(User user);
+
     }
 }
