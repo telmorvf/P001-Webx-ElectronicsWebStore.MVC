@@ -1,4 +1,7 @@
-﻿using Webx.Web.Data.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Webx.Web.Data.Entities;
 
 namespace Webx.Web.Data.Repositories
 {
@@ -10,5 +13,10 @@ namespace Webx.Web.Data.Repositories
         {
             _context = context;
         }
+        public async Task<List<Brand>> GetAllBrandsAsync()
+        {
+            return await _context.Brands.ToListAsync();
+        }
+
     }
 }

@@ -53,14 +53,16 @@ namespace Webx.Web.Data.Repositories
             return product;
         }
 
-#nullable enable
-        public async Task<IEnumerable<Product>> GetFullProducts(string? category)
+
+        public async Task<List<Product>> GetAllProducts(string category)
         {
-            IEnumerable<Product> productAll;
+            //IEnumerable<Product> productAll;
+            List<Product> list = new List<Product>();
 
             if (category == "AllCategories")
             {
-                productAll =
+
+                list =
                     await _context.Products
                     .Include(p => p.Category)
                     .Include(p => p.Images)
@@ -70,7 +72,7 @@ namespace Webx.Web.Data.Repositories
             }
             else
             {
-                productAll =
+                list =
                     await _context.Products
                     .Include(p => p.Category)
                     .Include(p => p.Images)
@@ -79,10 +81,60 @@ namespace Webx.Web.Data.Repositories
                     .OrderBy(p => p.Name)
                     .ToListAsync();
             }
-            return productAll;
+
+            return list;
         }
-#nullable disable
+
+        public async Task<List<Product>> GetFilteredProducts(string category, List<string> brandsFilter)
+        {
+            //IEnumerable<Product> productAll;
+            List<Product> list = new List<Product>();
+
+            if (category == "AllCategories")
+            {
+
+                list =
+                    await _context.Products
+                    .Include(p => p.Category)
+                    .Include(p => p.Images)
+                    .Include(p => p.Brand)
+                    .OrderBy(p => p.Name)
+                    .ToListAsync();
+            }
+            else
+            {
+                list =
+                    await _context.Products
+                    .Include(p => p.Category)
+                    .Include(p => p.Images)
+                    .Include(p => p.Brand)
+                    .Where(c => c.Category.Name == category)
+                    .OrderBy(p => p.Name)
+                    .ToListAsync();
+            }
+
+            if (brandsFilter != null && brandsFilter.Count > 0)
+            {
+                List<Product> filteredlist = new List<Product>();
 
 
+                foreach (var filter in brandsFilter)
+                {                    
+                    filteredlist.AddRange(list.Where(p => p.Brand.HtmlId == filter).ToList());
+                }
+
+                return filteredlist;
+            }
+
+            return list;
+        }
+
+
+        public async Task<decimal> MostExpensiveProductPriceAsync()
+        {
+            var Product = await _context.Products.OrderByDescending(p => p.Price).FirstAsync();
+
+            return Product.Price;
+        }
     }
 }

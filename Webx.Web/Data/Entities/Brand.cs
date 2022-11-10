@@ -8,5 +8,7 @@ namespace Webx.Web.Data.Entities
 
         [Required]
         public string Name { get; set; }
+
+        public string HtmlId => $"{Name.Replace(" ","")}Identifier";
     }
 }
