@@ -17,7 +17,6 @@ namespace Webx.Web.Data.Repositories
             _context = context;
         }
 
-
         public async Task<IEnumerable<Stock>> GetAllStockAsync()
         {
             IEnumerable<Stock> stockAll;

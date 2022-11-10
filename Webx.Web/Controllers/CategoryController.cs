@@ -52,6 +52,7 @@ namespace Webx.Web.Controllers
             return View(categories);
         }
 
+
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int? id)
         {
@@ -82,20 +83,13 @@ namespace Webx.Web.Controllers
             return View(model);
         }
 
+
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(CategoryViewModel model)
         {
             if (this.ModelState.IsValid)
             {
-                // TODO Remover duplicados no update
-                //var categoryDuplicated = _categoryRepository.GetAllCategoryByNameAsync(model.Name);
-                //if (categoryDuplicated.Result != null)
-                //{
-                //    _toastNotification.Error("This Category Already Exists, Please try again...");
-                //    return View(model);
-                //}
-
                 var category = await _categoryRepository.GetAllCategoriesByIdAsync(model.Id);
                 if (category == null)
                 {
@@ -130,14 +124,22 @@ namespace Webx.Web.Controllers
                     _dataContext.Categories.Update(category);
                     await _dataContext.SaveChangesAsync();
 
-                    // Passando a model para o repository o nome da imagem não é gravado na tabela
-                    //await _categoryRepository.UpdateCategoryAsync(model);
+                    //category = _converterHelper.CategoryFromViewModel(model, false);
+                    //await _categoryRepository.CreateAsync(category);
                     _toastNotification.Success("Category changes saved successfully!!!");
+
+                    return View(model);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    //TODO colocar if se duplicado
-                    _toastNotification.Error("There was a problem, When try Modifiy the category. Please try again");
+                    if (ex.InnerException.Message.Contains("Cannot insert duplicate key row in object"))
+                    {
+                        _toastNotification.Error($"The Category Name:  {category.Name} , already exists!");
+                    }
+                    else
+                    {
+                        _toastNotification.Error($"There was a problem updating the employee!");
+                    }
                     return View(model);
                 }
 
@@ -186,10 +188,13 @@ namespace Webx.Web.Controllers
                             }
                             //category.ImageId = imageId;
                             model.ImageId = imageId;
+
+                            // Image File - End
                         }
 
                         await _categoryRepository.AddCategoryAsync(model);
-                        return RedirectToAction(nameof(ViewAll));
+                        _toastNotification.Success("Category created successfully!!!");
+                        return View(model);
                     }
                     catch (Exception)
                     {

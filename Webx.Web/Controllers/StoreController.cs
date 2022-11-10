@@ -1,6 +1,7 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Syncfusion.EJ2.Schedule;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -91,18 +92,7 @@ namespace Webx.Web.Controllers
         {
             if (this.ModelState.IsValid)
             {
-                
-                // TODO Remover duplicados no update
-                //var storePrev = model.Name;
-                //var storeName = _storeRepository.GetAllStoreByNameAsync(model.Name);
-                //if (storeName.Result != null && storePrev != model.Name)
-                //{
-                //    _toastNotification.Error("This Store Name Already Exists, Please try again...");
-                //    return View(model);
-                //}
-
-                var store = await _storeRepository.GetAllStoreByIdAsync(model.Id);
-                if (store == null)
+                if (model.Name == null)
                 {
                     _toastNotification.Error("Error, the store was not found");
                     return RedirectToAction(nameof(ViewAll));
@@ -110,12 +100,21 @@ namespace Webx.Web.Controllers
 
                 try
                 {
-                    await _storeRepository.UpdateStoreAsync(model);
+                    var store = _converterHelper.StoreFromViewModel(model, false);
+                    await _storeRepository.UpdateAsync(model);
+
                     _toastNotification.Success("Store changes saved successfully!!!");
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    _toastNotification.Error("There was a problem, When try Modifiy the store. Please try again");
+                    if (ex.InnerException.Message.Contains("Cannot insert duplicate key row in object"))
+                    {
+                        _toastNotification.Error($"The nif  {model.Name}  already exists!");
+                    }
+                    else
+                    {
+                        _toastNotification.Error($"There was a problem updating the employee!");
+                    }
                     return View(model);
                 }
 
@@ -147,8 +146,10 @@ namespace Webx.Web.Controllers
                 {
                     try
                     {
-                        await _storeRepository.AddStoreAsync(model);
-                        return RedirectToAction(nameof(ViewAll));
+                        Store newBrand = _converterHelper.StoreFromViewModel(model, true);
+                        await _storeRepository.CreateAsync(model);
+                        _toastNotification.Success("Store created successfully!!!");
+                        return View(model);
                     }
                     catch (Exception)
                     {

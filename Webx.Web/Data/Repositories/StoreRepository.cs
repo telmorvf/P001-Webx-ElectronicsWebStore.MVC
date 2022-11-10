@@ -54,46 +54,5 @@ namespace Webx.Web.Data.Repositories
 
             return storeAll;
         }
-
-        public async Task AddStoreAsync(StoreViewModel model)
-        {
-            Store store = new Store
-            {
-                Name = model.Name,
-                Address = model.Address,
-                City = model.City,
-                ZipCode = model.ZipCode,
-                Country = model.Country,    
-                Email = model.Email,
-                PhoneNumber = model.PhoneNumber,
-                IsOnlineStore = model.IsOnlineStore,
-                IsActive = model.IsActive,
-            };
-
-            _context.Stores.Add(store);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task UpdateStoreAsync(StoreViewModel model)
-        {
-            Store store = new Store
-            {
-                Name = model.Name,
-                Address = model.Address,
-                City = model.City,
-                ZipCode = model.ZipCode,
-                Country = model.Country,
-                Email = model.Email,
-                PhoneNumber = model.PhoneNumber,
-                IsOnlineStore = model.IsOnlineStore,
-                IsActive = model.IsActive,
-            };
-
-            _context.Stores.Update(store);
-            await _context.SaveChangesAsync();
-        }
-
-
-
     }
 }

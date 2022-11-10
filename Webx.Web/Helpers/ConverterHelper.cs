@@ -48,6 +48,7 @@ namespace Webx.Web.Helpers
             };
         }
 
+        
         public StoreViewModel StoreToViewModel(Store store)
         {
             return new StoreViewModel
@@ -65,6 +66,23 @@ namespace Webx.Web.Helpers
             };
         }
 
+        public Store StoreFromViewModel(StoreViewModel model, bool isNew)
+        {
+            return new Store
+            {
+                Id = isNew ? 0 : model.Id,
+                Name = model.Name,
+                PhoneNumber = model.PhoneNumber,
+                Address = model.Address,
+                IsActive = model.IsActive,
+                City = model.City,
+                Country = model.Country,
+                Email = model.Email,
+                IsOnlineStore = model.IsOnlineStore,
+                ZipCode = model.ZipCode,
+            };
+        }
+
 
         public BrandViewModel BrandToViewModel(Brand brand)
         {
@@ -72,6 +90,15 @@ namespace Webx.Web.Helpers
             {
                 Id = brand.Id,
                 Name = brand.Name
+            };
+        }
+
+        public Brand BrandFromViewModel(BrandViewModel model, bool isNew)
+        {
+            return new Brand
+            {
+                Id = isNew ? 0 : model.Id,
+                Name = model.Name,
             };
         }
 
@@ -83,6 +110,16 @@ namespace Webx.Web.Helpers
                 Id = category.Id,
                 Name = category.Name,
                 ImageId = category.ImageId,
+            };
+        }
+
+        public Category CategoryFromViewModel(CategoryViewModel model, bool isNew)
+        {
+            return new Category
+            {
+                Id = isNew ? 0 : model.Id,
+                Name = model.Name,
+                ImageId= model.ImageId,
             };
         }
 

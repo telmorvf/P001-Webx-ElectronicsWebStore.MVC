@@ -10,7 +10,7 @@ using Webx.Web.Data;
 namespace Webx.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20221108142022_AddImage_Cotegory_Brand")]
+    [Migration("20221110113845_AddImage_Cotegory_Brand")]
     partial class AddImage_Cotegory_Brand
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -196,9 +196,12 @@ namespace Webx.Web.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Brands");
                 });
@@ -215,9 +218,12 @@ namespace Webx.Web.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Categories");
                 });
@@ -435,7 +441,7 @@ namespace Webx.Web.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -447,6 +453,9 @@ namespace Webx.Web.Migrations
                         .HasColumnType("nvarchar(8)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Stores");
                 });

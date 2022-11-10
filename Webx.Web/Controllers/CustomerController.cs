@@ -107,7 +107,14 @@ namespace Webx.Web.Controllers
                 }
                 catch (Exception ex)
                 {
-                    _toastNotification.Error($"There was a problem updating the customer! {ex.InnerException}");
+                    if (ex.InnerException.Message.Contains("Cannot insert duplicate key row in object"))
+                    {
+                        _toastNotification.Error($"The nif  {user.NIF}  already exists!");
+                    }
+                    else
+                    {
+                        _toastNotification.Error($"There was a problem updating the employee!");
+                    }
                     return View(model);
                 }
 

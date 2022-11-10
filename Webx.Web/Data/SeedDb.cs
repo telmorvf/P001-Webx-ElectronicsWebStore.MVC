@@ -141,19 +141,19 @@ namespace Webx.Web.Data
 
                 //TODO comentado por telmo há vezes que dá erro no formato da data, nem sempre - perceber o que se passa com o Filipe
 
-                //for (int i = 0; i <= 2; i++)
-                //{
-                //    var orderDate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, r.Next(DateTime.DaysInMonth(DateTime.UtcNow.Year, DateTime.UtcNow.Month)));
+                for (int i = 0; i <= 2; i++)
+                {
+                    var orderDate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, r.Next(DateTime.DaysInMonth(DateTime.UtcNow.Year, DateTime.UtcNow.Month)));
 
-                //    _context.Orders.Add(new Order
-                //    {
-                //        Customer = customers[r.Next(customers.Count)],
-                //        Store = stores[r.Next(stores.Count)],
-                //        Appointment = null,
-                //        OrderDate = orderDate,
-                //        DeliveryDate = orderDate.AddDays(r.Next(0, 4)),
-                //    });
-                //}
+                    _context.Orders.Add(new Order
+                    {
+                        Customer = customers[r.Next(customers.Count)],
+                        Store = stores[r.Next(stores.Count)],
+                        Appointment = null,
+                        OrderDate = orderDate,
+                        DeliveryDate = orderDate.AddDays(r.Next(0, 4)),
+                    });
+                }
 
                 await _context.SaveChangesAsync();
             }
