@@ -13,6 +13,7 @@ namespace Webx.Web.Data.Entities
         public string Description { get; set; }
         
         [Required]
+        [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
         public decimal Price { get; set; }
         
         [Required]
@@ -22,6 +23,7 @@ namespace Webx.Web.Data.Entities
         public Category Category { get; set; }
 
         public IEnumerable<ProductImages> Images { get; set; }
+       
         
         [Required]
         public bool IsService { get; set; }

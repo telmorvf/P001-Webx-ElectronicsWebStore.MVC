@@ -18,6 +18,7 @@ namespace Webx.Web.Models
 
         public IFormFile PictureFile { get; set; }
 
+        //View Model Criada em separado da EdiEmployeeViewModel porque quando se cria empregado novo, é obrigatório a inserção de email
         [DataType(DataType.EmailAddress)]
         [Required]
         public override string Email { get; set; }

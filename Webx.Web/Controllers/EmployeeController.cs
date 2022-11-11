@@ -194,7 +194,7 @@ namespace Webx.Web.Controllers
                 }
                 catch (Exception ex)
                 {
-                    _toastNotification.Error($"There was a problem updating the employee! {ex.InnerException.Message} ");
+                    _toastNotification.Error($"There was a problem updating the employee! {ex.InnerException.Message}");
                     return View(model);
                 }
 

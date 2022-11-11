@@ -10,10 +10,13 @@ namespace Webx.Web.Data.Entities
         [Required]
         public string Name { get; set; }
 
+        public string HtmlId => $"{Name.Replace(" ","")}Identifier";
+
         public Guid ImageId { get; set; }
 
         public string ImageFullPath => ImageId == Guid.Empty
            ? $"https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg"
            : $"https://webx2022.blob.core.windows.net/brands/{ImageId}";
+
     }
 }

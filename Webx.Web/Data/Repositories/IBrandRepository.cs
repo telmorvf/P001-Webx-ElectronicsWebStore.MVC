@@ -6,6 +6,6 @@ namespace Webx.Web.Data.Repositories
 {
     public interface IBrandRepository : IGenericRepository<Brand>
     {
-        Task<IEnumerable<Brand>> GetAllBrandsAsync();
+        Task<List<Brand>> GetAllBrandsAsync();
     }
 }

@@ -16,6 +16,7 @@ using Webx.Web.Helpers;
 using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
 using Webx.Web.Data.Repositories;
+using System;
 
 namespace Webx.Web
 {
@@ -45,6 +46,25 @@ namespace Webx.Web
                 cfg.Password.RequiredLength = 6;
             }).AddDefaultTokenProviders().AddEntityFrameworkStores<DataContext>();
 
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                //    // define the list of cultures your app will support  
+                var supportedCultures = new List<CultureInfo>()
+                {
+                  new CultureInfo("en-US"),
+                  new CultureInfo("pt")
+                };
+
+                // set the default culture  
+                options.DefaultRequestCulture = new RequestCulture("pt");
+                options.DefaultRequestCulture.Culture.NumberFormat.CurrencySymbol = supportedCultures[1].NumberFormat.CurrencySymbol;
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+                options.RequestCultureProviders = new List<IRequestCultureProvider>() {
+                 new QueryStringRequestCultureProvider()
+                };
+            });
+
             services.AddAuthentication().AddCookie().AddJwtBearer(cfg =>
             {
                 cfg.TokenValidationParameters = new TokenValidationParameters
@@ -59,7 +79,6 @@ namespace Webx.Web
             {
                 cfg.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
-
 
             services.AddAuthentication().AddFacebook(opts =>
             {
@@ -93,6 +112,7 @@ namespace Webx.Web
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IStockRepository, StockRepository>();
             services.AddScoped<IStoreRepository, StoreRepository>();
+   
 
             services.AddHttpContextAccessor();
 
@@ -137,7 +157,7 @@ namespace Webx.Web
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            
             app.UseAuthentication();
 
             app.UseAuthorization();
