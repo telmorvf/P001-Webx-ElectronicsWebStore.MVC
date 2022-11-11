@@ -12,6 +12,7 @@ using Webx.Web.Models;
 using X.PagedList.Mvc;
 using X.PagedList;
 using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Http;
 
 namespace Webx.Web.Controllers
 {
@@ -23,18 +24,21 @@ namespace Webx.Web.Controllers
         private readonly ICategoryRepository _categoryRepository;
         private readonly IBrandRepository _brandRepository;
         private readonly INotyfService _toastNotification;
+        private readonly IConverterHelper _converterHelper;
 
         public ProductsController(
             IProductRepository productRepository,
             ICategoryRepository categoryRepository,
             IBrandRepository brandRepository,
-            INotyfService toastNotification
+            INotyfService toastNotification,
+            IConverterHelper converterHelper
             )
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
             _brandRepository = brandRepository;
             _toastNotification = toastNotification;
+            _converterHelper = converterHelper;
         }
 
         public async Task<IActionResult> Index()
@@ -50,41 +54,46 @@ namespace Webx.Web.Controllers
             {
                 _toastNotification.Error("There was a problem loading the store.Please try again later!");
                 return NotFound();
-            }
+            }      
+
+            var cart = await _productRepository.GetCurrentCartAsync();
 
             var model = new ShopViewModel
             {
-                PagedListProduct = products.ToPagedList(1,12),
+                PagedListProduct = products.ToPagedList(1, 12),
                 SelectedCategory = "AllCategories",
                 Categories = await _categoryRepository.GetAllCategoriesAsync(),
                 ResultsPerPage = 12,
                 NumberOfProductsFound = products.Count(),
                 Brands = await _brandRepository.GetAllBrandsAsync(),
                 MostExpensiveProductPrice = await _productRepository.MostExpensiveProductPriceAsync(),
+                Cart = cart,
             };
 
             return View(model);
         }
 
-        
-        public async Task<IActionResult> Details(int? id)
-        {
-            var product = await _productRepository.GetFullProduct(id.Value);
+       
 
-            if (product == null)
+        private int CheckProductExists(int productId, List<CookieItemModel> cart)
+        {
+            for (int i = 0; i < cart.Count; i++)
             {
-                return new NotFoundViewResult("ProductNotFound");
+                if (cart[i].ProductId == productId)
+                {
+                    return i;
+                }
             }
 
-            return View(product);
+            return -1;
         }
+        
 
         [HttpGet]
         public async Task<ActionResult> ClearFilters(int? resultsPerPage)
         {
             var products = await _productRepository.GetAllProducts("AllCategories");
-
-           
+                      
 
             var model = new ShopViewModel
             {
@@ -291,44 +300,97 @@ namespace Webx.Web.Controllers
             return PartialView("_ProductModalPartial",model);
         }
 
-
-        //[HttpGet]
-        //public async Task<IActionResult> CloseViewModal( int resultsPerPage, string category, int minRange, int maxRange, string brandsFilter = null)
+        //[HttpPost]
+        //[Route("/Products/AddProduct")]
+        //public async Task<JsonResult> AddProduct(int? id)
         //{
-        //    var products = new List<Product>();
-        //    var brandsList = new List<string>();
-
-        //    if (brandsFilter != null && brandsFilter.Length > 2)
+        //    if (id == null)
         //    {
-        //        brandsList = JsonConvert.DeserializeObject<List<string>>(brandsFilter);
-        //        products = await _productRepository.GetFilteredProducts(category, brandsList);
-        //        products = products.Where(p => p.Price >= minRange && p.Price <= maxRange).ToList();
+        //        return Json("Product Not Found");
+        //    }
+
+        //    var cartCookie = Request.Cookies["Cart"];
+        //    var cookieItemList = JsonConvert.DeserializeObject<List<CookieItemModel>>(cartCookie);
+        //    int isInCartIndex = CheckProductExists(id.Value, cookieItemList); // verifica se produto que cliente está a inserir no carrinho já existe no carrinho e devolve o index do mesmo no carrinho
+
+        //    //se resultado for -1 significa que produto ainda não existe no carrinho, se não for, incrementa-se a quantidade do produto na posição que está
+        //    if (isInCartIndex != -1) //produto já existe no carrinho
+        //    {
+        //        cookieItemList[isInCartIndex].Quantity++;
         //    }
         //    else
         //    {
-        //        products = await _productRepository.GetAllProducts(category);
-        //        products = products.Where(p => p.Price >= minRange && p.Price <= maxRange).ToList();
+        //        cookieItemList.Add(new CookieItemModel { ProductId = id.Value, Quantity = 1 });
         //    }
 
-        //    var model = new ShopViewModel
-        //    {                
-        //        PagedListProduct = products.ToPagedList(1, resultsPerPage),
-        //        SelectedCategory = category,
-        //        ResultsPerPage = resultsPerPage,
-        //        NumberOfProductsFound = products.Count(),
-        //        Categories = await _categoryRepository.GetAllCategoriesAsync(),
-        //        Brands = await _brandRepository.GetAllBrandsAsync()
-        //    };
+        //    var serializedCart = JsonConvert.SerializeObject(cookieItemList);
+        //    CookieOptions options = new CookieOptions();
+        //    options.Expires = DateTime.UtcNow.AddDays(365);
+        //    options.Secure = true;
+        //    Response.Cookies.Append("Cart", serializedCart, options);
+        //    var cart = await _converterHelper.ToCartViewModelAsync(cookieItemList);
+        //    double cartGrandTotal = 0;
 
-        //    return PartialView("_shopSectionPartial", model);
+        //    if (cart != null && cart.Count() > 0)
+        //    {
+        //        cartGrandTotal = (double)cart.Sum(item => item.Product.Price * item.Quantity);
+        //    }
+
+
+        //    return Json(cartGrandTotal.ToString("C2"));
         //}
 
 
-       public IActionResult ProductNotFound()
-       {
-       //TODO: View with a nice look, search in the net
-       return View();
-       }
+        [HttpGet]
+        public async Task<IActionResult> AddProduct(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var product = await _productRepository.GetByIdAsync(id.Value);
+            if(product == null)
+            {
+                return NotFound();
+            }
+
+            var cartCookie = Request.Cookies["Cart"];
+            var cookieItemList = JsonConvert.DeserializeObject<List<CookieItemModel>>(cartCookie);
+            int isInCartIndex = CheckProductExists(id.Value, cookieItemList); // verifica se produto que cliente está a inserir no carrinho já existe no carrinho e devolve o index do mesmo no carrinho
+
+            //se resultado for -1 significa que produto ainda não existe no carrinho, se não for, incrementa-se a quantidade do produto na posição que está
+            if (isInCartIndex != -1) //produto já existe no carrinho
+            {
+                cookieItemList[isInCartIndex].Quantity++;
+            }
+            else
+            {
+                cookieItemList.Add(new CookieItemModel { ProductId = id.Value, Quantity = 1 });
+            }
+
+            var serializedCart = JsonConvert.SerializeObject(cookieItemList);
+            CookieOptions options = new CookieOptions();
+            options.Expires = DateTime.UtcNow.AddDays(365);
+            options.Secure = true;
+            Response.Cookies.Append("Cart", serializedCart, options);
+            var cart = await _converterHelper.ToCartViewModelAsync(cookieItemList);
+
+            var model = new ShopViewModel
+            {
+                Cart = cart,
+            };
+
+            return PartialView("_CartDropDownPartial", model);
+        }
+
+
+
+        public IActionResult ProductNotFound()
+         {
+         //TODO: View with a nice look, search in the net
+         return View();
+         }
 
     }
 }

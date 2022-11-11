@@ -22,6 +22,60 @@ function onloadFunction() {
 }
 
 
+function AddtoCart(id) {
+    debugger;
+
+    $.ajax({
+        url: '/Products/AddProduct/',
+        type: 'GET',
+        contentType: 'application/html',
+        dataType: "html",
+        data: { Id: id },
+        success: function (value) {
+            debugger;
+
+            let content = $("#cartPartialDiv").html(value);          
+            eval(content);       
+        },
+        error: function (ex) {
+            debugger;
+
+            console.log("error");
+        }
+    })
+}
+
+
+function AddProduct(id) {
+    debugger;
+
+    $.ajax({
+
+        url: "/Cart/AddProduct/",
+        data: { id: id },
+        dataType: "json",
+        type: "POST",
+        success: function (e) {
+            var obj = $("#cartGrid").ejGrid("instance");
+            console.log(obj);
+
+            
+        }
+
+    })
+}
+
+
+function RemoveProduct(productId) {
+
+
+
+
+}
+
+
+
+
 function onOverlayClick() {
     var dialog = document.getElementById("dialog").ej2_instances[0];
     dialog.hide();

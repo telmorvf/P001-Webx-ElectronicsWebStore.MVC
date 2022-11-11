@@ -23,6 +23,7 @@ namespace Webx.Web.Data.Entities
         public Category Category { get; set; }
 
         public IEnumerable<ProductImages> Images { get; set; }
+       
         
         [Required]
         public bool IsService { get; set; }

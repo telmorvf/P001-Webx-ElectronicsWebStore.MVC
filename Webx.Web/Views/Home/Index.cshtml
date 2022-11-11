@@ -1,4 +1,6 @@
-﻿@{
+﻿@model Webx.Web.Models.ShopViewModel
+
+@{
     ViewData["Title"] = "WebX";
 }
 
@@ -2699,19 +2701,23 @@
     </section>
     <!-- tab banner section end -->
 
-    <!-- Coockie Section Start -->
-    <div class="cookie-bar-section cookiebar-left-section">
-        <img src="~/assets/images/cookie.png" alt="">
-        <div class="content">
-            <h3>Cookies Consent</h3>
-            <p class="font-light">This website use cookies to ensure you get the best experience on our website.</p>
-            <div class="cookie-buttons">
-                <button class="btn btn-solid-default" id="button">I understand</button>
-                <a href="javascript:void(0)" class="btn default-light1">Learn more</a>
+    @if(Model.CookieConsent == false){
+        <!-- Coockie Section Start -->
+        <div class="cookie-bar-section cookiebar-left-section">
+            <img src="~/assets/images/cookie.png" alt="">
+            <div class="content">
+                <h3>Cookies Consent</h3>
+                <p class="font-light">This website use cookies to ensure you get the best experience on our website.</p>
+                <div class="cookie-buttons">
+                    <button class="btn btn-solid-default" id="button">I understand</button>
+                    <a href="https://www.learn-about-cookies.com/index.html" target="_blank" class="btn default-light1">Learn more</a>
+                </div>
             </div>
         </div>
-    </div>
-    <!-- Coockie Section End -->   
+        <!-- Coockie Section End -->   
+    }
+
+    
 
 
      @section Scripts{

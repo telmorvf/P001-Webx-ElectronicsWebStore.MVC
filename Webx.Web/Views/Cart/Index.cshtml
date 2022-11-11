@@ -1,0 +1,335 @@
+﻿@model Webx.Web.Models.ShopViewModel
+
+@{
+    List<Object> toolbarItems = new List<Object>();
+    //if(ViewBag.IsActive == true)
+    //{
+    //    toolbarItems.Add(new { text = "Show Inactive", tooltipText = "Show inactive Employees", prefixIcon = "e-expand", id = "showEmployee",align ="Right"});
+    //}
+    //else
+    //{
+    //    toolbarItems.Add(new { text = "Hide Inactive", tooltipText = "Hide inactive Employees", prefixIcon = "e-expand", id = "hideEmployee",align ="Right"});
+    //}
+    //toolbarItems.Add("Search");
+    //toolbarItems.Add(new { text = "Edit", tooltipText = "Edit employee", prefixIcon = "e-expand", id = "editEmployee" });
+    //toolbarItems.Add(new { text = "Info", tooltipText = "Employee Details", prefixIcon = "e-expand", id = "infoEmployee" });
+    //toolbarItems.Add(new { text = "Delete", tooltipText = "Delete Employee", prefixIcon = "e-expand", id = "deleteEmployee" });
+}
+
+<section class="cart-section section-b-space">
+        <div class="container">
+
+
+            @*rowSelected="rowSelected"*@
+            <!-- Tabela/Grid do syncfusion  -->
+            <ejs-grid id="cartGrid" dataSource="Model.Cart" allowSelection="true" allowPaging="true" allowSorting="true" allowFiltering="false"  >
+                <e-grid-selectionsettings type="Single" mode="Row"></e-grid-selectionsettings>
+                <e-grid-pagesettings pageSize="4"></e-grid-pagesettings>        
+                <e-grid-columns>            
+                    <e-grid-column  template="#template" headerTemplate="#imageHeaderTemplate" width="100" textAlign="Center" allowEditing="false"></e-grid-column>
+                    <e-grid-column field="Product.Id" isPrimaryKey="true" width="0px"></e-grid-column>
+                    <e-grid-column field="Product.Name" headerTemplate="#productHeaderTemplate" textAlign="Center" width="160px"></e-grid-column>
+                    <e-grid-column  headerText="Price" Template="#priceTemplate" headerTemplate="#priceHeaderTemplate"  textAlign="Center" width="80px"></e-grid-column>
+                    <e-grid-column template="#quantityTemplate" textAlign="Center" headerTemplate="#quantityHeaderTemplate" allowEditing="false" width="80px"></e-grid-column>
+                    <e-grid-column  template="#actionTemplate" textAlign="Center" headerTemplate="#actionHeaderTemplate" allowEditing="false" width="40px"></e-grid-column>
+                    <e-grid-column  template="#totalTemplate" textAlign="Center" headerTemplate="#totalHeaderTemplate" width="100px"></e-grid-column>                    
+                </e-grid-columns>
+            </ejs-grid>
+
+             <div class="col-12 mt-md-5 mt-4">
+                    <div class="row">
+                        <div class="col-sm-7 col-5 order-1">
+                            <div class="left-side-button text-end d-flex d-block justify-content-end">
+                                <a href="javascript:void(0)"
+                                    class="text-decoration-underline theme-color d-block text-capitalize">clear
+                                    all items</a>
+                            </div>
+                        </div>
+                        <div class="col-sm-5 col-7">
+                           
+                        </div>
+                    </div>
+             </div>
+
+            <div class="cart-checkout-section">
+                <div class="row g-4">                        
+
+                    <div class="col-lg-4">
+                         <div class="left-side-button float-start">
+                            <a href="index.html" class="btn btn-solid-default btn fw-bold mb-0 ms-0">
+                                <i class="fas fa-arrow-left"></i> Continue Shopping</a>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-sm-6 ">
+                        <div class="checkout-button">
+                            <a href="checkout.html" class="btn btn-solid-default btn fw-bold">
+                                Check Out <i class="fas fa-arrow-right ms-1"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="cart-box">
+                            <div class="cart-box-details">
+                                <div class="total-details">
+                                    <div class="top-details">
+                                        <h3>Cart Totals</h3>
+                                        <h6>Total <span>@Model.CartGrandTotal</span></h6>
+                                        <h6>Coupon Discount <span>To do?</span></h6>
+                                        <h6>Total With Discount <span><del>To do?</del></span></h6>
+                                    </div>
+                                    <div class="bottom-details">
+                                        <a href="checkout.html">Process Checkout</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+            </div>
+
+            <style>
+                .image img{
+                    width:100px;                   
+                    border-radius:5%;
+                    box-shadow: inset 0 0 1px #e0e0e0, inset 0 0 14px rgba(0, 0, 0, 0.2);
+                    text-align:left;
+                }
+
+                .paragraph{
+                    display: inline-flex;
+                    width: 50px;
+                    height: 40px;
+                    text-align: center;
+                    justify-content: center;
+                    line-height: 10px;
+                    font-weight: 600;
+                }
+
+                .header{
+                    height:20px;
+                }
+
+                .spacing{
+                    font-weight:bold;                    
+                }
+                                
+            </style>
+
+            <!-- Script template para a grid do syncfusion, este template permite colocar a imagem do user numa determinada coluna -->
+            <script id="template" type="text/x-template">
+                
+                <div class="image">   
+                    <img src="${Image}" />
+                </div>
+            </script>
+            
+            <!-- Script template para a grid do syncfusion, este template permite colocar a checkbox numa determinada coluna -->
+            <script id="quantityTemplate" type="text/x-template">
+                <div class="form-group">                   
+                     <a style="cursor:pointer" onclick="RemoveProduct(${Product.Id})"><span style="padding:10px;"><i class="fas fa-minus"></i></span></a> 
+                     <p class="form-control paragraph">${Quantity}</p>
+                     <a style="cursor:pointer" onclick="AddProduct(${Product.Id})"><span style="padding:10px;"><i class="fas fa-plus"></i></span></a>
+                </div>
+            </script>
+            
+            <script id="priceTemplate" type="text/x-template">                
+               
+                <div>   
+                    <p>${Price}</p>
+                </div>
+
+            </script>
+
+            <script id="totalTemplate" type="text/x-template">                
+               
+               <div>   
+                    <p>${TotalPrice}</p>
+                </div>
+
+            </script>
+
+            <script id="actionTemplate" type="text/x-template">                
+               
+               <div>   
+                    <a><p><i class="fal fa-times"></i></p></a>
+               </div>
+
+            </script>
+
+            <script id="imageHeaderTemplate" type="text/x-template">
+                <div class="header" >
+                    <p class="spacing" style="margin-left:16px">Image</p>
+                </div>
+            </script>
+
+             <script id="priceHeaderTemplate" type="text/x-template">
+                <div class="header" >
+                    <p class="spacing" style="margin-left:9px">Price</p>
+                </div>
+            </script>
+
+             <script id="quantityHeaderTemplate" type="text/x-template">
+                <div class="header" >
+                    <p class="spacing" style="margin-left:16px">Quantity</p>
+                </div>
+            </script>
+
+             <script id="actionHeaderTemplate" type="text/x-template">
+                <div class="header" >
+                    <p class="spacing">Action</p>
+                </div>
+            </script>
+
+             <script id="productHeaderTemplate" type="text/x-template">
+                <div class="header" >
+                    <p class="spacing">Product</p>
+                </div>
+            </script>
+
+             <script id="totalHeaderTemplate" type="text/x-template">
+                <div class="header" >
+                    <p class="spacing" style="margin-left:9px">Total</p>
+                </div>
+            </script>
+
+
+
+        @*    <div class="row">               
+
+                <div class="col-sm-12 table-responsive mt-4">
+                    <table class="table cart-table">
+                        <thead>
+                            <tr class="table-head">
+                                <th scope="col">image</th>
+                                <th scope="col">product name</th>
+                                <th scope="col">price</th>
+                                <th scope="col">quantity</th>
+                                <th scope="col">action</th>
+                                <th scope="col">total</th>
+                            </tr>
+                        </thead>
+                          @foreach(var item in Model.Cart)
+                          {
+                              <tbody>
+                                  <tr>
+                                      <td>
+                                          <a href="product-left-sidebar.html">
+                                                @if(item.Product.Images.Count() > 0)
+                                                {
+                                                    <img src="@item.Product.Images.ElementAt(0).ImageFullPath" class=" blur-up lazyload" alt="">
+                                                }
+                                                else
+                                                {
+                                                    <img src="https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg" class=" blur-up lazyload" alt="">
+                                                }
+                                          </a>
+                                      </td>
+                                      <td>
+                                          <div>@item.Product.Name</div>
+                                          <div class="mobile-cart-content row">
+                                              <div class="col">
+                                                  <div class="qty-box">
+                                                       <a style="cursor:pointer"><span style="padding:10px;"><i class="fas fa-minus"></i></span></a>
+                                                      <div class="input-group">                                                 
+                                                          <input  type="text" name="quantity" class="form-control input-number" value="@item.Quantity">
+                                                      </div>
+                                                      <a style="cursor:pointer"><span style="padding:10px;"><i class="fas fa-plus"></i></span></a>
+                                                  </div>
+                                              </div>
+                                              <div class="col">
+                                                  <h2>@item.Product.Price.ToString("C2")</h2>
+                                              </div>
+                                              <div class="col">
+                                                  <h2 class="td-color">
+                                                      <a href="javascript:void(0)">
+                                                          <i class="fas fa-times"></i>
+                                                      </a>
+                                                  </h2>
+                                              </div>
+                                          </div>
+                                      </td>
+                                      <td>
+                                          <h2>@item.Product.Price.ToString("C2")</h2>
+                                      </td>
+                                      <td>
+                                          <div class="qty-box" style="display:flex;justify-content:center;align-items:center">
+                                              <div class="input-group">
+                                                  <a style="cursor:pointer" onclick="RemoveProduct(@item.Product.Id)"><span style="padding:10px;"><i class="fas fa-minus"></i></span></a>
+                                                  <input style="display:inline-flex" type="number" name="quantity" class="form-control input-number" value="@item.Quantity" readonly>                                               
+                                                  <a style="cursor:pointer"><span style="padding:10px;"><i class="fas fa-plus"></i></span></a>
+                                              </div>
+                                          </div>
+                                      </td>
+                                      <td>
+                                          <a href="javascript:void(0)">
+                                              <i class="fas fa-times"></i>
+                                          </a>
+                                      </td>
+                                      <td>
+                                          <h2 class="td-color">@((item.Product.Price * item.Quantity).ToString("C2"))</h2>
+                                      </td>
+                                  </tr>
+                              </tbody>
+                          }
+                    
+                        
+                    </table>
+                </div>
+
+                <div class="col-12 mt-md-5 mt-4">
+                    <div class="row">
+                        <div class="col-sm-7 col-5 order-1">
+                            <div class="left-side-button text-end d-flex d-block justify-content-end">
+                                <a href="javascript:void(0)"
+                                    class="text-decoration-underline theme-color d-block text-capitalize">clear
+                                    all items</a>
+                            </div>
+                        </div>
+                        <div class="col-sm-5 col-7">
+                           
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cart-checkout-section">
+                    <div class="row g-4">                        
+
+                        <div class="col-lg-4">
+                             <div class="left-side-button float-start">
+                                <a href="index.html" class="btn btn-solid-default btn fw-bold mb-0 ms-0">
+                                    <i class="fas fa-arrow-left"></i> Continue Shopping</a>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-sm-6 ">
+                            <div class="checkout-button">
+                                <a href="checkout.html" class="btn btn-solid-default btn fw-bold">
+                                    Check Out <i class="fas fa-arrow-right ms-1"></i></a>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="cart-box">
+                                <div class="cart-box-details">
+                                    <div class="total-details">
+                                        <div class="top-details">
+                                            <h3>Cart Totals</h3>
+                                            <h6>Total <span>@Model.CartGrandTotal</span></h6>
+                                            <h6>Coupon Discount <span>To do?</span></h6>
+                                            <h6>Total With Discount <span><del>To do?</del></span></h6>
+                                        </div>
+                                        <div class="bottom-details">
+                                            <a href="checkout.html">Process Checkout</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+        </div>
+    </section>
+    <!-- Cart Section End -->

@@ -13,8 +13,7 @@ namespace Webx.Web.Models
 
         public List<string> BrandsTags { get; set; }
 
-        public int NumberOfProductsFound { get; set; }
-             
+        public int NumberOfProductsFound { get; set; }             
 
         public int ResultsPerPage { get; set; }
 
@@ -25,6 +24,14 @@ namespace Webx.Web.Models
         public decimal MostExpensiveProductPrice { get; set; }
         
         public Product Product { get; set; }
+
+        public List<CartViewModel> Cart { get; set; }
+
+        public int TotalProductsInCart => Cart.Sum(p => p.Quantity);
+
+        public string CartGrandTotal => Cart.Sum(p => p.Product.Price * p.Quantity).ToString("C2");       
+
+        public bool CookieConsent { get; set; }
 
     }
 }

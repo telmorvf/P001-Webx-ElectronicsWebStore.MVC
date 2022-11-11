@@ -128,9 +128,9 @@
                 
                  <div class="cart-wrap">
                      <ul>
+                         @*data-bs-toggle="modal" data-bs-target="#addtocart"*@
                          <li>
-                             <a href="javascript:void(0)" class="addtocart-btn"
-                                 data-bs-toggle="modal" data-bs-target="#addtocart">
+                             <a href="#" onclick="AddtoCart(@item.Id)" class="addtocart-btn">                                 
                                  <i class="fas fa-shopping-bag"></i>                                 
                              </a>
                          </li>
@@ -139,13 +139,9 @@
                              <a href="#"  onclick="showProductDetails(@item.Id)">                                                                                     
                                  <i class="fas fa-eye"></i>
                              </a>
-                         </li>
+                         </li>                         
                          <li>
-                             <a href="compare.html">
-                                 <i class="fas fa-sync-alt"></i>
-                             </a>
-                         </li>
-                         <li>
+                             
                              <a href="wishlist.html" class="wishlist">
                                  <i class="fas fa-heart"></i>
                              </a>

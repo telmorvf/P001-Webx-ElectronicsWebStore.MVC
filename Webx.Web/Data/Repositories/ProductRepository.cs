@@ -1,20 +1,28 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.Ocsp;
 using Syncfusion.EJ2.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Webx.Web.Data.Entities;
+using Webx.Web.Helpers;
+using Webx.Web.Models;
 
 namespace Webx.Web.Data.Repositories
 {
     public class ProductRepository : GenericRepository<Product>, IProductRepository
     {
         private readonly DataContext _context;
+        private readonly IHttpContextAccessor _httpContext;
 
-        public ProductRepository(DataContext context) : base(context)
+        public ProductRepository(DataContext context,IHttpContextAccessor httpContext) : base(context)
         {
             _context = context;
+            _httpContext = httpContext;       
         }
 
         public IEnumerable<SelectListItem> GetComboProdBrands()
@@ -135,6 +143,74 @@ namespace Webx.Web.Data.Repositories
             var Product = await _context.Products.OrderByDescending(p => p.Price).FirstAsync();
 
             return Product.Price;
+        }
+
+
+        public async Task<ShopViewModel> GetInitialShopViewModelAsync()
+        {
+            var cookie = _httpContext.HttpContext.Request.Cookies["Cart"];
+            List<CartViewModel> cart = new List<CartViewModel>();            
+
+            if (string.IsNullOrEmpty(cookie))
+            {
+                List<CookieItemModel> cookieItemList = new List<CookieItemModel>();
+                var serializedCart = JsonConvert.SerializeObject(cookieItemList);
+                CookieOptions options = new CookieOptions();
+                options.Expires = DateTime.UtcNow.AddDays(365);
+                options.Secure = true;
+                _httpContext.HttpContext.Response.Cookies.Append("Cart", serializedCart, options);
+            }
+            else
+            {
+                var cookieItemList = JsonConvert.DeserializeObject<List<CookieItemModel>>(cookie);
+                foreach (var item in cookieItemList)
+                {
+                    var product = await GetFullProduct(item.ProductId);
+                    cart.Add(new CartViewModel { Product = product, Quantity = item.Quantity });                   
+                }
+            }             
+           
+            return new ShopViewModel{
+                 Cart = cart,
+            };          
+        }
+
+        public async Task<List<CartViewModel>> GetCurrentCartAsync()
+        {
+            List<CartViewModel> cart = new List<CartViewModel>();
+
+            var cookie = _httpContext.HttpContext.Request.Cookies["Cart"];
+            var cookieItemList = JsonConvert.DeserializeObject<List<CookieItemModel>>(cookie);
+            if(cookieItemList != null && cookieItemList.Count() > 0)
+            {
+                foreach (var item in cookieItemList)
+                {
+                    var product = await GetFullProduct(item.ProductId);
+                    cart.Add(new CartViewModel { Product = product, Quantity = item.Quantity });                   
+                }
+            }
+            
+            return cart;
+
+        }
+
+        public bool CheckCookieConsentStatus()
+        {
+            var cookieConsent = _httpContext.HttpContext.Request.Cookies["Consent"];
+            CookieOptions options = new CookieOptions();
+            options.Expires = DateTime.UtcNow.AddDays(365);
+            options.Secure = true;
+
+            if (string.IsNullOrEmpty(cookieConsent))
+            {                
+                _httpContext.HttpContext.Response.Cookies.Append("Consent", "false", options);
+                return false;
+            }
+            else
+            {
+                _httpContext.HttpContext.Response.Cookies.Append("Consent", "true", options);
+                return true;
+            }        
         }
     }
 }

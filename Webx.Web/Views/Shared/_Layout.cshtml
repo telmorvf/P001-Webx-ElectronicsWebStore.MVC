@@ -117,14 +117,14 @@
                                       
                                   </li>
 
-                                    @if (!this.User.IsInRole("Customer") && ViewBag.IsActive == true)
-                                    {
-                                        <li>
-                                            <div class="top-header-dropdown">
-                                                <a asp-action="Index" asp-controller="AdminPanel" style="padding: 5px;"><i class="fas fa-tools" style="font-size:20px;margin-right: 10px;"></i> Admin Panel</a>
-                                            </div>
-                                        </li>
-                                    }
+                                  @if (!this.User.IsInRole("Customer") && ViewBag.IsActive == true)
+                                  {
+                                      <li>
+                                          <div class="top-header-dropdown">
+                                              <a asp-action="Index" asp-controller="AdminPanel" style="padding: 5px;"><i class="fas fa-tools" style="font-size:20px;margin-right: 10px;"></i> Admin Panel</a>
+                                          </div>
+                                      </li>
+                                  }
 
 
                                   <li>
@@ -159,106 +159,15 @@
                                 </div>
                             </div>
                         
-                            <div class="menu-right">
-                                <ul>
-                                    <li>
-                                        <div class="search-box theme-bg-color">
-                                            <i data-feather="search"></i>
-                                        </div>
-                                    </li>
-                                    <li class="onhover-dropdown wislist-dropdown">
-                                        <div class="cart-media">
-                                            <div class="cart-icon">
-                                                <i data-feather="heart"></i>
-                                                <span class="label label-theme rounded-pill">0</span>
-                                            </div>
-                                            <div class="cart-content">
-                                                <h6>Empty</h6>
-                                                <span>Wish List</span>
-                                            </div>
-                                        </div>
-                                        <div class="onhover-div">
-                                            <a href="wishlist.html">
-                                                <div class="wislist-empty">
-                                                    <i class="fab fa-gratipay"></i>
-                                                    <h6 class="mb-1">Your wislist empty !!</h6>
-                                                    <p class="font-light mb-0">explore more and shortlist items.</p>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    </li>
-                                    <li class="onhover-dropdown cart-dropdown">
-                                        <button type="button" class="btn btn-solid-default btn-spacing">
-                                            <i data-feather="shopping-cart" class="pe-2"></i>
-                                            <span>$5686.25</span>
-                                        </button>
-                                        <div class="onhover-div">
-                                            <div class="cart-menu">
-                                                <div class="cart-title">
-                                                    <h6>
-                                                        <i data-feather="shopping-bag"></i>
-                                                        <span class="label label-theme rounded-pill">5</span>
-                                                    </h6>
-                                                    <span class="d-md-none d-block">
-                                                        <i class="fas fa-arrow-right back-cart"></i>
-                                                    </span>
-                                                </div>
-                                                <ul class="custom-scroll">
-                                                    <li>
-                                                        <div class="media">
-                                                            <img src="~/assets/images/fashion/product/front/1.jpg"
-                                                                class="img-fluid blur-up lazyload" alt="">
-                                                            <div class="media-body">
-                                                                <h6>Slim Fit Plastic Coat</h6>
-                                                                <div class="qty-with-price">
-                                                                    <span>$78.00</span>
-                                                                    <span>
-                                                                        <input type="number" class="form-control"
-                                                                            value="1">
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                            <button type="button" class="btn-close d-block d-md-none"
-                                                                aria-label="Close">
-                                                                <i class="fas fa-times"></i>
-                                                            </button>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="media">
-                                                            <img src="~/assets/images/fashion/product/front/7.jpg"
-                                                                class="img-fluid blur-up lazyload" alt="">
-                                                            <div class="media-body">
-                                                                <h6>Womens Stylish Jacket</h6>
-                                                                <div class="qty-with-price">
-                                                                    <span>$24.00</span>
-                                                                    <span>
-                                                                        <input type="number" class="form-control"
-                                                                            value="1">
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                            <button type="button" class="btn-close d-block d-md-none"
-                                                                aria-label="Close">
-                                                                <i class="fas fa-times"></i>
-                                                            </button>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <div class="cart-btn">
-                                                <h6 class="cart-total"><span class="font-light">Total:</span> $
-                                                    542.00</h6>
-                                                <button onclick="location.href = 'cart.html';" type="button"
-                                                    class="btn btn-solid-default btn-block">
-                                                    Proceed to payment
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
+                           
+                            <!--Partial View do Carrinho-->
+                            <div id="cartPartialDiv">
+                                <partial id="cartPartial" name="_CartDropDownPartial" ></partial>
                             </div>
-                            <div class="search-full">
+                            
+
+                            
+                            @*<div class="search-full">
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i data-feather="search" class="font-light"></i>
@@ -330,7 +239,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                            </div>
+                            </div>*@
                         </div>
                     </div>
                 </div>

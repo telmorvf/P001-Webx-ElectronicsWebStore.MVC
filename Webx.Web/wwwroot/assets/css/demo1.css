@@ -8082,7 +8082,7 @@ tfoot tr td {
   border-top: 0;
   border-bottom: 1px solid #c7c7c5 !important;
   text-align: center;
-  min-width: 175px; }
+  /*min-width: 175px;*/ }
   @media (max-width: 767px) {
     .cart-section tbody tr td:nth-last-child(-n + 4) {
       display: none; } }

@@ -16,6 +16,7 @@ using Webx.Web.Helpers;
 using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
 using Webx.Web.Data.Repositories;
+using System;
 
 namespace Webx.Web
 {
@@ -64,7 +65,6 @@ namespace Webx.Web
                 };
             });
 
-
             services.AddAuthentication().AddCookie().AddJwtBearer(cfg =>
             {
                 cfg.TokenValidationParameters = new TokenValidationParameters
@@ -79,9 +79,6 @@ namespace Webx.Web
             {
                 cfg.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
-
-           
-
 
             services.AddAuthentication().AddFacebook(opts =>
             {
@@ -115,6 +112,7 @@ namespace Webx.Web
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IStockRepository, StockRepository>();
             services.AddScoped<IStoreRepository, StoreRepository>();
+   
 
             services.AddHttpContextAccessor();
 
@@ -159,7 +157,7 @@ namespace Webx.Web
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            
             app.UseAuthentication();
 
             app.UseAuthorization();

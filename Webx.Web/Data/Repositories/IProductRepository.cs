@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Webx.Web.Data.Entities;
+using Webx.Web.Helpers;
+using Webx.Web.Models;
 
 namespace Webx.Web.Data.Repositories
 {
@@ -15,5 +17,10 @@ namespace Webx.Web.Data.Repositories
 
         Task<List<Product>> GetFilteredProducts(string category, List<string> brandsFilter);
         Task<decimal> MostExpensiveProductPriceAsync();
+       
+        Task<ShopViewModel> GetInitialShopViewModelAsync();
+
+        Task<List<CartViewModel>> GetCurrentCartAsync();
+        bool CheckCookieConsentStatus();
     }
 }
