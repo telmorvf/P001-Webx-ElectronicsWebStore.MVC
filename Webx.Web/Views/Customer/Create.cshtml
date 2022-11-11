@@ -1,8 +1,8 @@
-﻿@model Webx.Web.Models.EditEmployeeViewModel
+﻿@model Webx.Web.Models.CreateCustomerViewModel
 
 @{
-    ViewData["Title"] = "Update";
-    ViewData["BreadCrumb"] = "Edit Employee";
+    ViewData["Title"] = "Create";
+    ViewData["BreadCrumb"] = "Add Customer";
     Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
 }
 
@@ -73,7 +73,7 @@
 
     <div class="row">
         <div class="col-md-12" style="margin-top: 15px;">
-            <h4 style="text-align:center">Edit @Model.FullName (@Model.CurrentRole)</h4>
+            <h4 style="text-align:center">Add New Customer</h4>
             <hr />
         </div>
     </div>
@@ -82,15 +82,9 @@
 
         <div class="col-md-6">       
 
-            <form enctype="multipart/form-data" asp-action="Update">
+            <form enctype="multipart/form-data" asp-action="Create">
 
-                  <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                         
-                         <input type="hidden" asp-for="Id"/> 
-                         <input type="hidden" asp-for="CurrentRole"/>                         
-                         <input type="hidden" asp-for="Roles" />
-                         <input type="hidden" asp-for="ImageId" />
-                         <input type="hidden" asp-for="Active" />
+                  <div asp-validation-summary="ModelOnly" class="text-danger"></div>                        
 
                 <div class="row">                   
                                          
@@ -127,16 +121,7 @@
                                 <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                     </div>
-                     <div class="col-md-3">
-                             
-                     </div>                   
-                    <div class="col-md-3">
-                        <div class="form-group">
-                             <label asp-for="RoleId" class="control-label"></label>
-                             <select asp-for="RoleId" asp-items="Model.Roles" class="form-control"></select>
-                             <span asp-validation-for="RoleId" class="text-danger"></span>
-                         </div>
-                    </div>
+                    <div class="col-md-3"> </div>                   
                 </div>
 
                 <div class="row">
@@ -160,7 +145,7 @@
                     </div>
                 </div>                               
                                                             
-                <div class="row">  
+               @* <div class="row">  
                     <div class="col-md-12">
                         <div class="form-group">
                            <label asp-for="ImageId" class="control-label"></label>
@@ -168,32 +153,25 @@
                            <span asp-validation-for="PictureFile" class="text-danger"></span>                                    
                         </div>
                     </div>                    
-                </div>   
+                </div>*@   
                 
                 <div class="row">                    
                     <div class="col-md-12" style="margin-top:100px;">
                         
                     </div>                    
                 </div>                
-             
-                <div class="row" style="margin-top: 60px;"> 
-                    <div class="col-md-3">
-                        @if(Model.Active == false)
-                        {
-                           <div class="form-group" >
-                                <a id="return" asp-action="Reactivate" asp-controller="Employee" asp-route-id="@Model.Id" class="btn"><i class="fas fa-power-off"></i> Re-activate Account</a>
-                           </div> 
-                        }
-                    </div>
+                @* style="margin-top: 60px;*@
+                <div class="row" > 
+                    <div class="col-md-3"></div>
                     <div class="col-md-3"></div>
                      <div class="col-md-3">
                         <div class="form-group" >
-                           <a id="return" asp-action="ViewAll" asp-controller="Employee" asp-route-isActive="true" class="btn"><i class="fas fa-arrow-left"></i> Back</a>
+                           <a id="return" asp-action="ViewAll" asp-controller="Customer" asp-route-isActive="true" class="btn"><i class="fas fa-arrow-left"></i> Back</a>
                         </div>
                     </div>  
                     <div class="col-md-3">
                         <div class="form-group">
-                           <input id="submit" type="submit" value="Save" class="btn" />
+                           <input id="submit" type="submit" value="Create" class="btn" />
                         </div>
                     </div>                                     
                 </div> 
@@ -213,5 +191,3 @@
 
     </div>
 </div>
-
-

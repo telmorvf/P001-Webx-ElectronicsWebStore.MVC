@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
+
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Syncfusion.EJ2.Linq;
 using Webx.Web.Data.Entities;
 
 namespace Webx.Web.Data.Repositories
@@ -13,10 +16,10 @@ namespace Webx.Web.Data.Repositories
         {
             _context = context;
         }
+
         public async Task<List<Brand>> GetAllBrandsAsync()
         {
             return await _context.Brands.ToListAsync();
         }
-
     }
 }

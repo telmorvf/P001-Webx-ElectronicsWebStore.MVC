@@ -18,8 +18,6 @@ namespace Webx.Web.Controllers
 {
     public class ProductsController : Controller
     {
-
-
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IBrandRepository _brandRepository;
@@ -224,6 +222,7 @@ namespace Webx.Web.Controllers
         }
 
 
+
         [HttpGet]
         public async Task<IActionResult> ChangePriceRange(string category, int resultsPerPage, int minRange,int maxRange, string brandsFilter = null)
         {
@@ -386,11 +385,30 @@ namespace Webx.Web.Controllers
 
 
 
+
         public IActionResult ProductNotFound()
          {
          //TODO: View with a nice look, search in the net
          return View();
          }
+
+
+        /// <summary>
+        /// CRUD View All Products
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> ViewAll()
+        {
+            IEnumerable<Product> products;
+
+            // Get all Brands from the company:
+            products = await _productRepository.GetAllProductsControllerAsync();
+
+            //vai buscar as dataAnnotations da class User para injectar na tabela do syncfusion
+            ViewBag.Type = typeof(Product);
+
+            return View(products);
+        }
 
     }
 }

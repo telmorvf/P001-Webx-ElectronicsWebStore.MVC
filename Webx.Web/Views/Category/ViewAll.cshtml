@@ -1,0 +1,341 @@
+﻿@* CATEGORY *@
+
+@using Webx.Web.Models
+@model IEnumerable<Webx.Web.Data.Entities.Category>
+
+@{
+    ViewData["Title"] = "View All Categories";
+    ViewData["Breadcrumb"] = null;
+    Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
+    List<Object> toolbarItems = new List<Object>();
+   
+    //if (ViewBag.IsActive == true)
+    //{
+    //    toolbarItems.Add(new { text = "Show Inactive", tooltipText = "Show inactive Categories", prefixIcon = "e-expand", id = "showCategory", align = "Right" });
+    //}
+    //else
+    //{
+    //    toolbarItems.Add(new { text = "Hide Inactive", tooltipText = "Hide inactive Categories", prefixIcon = "e-expand", id = "hideCategory", align = "Right" });
+    //}
+    toolbarItems.Add("Search");
+
+    toolbarItems.Add(new { text = "Info", tooltipText = "Category Details", prefixIcon = "e-expand", id = "infoCategory" });
+    toolbarItems.Add(new { text = "Edit", tooltipText = "Edit Category", prefixIcon = "e-expand", id = "editCategory" });
+    //toolbarItems.Add(new { text = "Delete", tooltipText = "Delete Category", prefixIcon = "e-expand", id = "deleteCategory" });
+    toolbarItems.Add(new { text = "Create", tooltipText = "Create Category", prefixIcon = "e-expand", id = "createCategory" });
+
+    var yesButton = new ButtonModel() { content = "Yes", cssClass = "e-flat" };
+    var noButton = new ButtonModel() { content = "No", cssClass = "e-flat" };
+}
+
+<style>
+    .image img {
+        height: 75px;
+        width: 75px;
+        border-radius: 50px;
+        box-shadow: inset 0 0 1px #e0e0e0, inset 0 0 14px rgba(0, 0, 0, 0.2);
+    }
+
+    #editCategory > .e-expand::before {
+        content: '\e730' !important;
+    }
+
+    #infoCategory > .e-expand::before {
+        content: '\e800' !important;
+    }
+
+    #deleteCategory > .e-expand::before {
+        content: '\e820' !important;
+    }
+
+    #showCategory > .e-expand::before {
+        content: '\e887' !important;
+    }
+
+    #hideCategory > .e-expand::before {
+        content: '\e7de' !important;
+    }
+
+</style>
+
+
+<!--Div que permite dar espaçamento entre ejs grid e topo-->
+<div class="container-fluid" style="min-height:25px;background-color: #f4f6f9;">
+</div>
+
+<div id='container' class="container-fluid">
+
+    <!-- Tabela/Grid do syncfusion  -->
+    <ejs-grid id="grid" TValue="@ViewBag.Type" dataSource="Model" rowSelected="rowSelected" allowSelection="true" allowPaging="true" allowSorting="true" allowFiltering="false" toolbarClick="toolbarClick" toolbar="toolbarItems">
+        <e-grid-selectionsettings type="Single" mode="Row"></e-grid-selectionsettings>
+        <e-grid-pagesettings pageSize="7"></e-grid-pagesettings>
+        <e-grid-columns>
+            <e-grid-column headerText="Id" isPrimaryKey="true" width="0px"></e-grid-column>
+            <e-grid-column headerText="Profile Picture" template="#template" width="160" textAlign="Center" allowEditing="false"></e-grid-column>
+            <e-grid-column field="Name" textAlign="Left" allowEditing="false" width="165px"></e-grid-column>
+            <e-grid-column field="" textAlign="Left" allowEditing="false" width="700px"></e-grid-column>
+        </e-grid-columns>
+    </ejs-grid>
+
+
+    <!-- Caixa de Dialogo do syncfusion / Surge ao clicar no detalhes da Category -->
+    <ejs-dialog id='dialog' visible="false" isModal="true" width="400" height="450" showCloseIcon="true" allowDragging="true" overlayClick="onOverlayClick" target="#container">
+        <e-dialog-animationsettings effect="Fade" duration="400" delay="0"></e-dialog-animationsettings>
+    </ejs-dialog>
+
+    <!-- Caixa de Dialogo do syncfusion / Surge ao clicar no delete da Category -->
+    <ejs-dialog id='deleteDialog' visible="false" isModal="true" width="300px" showCloseIcon="true" allowDragging="true" overlayClick="onDeleteOverlayClick" target="#container"
+                header="Delete Category">
+        <e-dialog-animationsettings effect="Fade" duration="400" delay="0"></e-dialog-animationsettings>
+
+        <e-dialog-buttons>
+            <e-dialog-dialogbutton buttonModel="@yesButton" click="ondlgYesClick"></e-dialog-dialogbutton>
+            <e-dialog-dialogbutton buttonModel="@noButton" click="ondlgNoClick"></e-dialog-dialogbutton>
+        </e-dialog-buttons>
+    </ejs-dialog>
+
+</div>
+
+
+<!-- Script template para a grid do syncfusion, este template permite colocar a imagem do user numa determinada coluna -->
+<script id="template" type="text/x-template">
+    <div class="image">
+        <img src="${ImageFullPath}" />
+    </div>
+</script>
+
+
+<!-- Script com as funçoes dos botoes da grid do syncfusion -->
+<script>
+
+    let id;
+
+    function rowSelected(args) {
+        // obtem a linha da tabela selecionada
+        var selectedrecords = this.getSelectedRecords();
+
+        // atribui à variàvel id o valor do user id selecionado na tabela
+        id = selectedrecords[0].Id;
+    }
+
+    function toolbarClick(args) {
+
+        //determina se o botão da tabela clicado foi o de editar category, o editCategory é o id do botão definido na linha 21
+        if (args.item.id === 'createCategory') {
+            window.location.href = '/Category/Create/';
+        }
+
+        //determina se o botão da tabela clicado foi o de adicionar category, o create Category é o id do botão definido na linha 18
+        if (args.item.id === 'editCategory') {
+
+            //se o id for nulo, vazio ou indefenido entra neste bloco de código e faz um pedido por ajax ao servidor, mais especifico,
+            //ao método ToastNotification do controlador Category que vai fazer surgir uma toast message com a mensagem/tipo desejado
+            //os tipos de mensagem possiveis são warning,success,information e error.
+            if (id === "" || id === null || id === undefined) {
+
+                let message = "You must select a category!";
+                let type = "warning";
+
+                $.ajax({
+                    url: '@Url.Action("ToastNotification","Category")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { message: message, type: type },
+                    success: function (result) {
+                        console.log(result);
+                    },
+                    error: function (ex) {
+                        console.log(ex);
+                    }
+                });
+                return;
+            }
+
+            //se o id não for nulo,vazio ou indefinido chama o url seguinte (método update do controlador category) e passa-lhe o id
+            window.location.href = '/Category/Update/' + id;
+        }
+
+        //determina se o botão da tabela clicado foi o de info do sore, o infoCategory é o id do botão definido na linha 19
+
+        if (args.item.id === 'infoCategory') {
+            //ler linhas 140 a 142, faz exatamente o mesmo.
+            if (id === "" || id === null || id === undefined) {
+
+                let message = "You must select a category!";
+                let type = "warning";
+
+                $.ajax({
+                    url: '@Url.Action("ToastNotification","Category")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { message: message, type: type },
+                    success: function (result) {
+                        console.log(result);
+                    },
+                    error: function (ex) {
+                        console.log(ex);
+                    }
+                });
+
+                return;
+            }
+
+            //se o id não for vazio,nulo ou indefinido, procede a pedido ajax ao método CategoryDetails no controlador category para obter os dados do category
+            $.ajax({
+                url: '@Url.Action("CategoryDetails","Category")',
+                type: 'POST',
+                dataType: 'json',
+                data: { Id: id },
+
+                success: function (categoryData) {
+                    //se conseguir obter os dados (categoryDetails), vai apresentar os mesmos no dialog do syncfusion
+                    var dialog = document.getElementById("dialog").ej2_instances[0];  //obtem o objecto dialog do syncfusion
+
+                    dialog.header = "Category: " + categoryData.name; // define o titúlo do dialog e apresenta-o no Header
+                    dialog.content =
+                        "<div>" + //Define a mensagem/conteudo do dialog
+                        "<img src=" + categoryData.imageFullPath + " display='block' margin-left='auto' margin-right='auto' width='100%' > " +
+                        "</div>" ;
+
+                    dialog.show(); // faz popup do dialog                  
+                },
+                error: function (ex) //se não obter dados do servidor apresentar a mensagem de erro no log do browser
+                {
+                    console.log("failed " + ex.message);
+                }
+            });
+        }
+
+        //determina se o botão da tabela clicado foi o de delete do category, o deleteCategory é o id do botão definido na linha 20
+        if (args.item.id === 'deleteCategory') {
+            //ler linhas 140 a 142, faz exatamente o mesmo.
+            if (id === "" || id === null || id === undefined) {
+
+                let message = "You must select a category!";
+                let type = "warning";
+
+                $.ajax({
+                    url: '@Url.Action("ToastNotification","Category")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { message: message, type: type },
+                    success: function (result) {
+                        console.log(result);
+                    },
+                    error: function (ex) {
+                        console.log(ex);
+                    }
+                });
+
+                return;
+            }
+            //se o id não for vazio,nulo ou indefinido, apresenta a caixa de dialogo (deleteDialog) do syncfusion que está defenida entre as linhas
+            //91 e 99
+            var dialog = document.getElementById("deleteDialog").ej2_instances[0];
+            dialog.content = "Are you sure you want to delete the category?"; // insere o conteudo da caixa de dialogo
+            dialog.show(); //faz popup do dialog
+        }
+
+        //determina se o botão da tabela clicada foi o de mostrar category inactivo
+        //if (args.item.id === 'showCategory') {
+        //    //caso tenha sido, chama a partir de url, o método ViewAll do contralador category e passa-lhe a variavel isActive a falso
+        //    //para que possa mostrar todos os Categories, activos e inactivos
+        //    window.location.href = '/Category/ViewAll?isActive=false';
+        //}
+
+        //determina se o botão da tabela clicada foi o de esconder category inactivo
+        //if (args.item.id === 'hideCategory') {
+        //    //caso tenha sido, chama a partir de url, o método ViewAll do contralador category e passa-lhe a variavel isActive a true
+        //    //para que possa mostrar somente os Categories activos
+        //    window.location.href = '/Category/ViewAll?isActive=true';
+        //}
+    }
+
+    //on OverlayClick é função que permite fechar as janelas dialog do syncfusion quando utilizador clica numa outra zona do ecrã sem ser
+    //na caixa de dialog própriamente dita.
+    function onOverlayClick() {
+        var dialog = document.getElementById("dialog").ej2_instances[0];
+        dialog.hide();
+    };
+
+    //faz o mesmo da função acima, mas para caixa de dialogo diferente (deleteDialog)
+    function onDeleteOverlayClick() {
+        var dialog = document.getElementById("deleteDialog").ej2_instances[0];
+        dialog.hide();
+    }
+
+    //função que é chamada quando se clica no botão "NO" da caixa de dialogo Delete category, função limita-se a fechar caixa de diálogo
+    function ondlgNoClick() {
+        var dialog = document.getElementById("deleteDialog").ej2_instances[0];
+        dialog.hide();
+    }
+
+    //função que é chamada quando se clica no botão "YES" da caixa de dialogo Delete category
+    function ondlgYesClick() {
+
+        //procede a pedido ajax para correr metodo Delete do controlador Category, método esse que devolve um booleano(true/false)
+        $.ajax({
+            url: '@Url.Action("Delete","Category")',
+            type: 'POST',
+            dataType: 'json',
+            data: { id: id },
+            success: function (result) {
+                //se resultado for true, procede a pedido ajax para chamar o método ToastNotification do controlador category e
+                // mostrar uma toast message, neste caso de sucesso.
+                if (result === true) {
+
+                    let message = "Category deleted with success!";
+                    let type = "success";
+
+                    $.ajax({
+                        url: '@Url.Action("ToastNotification","Category")',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { message: message, type: type },
+                        success: function (result) {
+
+                        },
+                        error: function (ex) {
+                            console.log(ex);
+                        }
+                    });
+
+                    var dialog = document.getElementById("deleteDialog").ej2_instances[0];
+                    dialog.hide();
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 3000);
+
+
+                }
+                else {
+
+                    //se o resultado for falso, faz pedido ajax ao mesmo método de toastNotification para mostrar toast message de erro/warning
+                    let message = "There was a problem deleting the category";
+                    let type = "Warning";
+
+                    $.ajax({
+                        url: '@Url.Action("ToastNotification","Category")',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { message: message, type: type },
+                        success: function (result) {
+                            console.log(result);
+                        },
+                        error: function (ex) {
+                            console.log(ex);
+                        }
+                    });
+
+                    var dialog = document.getElementById("deleteDialog").ej2_instances[0];
+                    dialog.hide();
+                }
+            },
+            error: function (ex) {
+                console.log("failed " + ex.message);
+            }
+        });
+    }
+
+</script>
+

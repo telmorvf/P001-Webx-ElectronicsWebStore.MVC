@@ -7,7 +7,21 @@ namespace Webx.Web.Helpers
 {
     public interface IConverterHelper
     {
-        Task<EditEmployeeViewModel> ToEditEmployeeViewModelAsync(User user);
+        Task<EditEmployeeViewModel> ToEditEmployeeViewModelAsync(User user);        
+
+        public StoreViewModel StoreToViewModel(Store store);
+
+        BrandViewModel BrandToViewModel(Brand brand);
+
+        CategoryViewModel CategoryToViewModel(Category category);
+
+        ProductViewModel ProductToViewModel(Product product);
+
+        StockViewModel StockToViewModel(Stock stock);
+
+        EditCustomerViewModel ToEditCustomerViewModel(User user);
+        
         Task<List<CartViewModel>> ToCartViewModelAsync(List<CookieItemModel> cookieItemList);
+
     }
 }

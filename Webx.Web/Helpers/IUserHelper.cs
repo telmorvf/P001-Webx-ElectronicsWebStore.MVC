@@ -31,6 +31,7 @@ namespace Webx.Web.Helpers
         Task<IdentityResult> AddUserToRoleAsync(User user, string roleName);
 
         Task<IEnumerable<User>> GetAllCustomersUsersAsync();
+        Task<IEnumerable<User>> GetAllActiveCustomersAsync();
 
         Task<List<User>> GetAllAdminUsersAsync();
 
@@ -73,6 +74,7 @@ namespace Webx.Web.Helpers
 
         IEnumerable<SelectListItem> GetEmployeesComboRoles();
         Task<IdentityRole> GetRoleByIdAsync(string roleId);
+        Task<IdentityRole> GetRoleByNameAsync(string roleName);
         Task<IdentityResult> RemoveFromCurrentRoleAsync(User user,string currentRole);
     }
 }

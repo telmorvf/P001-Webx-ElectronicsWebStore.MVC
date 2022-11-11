@@ -25,7 +25,7 @@ namespace Webx.Web.Data.Repositories
             _httpContext = httpContext;       
         }
 
-        public IEnumerable<SelectListItem> GetComboProdBrands()
+        public IEnumerable<SelectListItem> GetBrandsCombo()
         {
             var list = _context.Brands.Select(b => new SelectListItem
             {
@@ -43,6 +43,27 @@ namespace Webx.Web.Data.Repositories
             return list;
         }
 
+        public IEnumerable<SelectListItem> GetCategoriesCombo()
+        {
+            var list = _context.Categories.Select(b => new SelectListItem
+            {
+                Text = b.Name,
+                Value = b.Id.ToString()
+
+            }).OrderBy(b => b.Text).ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "(Select a category...)",
+                Value = "0"
+            });
+
+            return list;
+        }
+
+        /// <summary>
+        /// Return all products to the Shop by id (when i click one product)
+        /// </summary>
         public async Task<Product> GetFullProduct(int id)
         {
             var product =
@@ -60,7 +81,6 @@ namespace Webx.Web.Data.Repositories
             }
             return product;
         }
-
 
         public async Task<List<Product>> GetAllProducts(string category)
         {
@@ -145,6 +165,17 @@ namespace Webx.Web.Data.Repositories
             return Product.Price;
         }
 
+        /// <summary>
+        /// Return all product to the Views of Product CRUD Controller
+        /// </summary>
+        public async Task<IEnumerable<Product>> GetAllProductsControllerAsync()
+        {
+            IEnumerable<Product> productAll;
+
+            productAll = await _context.Products
+                .OrderBy(p => p.Id)
+                .ToListAsync();
+
 
         public async Task<ShopViewModel> GetInitialShopViewModelAsync()
         {
@@ -211,6 +242,7 @@ namespace Webx.Web.Data.Repositories
                 _httpContext.HttpContext.Response.Cookies.Append("Consent", "true", options);
                 return true;
             }        
+
         }
     }
 }

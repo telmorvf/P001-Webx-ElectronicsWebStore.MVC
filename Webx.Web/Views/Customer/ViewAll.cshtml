@@ -1,29 +1,27 @@
-﻿@using Webx.Web.Models
-@model IEnumerable<Webx.Web.Data.Entities.User>
+﻿@model IEnumerable<Webx.Web.Data.Entities.User>
 
 @{
-    ViewData["Title"] = "View All Employees";
+    ViewData["Title"] = "View All Customers";
     ViewData["Breadcrumb"] = null;
     Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
     List<Object> toolbarItems = new List<Object>();
     if(ViewBag.IsActive == true)
     {
-        toolbarItems.Add(new { text = "Show Inactive", tooltipText = "Show inactive Employees", prefixIcon = "e-expand", id = "showEmployee",align ="Right"});
+        toolbarItems.Add(new { text = "Show Inactive", tooltipText = "Show inactive Customers", prefixIcon = "e-expand", id = "showCustomer",align ="Right"});
     }
     else
     {
-        toolbarItems.Add(new { text = "Hide Inactive", tooltipText = "Hide inactive Employees", prefixIcon = "e-expand", id = "hideEmployee",align ="Right"});
+        toolbarItems.Add(new { text = "Hide Inactive", tooltipText = "Hide inactive Customers", prefixIcon = "e-expand", id = "hideCustomer",align ="Right"});
     }
     toolbarItems.Add("Search");
-    toolbarItems.Add(new { text = "Info", tooltipText = "Employee Details", prefixIcon = "e-expand", id = "infoEmployee" });
-    toolbarItems.Add(new { text = "Edit", tooltipText = "Edit employee", prefixIcon = "e-expand", id = "editEmployee" });
-    toolbarItems.Add(new { text = "Delete", tooltipText = "Delete Employee", prefixIcon = "e-expand", id = "deleteEmployee" });
+    toolbarItems.Add(new { text = "Edit", tooltipText = "Edit employee", prefixIcon = "e-expand", id = "editCustomer" });
+    toolbarItems.Add(new { text = "Info", tooltipText = "Employee Details", prefixIcon = "e-expand", id = "infoCustomer" });
+    toolbarItems.Add(new { text = "Delete", tooltipText = "Delete Employee", prefixIcon = "e-expand", id = "deleteCustomer" });
 
 
     var yesButton = new ButtonModel() { content = "Yes", cssClass = "e-flat" };
     var noButton = new ButtonModel() { content = "No", cssClass = "e-flat" };
 }
-
 
 <style>
     .image img {
@@ -33,27 +31,25 @@
         box-shadow: inset 0 0 1px #e0e0e0, inset 0 0 14px rgba(0, 0, 0, 0.2);
     }
 
-    #editEmployee > .e-expand::before {
+    #editCustomer > .e-expand::before {
         content: '\e730' !important;
     }
 
-    #infoEmployee > .e-expand::before{
+    #infoCustomer > .e-expand::before{
         content: '\e800' !important;
     }
    
-    #deleteEmployee > .e-expand::before{
+    #deleteCustomer > .e-expand::before{
         content: '\e820' !important;
     }
 
-    #showEmployee > .e-expand::before{
+    #showCustomer > .e-expand::before{
         content: '\e887' !important;
     }
 
-    #hideEmployee > .e-expand::before{
+    #hideCustomer > .e-expand::before{
         content: '\e7de' !important;
     }
-
-    
 
 </style>
 
@@ -71,8 +67,7 @@
         <e-grid-columns>            
             <e-grid-column headerText="Profile Picture" template="#template" width="160" textAlign="Center" allowEditing="false"></e-grid-column>
             <e-grid-column field="Id" isPrimaryKey="true" width="0px"></e-grid-column>
-            <e-grid-column headerText="Active" template="#templateCheckbox" textAlign="Center" width="80px"></e-grid-column>
-            <e-grid-column field="" textAlign="Left" allowEditing="false" width="20px"></e-grid-column>
+            <e-grid-column field="Active" template="#templateCheckbox" textAlign="Center" width="80px"></e-grid-column>
             <e-grid-column field="FullName" textAlign="Left" allowEditing="false" width="200px"></e-grid-column>
             <e-grid-column field="Email" textAlign="Left" width="250px"></e-grid-column>
             <e-grid-column field="PhoneNumber" textAlign="Left" width="150px"></e-grid-column>
@@ -83,17 +78,17 @@
 
 
 
-     <!-- Caixa de Dialogo do syncfusion / Surge ao clicar no detalhes do empregado -->
-    <ejs-dialog id='dialog' visible="false" isModal="true" width="400px" height="450px" showCloseIcon="true" allowDragging="true" overlayClick="onOverlayClick" target="#container">
+     <!-- Caixa de Dialogo do syncfusion / Surge ao clicar no detalhes do Customer -->
+     <ejs-dialog id='dialog' visible="false" isModal="true" width="550px" showCloseIcon="true" allowDragging="true" overlayClick="onOverlayClick" target="#container">
             <e-dialog-animationsettings effect="Fade" duration="400" delay="0"></e-dialog-animationsettings>
             
      </ejs-dialog>
 
 
 
-     <!-- Caixa de Dialogo do syncfusion / Surge ao clicar no delete do empregado -->
+     <!-- Caixa de Dialogo do syncfusion / Surge ao clicar no delete do Customer -->
      <ejs-dialog id='deleteDialog' visible="false" isModal="true" width="300px" showCloseIcon="true" allowDragging="true" overlayClick="onDeleteOverlayClick" target="#container" 
-     header="Delete Employee">
+     header="Delete Customer">
             <e-dialog-animationsettings effect="Fade" duration="400" delay="0"></e-dialog-animationsettings>
             
             <e-dialog-buttons>              
@@ -138,19 +133,19 @@
 
     function toolbarClick(args) {        
 
-        //determina se o botão da tabela clicado foi o de editar empregado, o editEmployee é o id do botão definido na linha 17
-        if (args.item.id === 'editEmployee') {            
+        //determina se o botão da tabela clicado foi o de editar Customer, o editCustomer é o id do botão definido na linha 17
+        if (args.item.id === 'editCustomer') {            
 
             //se o id for nulo, vazio ou indefenido entra neste bloco de código e faz um pedido por ajax ao servidor, mais especifico,
-            //ao método ToastNotification do controlador Employee que vai fazer surgir uma toast message com a mensagem/tipo desejado
+            //ao método ToastNotification do controlador Customer que vai fazer surgir uma toast message com a mensagem/tipo desejado
             //os tipos de mensagem possiveis são warning,success,information e error.
             if (id === "" || id === null || id === undefined) {
 
-                let message = "You must select a employee!";
+                let message = "You must select a customer!";
                 let type = "warning";
 
                 $.ajax({
-                    url: '@Url.Action("ToastNotification","Employee")',
+                    url: '@Url.Action("ToastNotification","Customer")',
                     type: 'POST',
                     dataType: 'json',
                     data: { message: message, type: type },
@@ -165,20 +160,20 @@
                 return;
             }
 
-            //se o id não for nulo,vazio ou indefinido chama o url seguinte (método update do controlador employee) e passa-lhe o id
-            window.location.href = '/Employee/Update/' + id;
+            //se o id não for nulo,vazio ou indefinido chama o url seguinte (método update do controlador Customer) e passa-lhe o id
+            window.location.href = '/Customer/Update/' + id;
         }
 
-        //determina se o botão da tabela clicado foi o de info do empregado, o infoEmployee é o id do botão definido na linha 18
-        if (args.item.id === 'infoEmployee') {            
+        //determina se o botão da tabela clicado foi o de info do Customer, o infoCustomer é o id do botão definido na linha 18
+        if (args.item.id === 'infoCustomer') {            
             //ler linhas 140 a 142, faz exatamente o mesmo.
             if (id === "" || id === null || id === undefined) {
 
-                let message = "You must select a employee!";
+                let message = "You must select a customer!";
                 let type = "warning";
 
                 $.ajax({
-                    url: '@Url.Action("ToastNotification","Employee")',
+                    url: '@Url.Action("ToastNotification","Customer")',
                     type: 'POST',
                     dataType: 'json',
                     data: { message: message, type: type },
@@ -193,31 +188,30 @@
                 return;
             }
 
-            //se o id não for vazio,nulo ou indefinido, procede a pedido ajax ao método EmployeeDetails no controlador employee para obter os dados do empregado            
+            //se o id não for vazio,nulo ou indefinido, procede a pedido ajax ao método CustomerDetails no controlador Customer para obter os dados do empregado            
             $.ajax({
-                url: '@Url.Action("EmployeeDetails","Employee")',
+                url: '@Url.Action("CustomerDetails","Customer")',
                 type: 'POST',
                 dataType: 'json',
                 data: {Id: id},
-                success: function(employeeData) {                        
-                    //se conseguir obter os dados (employeeData), vai apresentar os mesmos no dialog do syncfusion
+                success: function(customerData) {                        
+                    //se conseguir obter os dados (customerData), vai apresentar os mesmos no dialog do syncfusion
                     var dialog = document.getElementById("dialog").ej2_instances[0];  //obtem o objecto dialog do syncfusion                       
-                    dialog.header = employeeData.fullName + " Details"; // defini o titolo do dialog e apresenta-o no Header
+                    dialog.header = customerData.fullName + " Details"; // defini o titolo do dialog e apresenta-o no Header
                     let accountStatus;
 
-                    if (employeeData.active === false) {
+                    if (customerData.active === false) {
                         accountStatus = "Inactive";
                     }
                     else {
                         accountStatus = "Active";
                     }
 
-                    dialog.content = "<b>Full Name: </b>" + employeeData.fullName + "<br/>" + //Define a mensagem/conteudo do dialog
-                        "<b>Email: </b>" + employeeData.email + "<br/>" +
-                        "<b>Address: </b>" + employeeData.address + "<br/>" +
-                        "<b>Phone Number: </b>" + employeeData.phoneNumber + "<br/>" +
-                        "<b>Role: </b>" + employeeData.currentRole +"<br/>"+
-                        "<b>NIF: </b>" + employeeData.nif + "<br/>"+
+                    dialog.content = "<b>Full Name: </b>" + customerData.fullName + "<br/>" + //Define a mensagem/conteudo do dialog
+                        "<b>Email: </b>" + customerData.email + "<br/>" +
+                        "<b>Address: </b>" + customerData.address + "<br/>" +
+                        "<b>Phone Number: </b>" + customerData.phoneNumber + "<br/>" +
+                        "<b>NIF: </b>" + customerData.nif + "<br/>"+
                         "<b>Account Status: </b>" + accountStatus + "<br/>";
 
                     dialog.show(); // faz popup do dialog
@@ -230,16 +224,16 @@
         }
 
 
-         //determina se o botão da tabela clicado foi o de delete do empregado, o deleteEmployee é o id do botão definido na linha 19
-        if (args.item.id === 'deleteEmployee') {            
+         //determina se o botão da tabela clicado foi o de delete do customer, o deleteCustomer é o id do botão definido na linha 19
+        if (args.item.id === 'deleteCustomer') {            
             //ler linhas 140 a 142, faz exatamente o mesmo.
             if (id === "" || id === null || id === undefined) {
 
-                let message = "You must select a employee!";
+                let message = "You must select a customer!";
                 let type = "warning";
 
                 $.ajax({
-                    url: '@Url.Action("ToastNotification","Employee")',
+                    url: '@Url.Action("ToastNotification","Customer")',
                     type: 'POST',
                     dataType: 'json',
                     data: { message: message, type: type },
@@ -256,21 +250,21 @@
             //se o id não for vazio,nulo ou indefinido, apresenta a caixa de dialogo (deleteDialog) do syncfusion que está defenida entre as linhas
             //91 e 99
             var dialog = document.getElementById("deleteDialog").ej2_instances[0];  
-            dialog.content = "Are you sure you want to delete the employee?"; // insere o conteudo da caixa de dialogo
+            dialog.content = "Are you sure you want to delete the customer?"; // insere o conteudo da caixa de dialogo
             dialog.show(); //faz popup do dialog           
         }
 
         //determina se o botão da tabela clicada foi o de mostrar empregado inactivo
-        if (args.item.id === 'showEmployee') {   
+        if (args.item.id === 'showCustomer') {   
             //caso tenha sido, chama a partir de url, o método ViewAll do contralador employee e passa-lhe a variavel isActive a falso
             //para que possa mostrar todos os empregados, activos e inactivos
-            window.location.href = '/Employee/ViewAll?isActive=false';            
+            window.location.href = '/Customer/ViewAll?isActive=false';            
         }
         //determina se o botão da tabela clicada foi o de esconder empregado inactivo
-        if (args.item.id === 'hideEmployee') { 
+        if (args.item.id === 'hideCustomer') { 
            //caso tenha sido, chama a partir de url, o método ViewAll do contralador employee e passa-lhe a variavel isActive a true
             //para que possa mostrar somente os empregados activos
-            window.location.href = '/Employee/ViewAll?isActive=true';            
+            window.location.href = '/Customer/ViewAll?isActive=true';            
         }
         
     }
@@ -300,7 +294,7 @@
          
         //procede a pedido ajax para correr metodo Delete do controlador Employee, método esse que devolve um booleano(true/false)
         $.ajax({
-                url: '@Url.Action("Delete","Employee")',
+                url: '@Url.Action("Delete","Customer")',
                 type: 'POST',
                 dataType: 'json',
                 data: {id: id},
@@ -309,11 +303,11 @@
                     // mostrar uma toast message, neste caso de sucesso.
                     if (result === true) {
 
-                        let message = "Employee deleted with success!";
+                        let message = "Customer deleted with success!";
                         let type = "success";
 
                         $.ajax({
-                            url: '@Url.Action("ToastNotification","Employee")',
+                            url: '@Url.Action("ToastNotification","Customer")',
                             type: 'POST',
                             dataType: 'json',
                             data: { message: message, type: type },
@@ -334,11 +328,11 @@
                     else {
 
                         //se o resultado for falso, faz pedido ajax ao mesmo método de toastNotification para mostrar toast message de erro/warning
-                        let message = "There was a problem deleting the employee";
+                        let message = "There was a problem deleting the customer";
                         let type = "Warning";
 
                         $.ajax({
-                            url: '@Url.Action("ToastNotification","Employee")',
+                            url: '@Url.Action("ToastNotification","Customer")',
                             type: 'POST',
                             dataType: 'json',
                             data: { message: message, type: type },

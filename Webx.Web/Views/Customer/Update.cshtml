@@ -1,8 +1,8 @@
-﻿@model Webx.Web.Models.EditEmployeeViewModel
+﻿@model Webx.Web.Models.EditCustomerViewModel
 
 @{
     ViewData["Title"] = "Update";
-    ViewData["BreadCrumb"] = "Edit Employee";
+    ViewData["BreadCrumb"] = "Edit Customer";
     Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
 }
 
@@ -73,7 +73,7 @@
 
     <div class="row">
         <div class="col-md-12" style="margin-top: 15px;">
-            <h4 style="text-align:center">Edit @Model.FullName (@Model.CurrentRole)</h4>
+            <h4 style="text-align:center">Edit @Model.FullName </h4>
             <hr />
         </div>
     </div>
@@ -87,8 +87,6 @@
                   <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                          
                          <input type="hidden" asp-for="Id"/> 
-                         <input type="hidden" asp-for="CurrentRole"/>                         
-                         <input type="hidden" asp-for="Roles" />
                          <input type="hidden" asp-for="ImageId" />
                          <input type="hidden" asp-for="Active" />
 
@@ -130,13 +128,7 @@
                      <div class="col-md-3">
                              
                      </div>                   
-                    <div class="col-md-3">
-                        <div class="form-group">
-                             <label asp-for="RoleId" class="control-label"></label>
-                             <select asp-for="RoleId" asp-items="Model.Roles" class="form-control"></select>
-                             <span asp-validation-for="RoleId" class="text-danger"></span>
-                         </div>
-                    </div>
+                    
                 </div>
 
                 <div class="row">
@@ -160,16 +152,6 @@
                     </div>
                 </div>                               
                                                             
-                <div class="row">  
-                    <div class="col-md-12">
-                        <div class="form-group">
-                           <label asp-for="ImageId" class="control-label"></label>
-                           <input asp-for="PictureFile"/>
-                           <span asp-validation-for="PictureFile" class="text-danger"></span>                                    
-                        </div>
-                    </div>                    
-                </div>   
-                
                 <div class="row">                    
                     <div class="col-md-12" style="margin-top:100px;">
                         
@@ -181,14 +163,14 @@
                         @if(Model.Active == false)
                         {
                            <div class="form-group" >
-                                <a id="return" asp-action="Reactivate" asp-controller="Employee" asp-route-id="@Model.Id" class="btn"><i class="fas fa-power-off"></i> Re-activate Account</a>
+                                <a id="return" asp-action="Reactivate" asp-controller="Customer" asp-route-id="@Model.Id" class="btn"><i class="fas fa-power-off"></i> Re-activate Account</a>
                            </div> 
                         }
                     </div>
                     <div class="col-md-3"></div>
                      <div class="col-md-3">
                         <div class="form-group" >
-                           <a id="return" asp-action="ViewAll" asp-controller="Employee" asp-route-isActive="true" class="btn"><i class="fas fa-arrow-left"></i> Back</a>
+                           <a id="return" asp-action="ViewAll" asp-controller="Customer" asp-route-isActive="true" class="btn"><i class="fas fa-arrow-left"></i> Back</a>
                         </div>
                     </div>  
                     <div class="col-md-3">
@@ -213,5 +195,3 @@
 
     </div>
 </div>
-
-
