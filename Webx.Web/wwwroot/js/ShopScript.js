@@ -46,35 +46,6 @@ function AddtoCart(id) {
 }
 
 
-function AddProduct(id) {
-    debugger;
-
-    $.ajax({
-
-        url: "/Cart/AddProduct/",
-        data: { id: id },
-        dataType: "json",
-        type: "POST",
-        success: function (e) {
-            var obj = $("#cartGrid").ejGrid("instance");
-            console.log(obj);
-
-            
-        }
-
-    })
-}
-
-
-function RemoveProduct(productId) {
-
-
-
-
-}
-
-
-
 
 function onOverlayClick() {
     var dialog = document.getElementById("dialog").ej2_instances[0];

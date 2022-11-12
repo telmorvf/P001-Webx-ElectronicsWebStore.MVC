@@ -23,13 +23,15 @@ namespace Webx.Web.Controllers
         private readonly IBrandRepository _brandRepository;
         private readonly INotyfService _toastNotification;
         private readonly IConverterHelper _converterHelper;
+        private readonly IUserHelper _userHelper;
 
         public ProductsController(
             IProductRepository productRepository,
             ICategoryRepository categoryRepository,
             IBrandRepository brandRepository,
             INotyfService toastNotification,
-            IConverterHelper converterHelper
+            IConverterHelper converterHelper,
+            IUserHelper userHelper
             )
         {
             _productRepository = productRepository;
@@ -37,6 +39,7 @@ namespace Webx.Web.Controllers
             _brandRepository = brandRepository;
             _toastNotification = toastNotification;
             _converterHelper = converterHelper;
+            _userHelper = userHelper;
         }
 
         public async Task<IActionResult> Index()
@@ -45,6 +48,14 @@ namespace Webx.Web.Controllers
 
             //TO DO: Falta adicionar propriedade ProductsCount na Entidade Brand para que possa mostrar a quantidade
             //que existe de cada produto para a categoria especifica. O mesmo tem de ser implementado quando se programar para adiconar/remover produtos
+
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+                ViewBag.UserFullName = user.FullName;
+                ViewBag.IsActive = user.Active;
+            }
 
             var products = await _productRepository.GetAllProducts("AllCategories");
 
@@ -299,46 +310,6 @@ namespace Webx.Web.Controllers
             return PartialView("_ProductModalPartial",model);
         }
 
-        //[HttpPost]
-        //[Route("/Products/AddProduct")]
-        //public async Task<JsonResult> AddProduct(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return Json("Product Not Found");
-        //    }
-
-        //    var cartCookie = Request.Cookies["Cart"];
-        //    var cookieItemList = JsonConvert.DeserializeObject<List<CookieItemModel>>(cartCookie);
-        //    int isInCartIndex = CheckProductExists(id.Value, cookieItemList); // verifica se produto que cliente está a inserir no carrinho já existe no carrinho e devolve o index do mesmo no carrinho
-
-        //    //se resultado for -1 significa que produto ainda não existe no carrinho, se não for, incrementa-se a quantidade do produto na posição que está
-        //    if (isInCartIndex != -1) //produto já existe no carrinho
-        //    {
-        //        cookieItemList[isInCartIndex].Quantity++;
-        //    }
-        //    else
-        //    {
-        //        cookieItemList.Add(new CookieItemModel { ProductId = id.Value, Quantity = 1 });
-        //    }
-
-        //    var serializedCart = JsonConvert.SerializeObject(cookieItemList);
-        //    CookieOptions options = new CookieOptions();
-        //    options.Expires = DateTime.UtcNow.AddDays(365);
-        //    options.Secure = true;
-        //    Response.Cookies.Append("Cart", serializedCart, options);
-        //    var cart = await _converterHelper.ToCartViewModelAsync(cookieItemList);
-        //    double cartGrandTotal = 0;
-
-        //    if (cart != null && cart.Count() > 0)
-        //    {
-        //        cartGrandTotal = (double)cart.Sum(item => item.Product.Price * item.Quantity);
-        //    }
-
-
-        //    return Json(cartGrandTotal.ToString("C2"));
-        //}
-
 
         [HttpGet]
         public async Task<IActionResult> AddProduct(int? id)
@@ -382,7 +353,6 @@ namespace Webx.Web.Controllers
 
             return PartialView("_CartDropDownPartial", model);
         }
-
 
 
 

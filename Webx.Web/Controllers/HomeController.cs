@@ -41,18 +41,18 @@ namespace Webx.Web.Controllers
 
             //ViewBag.Categories = await _categoryRepository.GetAllCategoriesAsync();
 
-            if (User.Identity.IsAuthenticated)
-            {
-                var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
-                ViewBag.UserFullName = user.FullName;
-                ViewBag.IsActive = user.Active;
-            }         
-
             var model = await _productRepository.GetInitialShopViewModelAsync();            
 
             if (model == null)
             {
                 return NotFound();
+            }
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+                ViewBag.UserFullName = user.FullName;
+                ViewBag.IsActive = user.Active;
             }
 
             var cookiesConsent = _productRepository.CheckCookieConsentStatus();

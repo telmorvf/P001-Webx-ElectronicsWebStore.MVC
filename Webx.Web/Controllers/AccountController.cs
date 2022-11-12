@@ -26,15 +26,17 @@ namespace Webx.Web.Controllers
         private readonly ICategoryRepository _categoryRepository;
         private readonly IBlobHelper _blobHelper;
         private readonly INotyfService _toastNotification;
+        private readonly IProductRepository _productRepository;
 
         public AccountController(IUserHelper userHelper,IMailHelper mailHelper, ICategoryRepository categoryRepository,IBlobHelper blobHelper
-            , INotyfService toastNotification)
+            , INotyfService toastNotification, IProductRepository productRepository)
         {
             _userHelper = userHelper;
             _mailHelper = mailHelper;
             _categoryRepository = categoryRepository;            
             _blobHelper = blobHelper;
             _toastNotification = toastNotification;
+            _productRepository = productRepository;
         }
 
         public IActionResult Login()
@@ -434,9 +436,11 @@ namespace Webx.Web.Controllers
                 return NotFound();
             }
 
+         
+
             var hasPassword = await _userHelper.HasPasswordAsync(user);
 
-            var model = new ChangeUserViewModel
+            var changeUserViewModel = new ChangeUserViewModel
             {
                 PhoneNumber = user.PhoneNumber,
                 FirstName = user.FirstName,
@@ -448,8 +452,15 @@ namespace Webx.Web.Controllers
                 HasPassword = hasPassword,
             };
 
+            var model = new ShopViewModel
+            {
+                UserViewModel = changeUserViewModel,
+                Cart = await _productRepository.GetCurrentCartAsync(),
+            };
+
             ViewBag.JsonModel = JsonConvert.SerializeObject(model);
             ViewBag.UserFullName = user.FullName;
+            ViewBag.IsActive = user.Active;
             ViewBag.Categories = await _categoryRepository.GetAllCategoriesAsync();
 
             return View(model);

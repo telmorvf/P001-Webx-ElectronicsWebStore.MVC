@@ -26,5 +26,7 @@ namespace Webx.Web.Data.Repositories
 
         Task<List<CartViewModel>> GetCurrentCartAsync();
         bool CheckCookieConsentStatus();
+        Response UpdateCartCookie(List<CartViewModel> cart);
+        Response ClearCart();
     }
 }

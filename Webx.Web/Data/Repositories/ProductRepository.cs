@@ -176,6 +176,8 @@ namespace Webx.Web.Data.Repositories
                 .OrderBy(p => p.Id)
                 .ToListAsync();
 
+            return productAll;
+        }
 
         public async Task<ShopViewModel> GetInitialShopViewModelAsync()
         {
@@ -242,6 +244,53 @@ namespace Webx.Web.Data.Repositories
                 _httpContext.HttpContext.Response.Cookies.Append("Consent", "true", options);
                 return true;
             }        
+
+        }
+
+        public Response UpdateCartCookie(List<CartViewModel> cart)
+        {
+            try
+            {
+                var cookie = _httpContext.HttpContext.Request.Cookies["Cart"];
+
+                List<CookieItemModel> cookieItemList = new List<CookieItemModel>();
+                foreach (var item in cart)
+                {
+                    cookieItemList.Add(new CookieItemModel { ProductId = item.Product.Id, Quantity = item.Quantity });
+                }
+
+                var serializedCart = JsonConvert.SerializeObject(cookieItemList);
+                CookieOptions options = new CookieOptions();
+                options.Expires = DateTime.UtcNow.AddDays(365);
+                options.Secure = true;
+                _httpContext.HttpContext.Response.Cookies.Append("Cart", serializedCart, options);
+
+                return new Response { IsSuccess = true };
+            }
+            catch (Exception ex)            {
+
+                return new Response { IsSuccess = false, Message = ex.Message };
+            }           
+        }
+
+        public Response ClearCart()
+        {
+            _httpContext.HttpContext.Response.Cookies.Delete("Cart");
+
+            try
+            {
+                List<CookieItemModel> cookieItemList = new List<CookieItemModel>();
+                var serializedCart = JsonConvert.SerializeObject(cookieItemList);
+                CookieOptions options = new CookieOptions();
+                options.Expires = DateTime.UtcNow.AddDays(365);
+                options.Secure = true;
+                _httpContext.HttpContext.Response.Cookies.Append("Cart", serializedCart, options);
+                return new Response { IsSuccess = true };
+            }
+            catch (Exception ex)
+            {
+                return new Response { IsSuccess = false,Message = ex.Message };
+            }           
 
         }
     }

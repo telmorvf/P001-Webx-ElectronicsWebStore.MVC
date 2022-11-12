@@ -1,0 +1,176 @@
+﻿@model Webx.Web.Models.ShopViewModel
+
+@{
+
+
+}
+
+
+
+<div class="row">               
+
+                <div class="col-sm-12 table-responsive mt-4">
+                    <table class="table cart-table">
+                        @if(Model.Cart.Count() > 0)
+                        {
+                            <thead>
+                                <tr class="table-head">
+                                    <th scope="col">image</th>
+                                    <th scope="col">product name</th>
+                                    <th scope="col">price</th>
+                                    <th scope="col">quantity</th>
+                                    <th scope="col">action</th>
+                                    <th scope="col">total</th>
+                                </tr>
+                            </thead>
+                        
+                            @foreach(var item in Model.Cart)
+                            {
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <a href="product-left-sidebar.html">
+                                                  @if(item.Product.Images.Count() > 0)
+                                                  {
+                                                      <img src="@item.Product.Images.ElementAt(0).ImageFullPath" class=" blur-up lazyload" alt="">
+                                                  }
+                                                  else
+                                                  {
+                                                      <img src="https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg" class=" blur-up lazyload" alt="">
+                                                  }
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <div>@item.Product.Name</div>
+                                            <div class="mobile-cart-content row">
+                                                <div class="col">
+                                                    <div class="qty-box">
+                                                         <a style="cursor:pointer"><span style="padding:10px;"><i class="fas fa-minus"></i></span></a>
+                                                        <div class="input-group">                                                 
+                                                            <input  type="text" name="quantity" class="form-control input-number" value="@item.Quantity">
+                                                        </div>
+                                                        <a style="cursor:pointer"><span style="padding:10px;"><i class="fas fa-plus"></i></span></a>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <h2>@item.Product.Price.ToString("C2")</h2>
+                                                </div>
+                                                <div class="col">
+                                                    <h2 class="td-color">
+                                                        <a href="javascript:void(0)">
+                                                            <i class="fas fa-times"></i>
+                                                        </a>
+                                                    </h2>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <h2>@item.Product.Price.ToString("C2")</h2>
+                                        </td>
+                                        <td>
+                                            <div class="qty-box" style="display:flex;justify-content:center;align-items:center">
+                                                <div class="input-group">
+                                                    <a style="cursor:pointer" onclick="updateCart(@item.Product.Id,'-1')">
+                                                        <span >
+                                                            <i style="padding:10px;"class="fas fa-minus"></i>
+                                                        </span>
+                                                    </a>
+                                                    <input style="display:inline-flex" type="number" name="quantity" class="form-control input-number" value="@item.Quantity" readonly>                                               
+                                                    <a style="cursor:pointer" onclick="updateCart(@item.Product.Id,'1')"><span style="padding:10px;"><i class="fas fa-plus"></i></span></a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a style="cursor:pointer" onclick="RemoveProduct(@item.Product.Id)">
+                                                <i class="fas fa-times"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <h2 class="td-color">@((item.Product.Price * item.Quantity).ToString("C2"))</h2>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            }
+                        }
+                        else
+                        {
+                            <thead>
+                                <tr class="table-head">
+                                    <th scope="col">Empty Cart</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <h5>Is the cart still empty?! ... <i style="font-size:22px;color:var(--theme-color)" class="fas fa-sad-cry"></i> ... Go buy some new things!</h5>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        }
+
+                        
+                    </table>
+                </div>
+
+                @if (Model.Cart.Count() > 0)
+                {
+                    <div class="col-12 mt-md-5 mt-4">
+                        <div class="row">
+                            <div class="col-sm-7 col-5 order-1">
+                                <div class="left-side-button text-end d-flex d-block justify-content-end">
+                                    <a style="cursor:pointer" onclick="ClearCart()" class="text-decoration-underline theme-color d-block text-capitalize">clear all items</a>    
+                                </div>
+                            </div>
+                            <div class="col-sm-5 col-7">
+
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                        <div class="cart-checkout-section">
+                                <div class="row g-4">                        
+
+                                    <div class="col-lg-4">
+                                         <div class="left-side-button float-start">
+                                            <a asp-action="Index" asp-controller="Products" class="btn btn-solid-default btn fw-bold mb-0 ms-0">
+                                                <i class="fas fa-arrow-left"></i> Continue Shopping</a>
+                                        </div>
+                                    </div>
+
+                                    @if(Model.Cart.Count() > 0)
+                                    {
+                                        <div class="col-lg-4 col-sm-6 ">
+                                            <div class="checkout-button">
+                                                <a asp-action="Index" asp-controller="CheckOut" class="btn btn-solid-default btn fw-bold">
+                                                    Check Out <i class="fas fa-arrow-right ms-1"></i></a>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4">
+                                            <div class="cart-box">
+                                                <div class="cart-box-details">
+                                                    <div class="total-details">
+                                                        <div class="top-details">
+                                                            <h3>Cart Totals</h3>
+                                                            <h6>Total <span>@Model.CartGrandTotal</span></h6>
+                                                            <h6>Coupon Discount <span>To do?</span></h6>
+                                                            <h6>Total With Discount <span><del>To do?</del></span></h6>
+                                                        </div>
+                                                        <div class="bottom-details">
+                                                            <a asp-action="Index" asp-controller="CheckOut">Process Checkout</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                         </div>
+                                    }
+                                    else
+                                    {
+                                       <div class="col-lg-4 col-sm-6 "></div> 
+                                       <div class="col-lg-4"></div>
+                                    }
+
+                                </div>
+                            </div>
+                        </div>

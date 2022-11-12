@@ -33,5 +33,8 @@ namespace Webx.Web.Models
 
         public bool CookieConsent { get; set; }
 
+        public ChangeUserViewModel UserViewModel { get; set; }
+
+
     }
 }
