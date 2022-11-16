@@ -17,7 +17,7 @@ namespace Webx.Web.Data.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Stock>> GetAllStockAsync()
+        public async Task<IEnumerable<Stock>> GetStockAsync()
         {
             IEnumerable<Stock> stockAll;
 
@@ -27,6 +27,68 @@ namespace Webx.Web.Data.Repositories
                 .ToListAsync();
 
             return stockAll;
+        }
+
+        public async Task<IEnumerable<Stock>> GetStockAllAsync()
+        {
+            IEnumerable<Stock> stockAll;
+
+            stockAll = await _context.Stocks
+                .Include(p => p.Product)
+                    .ThenInclude(p => p.Brand)
+                .Include(p => p.Product)
+                    .ThenInclude(p => p.Category)
+                .Include(p => p.Product)
+                    .ThenInclude(i => i.Images)
+                .Include(p => p.Store)
+                //.Where(p => p.Product.IsService == false)
+                .OrderBy(p => p.Product.Name)
+                .ThenBy(p => p.Store.Name)
+                .ToListAsync();
+
+            return stockAll;
+        }
+
+        public async Task<Stock> GetStockByIdAsync(int id)
+        {
+            return await _context.Stocks
+                .Include(p => p.Product)
+                    .ThenInclude(p => p.Brand)
+                .Include(p => p.Product)
+                    .ThenInclude(p => p.Category)
+                .Include(p => p.Product)
+                    .ThenInclude(i => i.Images)
+                .Include(p => p.Store)
+                .Where(p => p.Id == id)
+                .OrderBy(p => p.Product.Id)
+                .ThenBy(p => p.Store.Name)
+                .SingleOrDefaultAsync();
+        }
+
+
+        public async Task<List<Stock>> GetStockAlerts()
+        {
+            var stocks = await _context.Stocks
+                .Include(p => p.Product)
+                    .ThenInclude(p => p.Brand)
+                .Include(p => p.Product)
+                    .ThenInclude(p => p.Category)
+                .Include(p => p.Product)
+                    .ThenInclude(i => i.Images)
+                .Include(p => p.Store)
+                .Where(p => p.Quantity < p.MinimumQuantity && p.Product.IsService == false)
+                .ToListAsync();
+
+            return stocks;
+        }
+
+        public async Task<int> GetStockAlertsCount()
+        {
+            var count = await _context.Stocks
+                .Where(p => p.Quantity < p.MinimumQuantity && p.Product.IsService == false)
+                .CountAsync();
+
+            return count;
         }
 
 

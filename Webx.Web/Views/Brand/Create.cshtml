@@ -139,6 +139,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
+                            <label asp-for="ImageId" class="control-label"></label>
+                            <input asp-for="PictureFile" />
+                            <span asp-validation-for="PictureFile" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -180,8 +183,8 @@
         <div class="col-md-6">
 
             <div class="box">
-                <div class="imageStyle" style="background-size: cover;"></div>
-                @*<div class="imageStyle" style="background:Url(@Model.ImageFullPath) no-repeat center;background-size: cover;"></div>*@
+                @*<div class="imageStyle" style="background-size: cover;"></div>*@
+                <div class="imageStyle" style="background:Url(@Model.ImageFullPath) no-repeat center;background-size: cover;"></div>
             </div>
 
         </div>

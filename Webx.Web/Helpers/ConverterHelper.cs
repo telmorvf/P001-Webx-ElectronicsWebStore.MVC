@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
+using System;
 using System.Threading.Tasks;
 using Webx.Web.Data.Entities;
 using Webx.Web.Data.Repositories;
@@ -48,7 +49,30 @@ namespace Webx.Web.Helpers
             };
         }
 
-        
+        public EditCustomerViewModel ToEditCustomerViewModel(User user)
+        {
+            return new EditCustomerViewModel
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Address = user.Address,
+                AccessFailedCount = user.AccessFailedCount,
+                Active = user.Active,
+                ConcurrencyStamp = user.ConcurrencyStamp,
+                Email = user.Email,
+                EmailConfirmed = user.EmailConfirmed,
+                Id = user.Id,
+                ImageId = user.ImageId,
+                LockoutEnabled = user.LockoutEnabled,
+                LockoutEnd = user.LockoutEnd,
+                NIF = user.NIF,
+                NormalizedEmail = user.NormalizedEmail,
+                NormalizedUserName = user.NormalizedUserName,
+                PhoneNumber = user.PhoneNumber,
+                UserName = user.UserName,
+            };
+        }
+
         public StoreViewModel StoreToViewModel(Store store)
         {
             return new StoreViewModel
@@ -89,7 +113,8 @@ namespace Webx.Web.Helpers
             return new BrandViewModel
             {
                 Id = brand.Id,
-                Name = brand.Name
+                Name = brand.Name,
+                ImageId = brand.ImageId,
             };
         }
 
@@ -99,6 +124,7 @@ namespace Webx.Web.Helpers
             {
                 Id = isNew ? 0 : model.Id,
                 Name = model.Name,
+                ImageId = model.ImageId,
             };
         }
 
@@ -128,18 +154,33 @@ namespace Webx.Web.Helpers
         {
             return new ProductViewModel()
             {
-                Id = product.Id,
                 Name = product.Name,
                 Description = product.Description,
                 Price = product.Price,
                 IsService = product.IsService,
-                Brand = product.Brand,
-                Category = product.Category,
-                Brands = _productRepository.GetBrandsCombo(),
-                Categories = _productRepository.GetCategoriesCombo(),
-                Images = product.Images,
+                ImageFirst = product.ImageFirst,
+                BrandId = product.BrandId.ToString(),
+                Brands = _productRepository.GetBrandsCombo(product.BrandId),
+                CategoryId = product.CategoryId.ToString(),
+                Categories = _productRepository.GetCategoriesCombo(product.CategoryId),
             };
         }
+
+        public Product ProductFromViewModel(ProductViewModel model, bool isNew)
+        {
+            return new Product
+            {
+                Id = isNew ? 0 : model.Id,
+                Name = model.Name,
+                Price = model.Price,
+                Description = model.Description,
+                IsService = model.IsService,
+ 
+                CategoryId = Convert.ToInt32(model.CategoryId),
+                BrandId = Convert.ToInt32(model.BrandId),
+            };
+        }
+
 
         public StockViewModel StockToViewModel(Stock stock)
         {
@@ -153,27 +194,15 @@ namespace Webx.Web.Helpers
             };
         }
 
-        public EditCustomerViewModel ToEditCustomerViewModel(User user)
+        public Stock StockFromViewModel(StockViewModel model, bool isNew)
         {
-            return new EditCustomerViewModel
+            return new Stock
             {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Address = user.Address,
-                AccessFailedCount = user.AccessFailedCount,
-                Active = user.Active,
-                ConcurrencyStamp = user.ConcurrencyStamp,
-                Email = user.Email,
-                EmailConfirmed = user.EmailConfirmed,
-                Id = user.Id,
-                ImageId = user.ImageId,
-                LockoutEnabled = user.LockoutEnabled,
-                LockoutEnd = user.LockoutEnd,
-                NIF = user.NIF,
-                NormalizedEmail = user.NormalizedEmail,
-                NormalizedUserName = user.NormalizedUserName,
-                PhoneNumber = user.PhoneNumber,
-                UserName = user.UserName,
+                Id = isNew ? 0 : model.Id,
+                Store = model.Store,
+                Product = model.Product,
+                MinimumQuantity = model.MinimumQuantity,
+                Quantity = model.Quantity,
             };
         }
 

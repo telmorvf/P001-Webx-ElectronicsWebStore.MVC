@@ -22,13 +22,15 @@ namespace Webx.Web.Controllers
         private readonly INotyfService _toastNotification;
         private readonly DataContext _dataContext;
         private readonly IConverterHelper _converterHelper;
+        private readonly IImageHelper _imageHelper;
         private readonly IBlobHelper _blobHelper;
 
-        public CategoryController( 
+        public CategoryController(
             ICategoryRepository categoryRepository,
             INotyfService toastNotification,
             DataContext dataContext,
             IConverterHelper converterHelper,
+            IImageHelper imageHelper,
             IBlobHelper blobHelper
             )
         {
@@ -36,6 +38,7 @@ namespace Webx.Web.Controllers
             _toastNotification = toastNotification;
             _dataContext = dataContext;
             _converterHelper = converterHelper;
+            _imageHelper = imageHelper;
             _blobHelper = blobHelper;
         }
 
@@ -51,7 +54,6 @@ namespace Webx.Web.Controllers
 
             return View(categories);
         }
-
 
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int? id)
@@ -83,7 +85,6 @@ namespace Webx.Web.Controllers
             return View(model);
         }
 
-
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(CategoryViewModel model)
@@ -99,33 +100,26 @@ namespace Webx.Web.Controllers
 
                 try
                 {
-                    // Iage File - Start
-                    Guid imageId = category.ImageId;
-
+                    Guid imageId = Guid.Empty;                  
                     if (model.PictureFile != null && model.PictureFile.Length > 0)
                     {
-                        using var image = Image.Load(model.PictureFile.OpenReadStream());
-                        image.Mutate(img => img.Resize(512, 0));
-
-                        using (MemoryStream m = new MemoryStream())
-                        {
-                            image.SaveAsJpeg(m);
-                            byte[] imageBytes = m.ToArray();
-                            imageId = await _blobHelper.UploadBlobAsync(imageBytes, "categories");
-                        }
+                        imageId = await _imageHelper.UploadImageAsync(model.PictureFile, model.ImageId, "categories");
+                        category.ImageId = imageId;
+                        model.ImageId = imageId;
                     }
-                    model.ImageId = imageId;
+                    else
+                    {
+                        category.ImageId = model.ImageId;
+                    }
+                    //model.ImageId = imageId;
 
-                    // Image File - End
                     category.Id = model.Id;
                     category.Name = model.Name;
-                    category.ImageId = imageId;
 
                     _dataContext.Categories.Update(category);
                     await _dataContext.SaveChangesAsync();
+                    model = _converterHelper.CategoryToViewModel(category);
 
-                    //category = _converterHelper.CategoryFromViewModel(model, false);
-                    //await _categoryRepository.CreateAsync(category);
                     _toastNotification.Success("Category changes saved successfully!!!");
 
                     return View(model);
@@ -173,24 +167,12 @@ namespace Webx.Web.Controllers
                 {
                     try
                     {
-                        // Iage File - Start
                         Guid imageId = Guid.Empty;
                         if (model.PictureFile != null && model.PictureFile.Length > 0)
                         {
-                            using var image = Image.Load(model.PictureFile.OpenReadStream());
-                            image.Mutate(img => img.Resize(512, 0));
-
-                            using (MemoryStream m = new MemoryStream())
-                            {
-                                image.SaveAsJpeg(m);
-                                byte[] imageBytes = m.ToArray();
-                                imageId = await _blobHelper.UploadBlobAsync(imageBytes, "categories");
-                            }
-                            //category.ImageId = imageId;
-                            model.ImageId = imageId;
-
-                            // Image File - End
+                            imageId = await _imageHelper.UploadImageAsync(model.PictureFile, model.ImageId, "categories");
                         }
+                        model.ImageId = imageId;
 
                         await _categoryRepository.AddCategoryAsync(model);
                         _toastNotification.Success("Category created successfully!!!");

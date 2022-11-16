@@ -10,16 +10,17 @@ namespace Webx.Web.Data.Repositories
         Task<IEnumerable<Product>> GetAllProductsControllerAsync();
 
         IEnumerable<SelectListItem> GetBrandsCombo();
-
+        IEnumerable<SelectListItem> GetBrandsCombo(int brandId);
         IEnumerable<SelectListItem> GetCategoriesCombo();
-
+        IEnumerable<SelectListItem> GetCategoriesCombo(int categoryId);
         Task<Product> GetFullProduct(int id);
 
-        #nullable enable
+#nullable enable
         Task<IEnumerable<Product>> GetFullProducts(string? category);
-        #nullable disable
-    
-    
-    
+#nullable disable
+
+        Task<IEnumerable<Product>> GetProductAllAsync();
+        Task<Product> GetProductByIdAsync(int id);
+        Task<Product> GetProductByNameAsync(string name);
     }
 }

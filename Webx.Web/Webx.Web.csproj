@@ -12,6 +12,7 @@
     <Folder Include="wwwroot\images\images\" />
     <Folder Include="wwwroot\images\users\" />
     <Folder Include="wwwroot\images\products\" />
+    <Folder Include="wwwroot\stockAlert\temp\" />
   </ItemGroup>
 
   <ItemGroup>

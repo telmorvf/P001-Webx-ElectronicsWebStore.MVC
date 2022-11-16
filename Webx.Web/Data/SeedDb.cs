@@ -368,16 +368,31 @@ namespace Webx.Web.Data
         {
             if (!_context.Brands.Any())
             {
-                string[] brandsNames = new string[6] { "Asus","Corsair","MSI","Cooler Master","Intel","WebX"};
+                int nTimes = 14;
+                string[] brandsNames = new string[14] { 
+                    "Asus", "Corsair", "MSI", 
+                    "Cooler Master", "Intel", "WebX",
+                    "Samsung", "LG", "Apple",
+                    "Canon", "Sony", "Siemens",
+                    "Lenovo", "Microsoft"
+                };
+                Guid[] images = new Guid[14] { 
+                    Guid.Parse("00000000-0000-0000-0000-900000000001"), Guid.Parse("00000000-0000-0000-0000-900000000002"), Guid.Parse("00000000-0000-0000-0000-900000000003"),
+                    Guid.Parse("00000000-0000-0000-0000-900000000004"), Guid.Parse("00000000-0000-0000-0000-900000000005"), Guid.Parse("00000000-0000-0000-0000-900000000006"),
+                    Guid.Parse("00000000-0000-0000-0000-900000000007"), Guid.Parse("00000000-0000-0000-0000-900000000008"), Guid.Parse("00000000-0000-0000-0000-900000000009"),
+                    Guid.Parse("00000000-0000-0000-0000-900000000010"), Guid.Parse("00000000-0000-0000-0000-900000000011"), Guid.Parse("00000000-0000-0000-0000-900000000012"),
+                    Guid.Parse("00000000-0000-0000-0000-900000000013"), Guid.Parse("00000000-0000-0000-0000-900000000014")
+                };
 
-                foreach(string brandName in brandsNames)
+                for (int i = 0; i < nTimes; i++)
                 {
-                    _context.Brands.Add(new Brand
+                    var brands = new Brand
                     {
-                        Name = brandName
-                    });
+                        Name = brandsNames[i],
+                        ImageId = images[i]
+                    };
+                    _context.Brands.Add(brands);
                 }
-
                 await _context.SaveChangesAsync();
             }
         }

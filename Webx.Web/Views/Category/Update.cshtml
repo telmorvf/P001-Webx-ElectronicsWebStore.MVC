@@ -91,6 +91,7 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="ImageId" />
 
                 <div class="row">
                     
@@ -150,14 +151,12 @@
                     </div>
                 </div>
 
-
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
                         </div>
                     </div>
                 </div>
-
 
                 <div class="row">
                     <div class="col-md-12" style="margin-top:100px;">
@@ -190,8 +189,7 @@
         <div class="col-md-6">
 
             <div class="box">
-                <div class="imageStyle" style="background:Url(@Model.ImageFullPath) no-repeat center;background-size: cover;"></div>
-                @*<div class="imageStyle" style="background-size: cover;"></div>*@
+                <div class="imageStyle" style="background:Url(@Model.ImageFullPath) no-repeat center;background-size: cover;" display='block' margin-left='auto' margin-right='auto' width='95%'></div>
             </div>
 
         </div>

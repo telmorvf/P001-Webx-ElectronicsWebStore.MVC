@@ -7,6 +7,7 @@ namespace Webx.Web.Helpers
     public interface IConverterHelper
     {
         Task<EditEmployeeViewModel> ToEditEmployeeViewModelAsync(User user);
+        EditCustomerViewModel ToEditCustomerViewModel(User user);
 
         StoreViewModel StoreToViewModel(Store store);
         Store StoreFromViewModel(StoreViewModel model, bool isNew);
@@ -18,12 +19,10 @@ namespace Webx.Web.Helpers
         Category CategoryFromViewModel(CategoryViewModel model, bool isNew);
 
         ProductViewModel ProductToViewModel(Product product);
-
+        Product ProductFromViewModel(ProductViewModel model, bool isNew);
+      
         StockViewModel StockToViewModel(Stock stock);
+        Stock StockFromViewModel(StockViewModel model, bool isNew);
 
-        EditCustomerViewModel ToEditCustomerViewModel(User user);
-
-        
-        
     }
 }

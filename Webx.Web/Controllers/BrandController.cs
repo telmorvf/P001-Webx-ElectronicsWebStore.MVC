@@ -18,20 +18,23 @@ namespace Webx.Web.Controllers
     {
         private readonly IBrandRepository _brandRepository;
         private readonly INotyfService _toastNotification;
-        private readonly DataContext _dbContext;
+        private readonly DataContext _dataContext;
         private readonly IConverterHelper _converterHelper;
+        private readonly IImageHelper _imageHelper;
 
         public BrandController(
             IBrandRepository brandRepository,
             INotyfService toastNotification,
-            DataContext dbContext,  
-            IConverterHelper converterHelper
+            DataContext dataContext,  
+            IConverterHelper converterHelper,
+            IImageHelper imageHelper
             )
         {
             _brandRepository = brandRepository;
             _toastNotification = toastNotification;
-            _dbContext = dbContext;
+            _dataContext = dataContext;
             _converterHelper = converterHelper;
+            _imageHelper = imageHelper;
         }
 
         public async Task<IActionResult> ViewAll()
@@ -77,14 +80,14 @@ namespace Webx.Web.Controllers
             return View(model);
         }
 
-
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(BrandViewModel model)
         {
             if (this.ModelState.IsValid)
             {
-                if (model.Name == null)
+                var brand = await _brandRepository.GetBrandByIdAsync(model.Id);
+                if (brand == null)
                 {
                     _toastNotification.Error("Error, the brand was not found");
                     return View(model);
@@ -92,8 +95,26 @@ namespace Webx.Web.Controllers
 
                 try
                 {
-                    var newBrand = _converterHelper.BrandFromViewModel(model, false);
-                    await _brandRepository.UpdateAsync(newBrand);
+                    Guid imageId = Guid.Empty;
+                    if (model.PictureFile != null && model.PictureFile.Length > 0)
+                    {
+                        //Convert image bit array and upload to Azure
+                        imageId = await _imageHelper.UploadImageAsync(model.PictureFile, model.ImageId, "brands");
+                        brand.ImageId = imageId;
+                        model.ImageId = imageId;
+                    }
+                    else
+                    {
+                        brand.ImageId = model.ImageId;
+                    }
+                    //model.ImageId = imageId;
+
+                    brand.Id = model.Id;
+                    brand.Name = model.Name;
+
+                    _dataContext.Brands.Update(brand);
+                    await _dataContext.SaveChangesAsync();
+                    model = _converterHelper.BrandToViewModel(brand);
 
                     _toastNotification.Success("Brand changes saved successfully!!!");                 
                 }
@@ -113,7 +134,6 @@ namespace Webx.Web.Controllers
             };
             return View(model);
         }
-
 
         [Authorize(Roles = "Admin")]
         public IActionResult Create()
@@ -140,6 +160,15 @@ namespace Webx.Web.Controllers
                 {
                     try
                     {
+                        Guid imageId = Guid.Empty;
+                        if (model.PictureFile != null && model.PictureFile.Length > 0)
+                        {
+                            //Convert image bit array and upload to Azure
+                            imageId = await _imageHelper.UploadImageAsync(model.PictureFile, model.ImageId, "brands");
+                        }
+                        model.ImageId = imageId;
+
+                        // Convert from Model to Entitie Brand, and new? = true
                         Brand newBrand = _converterHelper.BrandFromViewModel(model, true);
                         await _brandRepository.CreateAsync(newBrand);
                         _toastNotification.Success("Brand created successfully!!!");

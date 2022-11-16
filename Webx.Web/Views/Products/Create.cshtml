@@ -1,13 +1,13 @@
-﻿@* Brand *@
+﻿@* Product CREATE *@
 
-@model Webx.Web.Models.BrandViewModel
+
+@model Webx.Web.Models.ProductViewModel
 
 @{
-    ViewData["Title"] = "Update";
-    ViewData["BreadCrumb"] = "Edit Brand";
+    ViewData["Title"] = "Create";
+    ViewData["BreadCrumb"] = "Add Product";
     Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
 }
-
 
 <style>
     .gridView {
@@ -76,63 +76,49 @@
 
     <div class="row">
         <div class="col-md-12" style="margin-top: 15px;">
-            <h4 style="text-align:center">Edit Brand @Model.Name</h4>
+            <h4 style="text-align:center">Add New Product</h4>
             <hr />
         </div>
     </div>
 
-
     <div class="row" style="padding:25px;min-height: 715px;">
-
         <div class="col-md-6">
 
-            <form enctype="multipart/form-data" asp-action="Update">
-
+            <form enctype="multipart/form-data" asp-action="Create">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
                 <input type="hidden" asp-for="Id" />
-                <input type="hidden" asp-for="ImageId" />
+                <input type="hidden" asp-for="ImageFirst" />
 
                 <div class="row">
-
-                    <div class="col-md-8">
+                    <div class="col-md-10">
                         <div class="form-group">
                             <label asp-for="Name" class="control-label"></label>
                             <input asp-for="Name" class="form-control" />
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <div class="form-group">
+                            <label asp-for="IsService" style="text-align:center" class="control-label"></label>
+                            <input asp-for="IsService" type="checkbox" style="text-align:center" class="form-control" />
+                            <span asp-validation-for="IsService" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-md-4">
                         <div class="form-group">
+                            <label asp-for="Price" class="control-label"></label>
+                            <input asp-for="Price" style="text-align:right" class="form-control" />
+                            <span asp-validation-for="Price" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="form-group">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="form-group">
+                            <label asp-for="MinimumQuantity" class="control-label"></label>
+                            <input asp-for="MinimumQuantity" style="text-align:right" class="form-control" />
+                            <span asp-validation-for="MinimumQuantity" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -144,9 +130,39 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label asp-for="ImageId" class="control-label"></label>
-                            <input asp-for="PictureFile" />
-                            <span asp-validation-for="PictureFile" class="text-danger"></span>
+                            <label asp-for="Description" class="control-label"></label>
+                            <textarea asp-for="Description" style="resize: none;" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="CategoryId" class="control-label"></label>
+                            <select asp-for="CategoryId" asp-items="Model.Categories" class="form-control"></select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="BrandId" class="control-label"></label>
+                            <select asp-for="BrandId" asp-items="Model.Brands" class="form-control"></select>
+                            <span asp-validation-for="BrandId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="PictureFile" class="control-label font-weight-bold"></label>
+                            <ejs-uploader id="PictureFile" autoUpload="false"></ejs-uploader>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
                         </div>
                     </div>
                 </div>
@@ -165,17 +181,17 @@
 
                 @* style="margin-top: 60px;*@
 
-                <div class="row" style="margin-top: 60px">
+                <div class="row">
                     <div class="col-md-3"></div>
                     <div class="col-md-3"></div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <a id="return" asp-action="ViewAll" asp-controller="Brand" asp-route-isActive="true" class="btn"><i class="fas fa-arrow-left"></i> Back</a>
+                            <a id="return" asp-action="ViewAll" asp-controller="Products" asp-route-isActive="true" class="btn"><i class="fas fa-arrow-left"></i> Back</a>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <input id="submit" type="submit" value="Save" class="btn" />
+                            <input id="submit" type="submit" value="Create" class="btn" />
                         </div>
                     </div>
                 </div>
@@ -184,15 +200,16 @@
 
         </div>
 
-
-
         <div class="col-md-6">
 
             <div class="box">
-                <div class="imageStyle" style="background:Url(@Model.ImageFullPath) no-repeat center;background-size: cover;" display='block' margin-left='auto' margin-right='auto' width='95%'></div>
+                @*<div class="imageStyle" style="background-size: cover;"></div>*@
+                <div class="imageStyle" style="background:Url(@Model.ImageFirst) no-repeat center;background-size: cover;"></div>
             </div>
 
         </div>
 
     </div>
 </div>
+
+

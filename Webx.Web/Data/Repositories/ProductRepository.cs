@@ -35,6 +35,32 @@ namespace Webx.Web.Data.Repositories
             return list;
         }
 
+        public IEnumerable<SelectListItem> GetBrandsCombo(int brandId)
+        {
+            var brand = _context.Brands.Find(brandId);
+            var list = new List<SelectListItem>();
+            if (brand != null)
+            {
+                list = _context.Brands.Select(c => new SelectListItem
+                {
+                    Text = c.Name,
+                    Value = c.Id.ToString()
+
+                }).OrderBy(l => l.Text).ToList();
+
+
+                list.Insert(0, new SelectListItem
+                {
+                    Text = "(Select a brand...)",
+                    Value = "0"
+                });
+
+            }
+
+            return list;
+        }
+
+
         public IEnumerable<SelectListItem> GetCategoriesCombo()
         {
             var list = _context.Categories.Select(b => new SelectListItem
@@ -53,9 +79,32 @@ namespace Webx.Web.Data.Repositories
             return list;
         }
 
-        /// <summary>
-        /// Return all products to the Shop by id (when i click one product)
-        /// </summary>
+        public IEnumerable<SelectListItem> GetCategoriesCombo(int categoryId)
+        {
+            var category = _context.Categories.Find(categoryId);
+            var list = new List<SelectListItem>();
+            if (category != null)
+            {
+                list = _context.Categories.Select(c => new SelectListItem
+                {
+                    Text = c.Name,
+                    Value = c.Id.ToString()
+
+                }).OrderBy(l => l.Text).ToList();
+
+
+                list.Insert(0, new SelectListItem
+                {
+                    Text = "(Select a category...)",
+                    Value = "0"
+                });
+
+            }
+
+            return list;
+        }
+
+
         public async Task<Product> GetFullProduct(int id)
         {
             var product =
@@ -64,7 +113,7 @@ namespace Webx.Web.Data.Repositories
                 .Include(p => p.Images)
                 .Include(p => p.Brand)
                 .Where(p => p.Id == id)
-                .OrderBy(p => p.Name)
+                .OrderBy(p => p.Id)
                 .FirstOrDefaultAsync();
 
             if (product == null)
@@ -74,9 +123,6 @@ namespace Webx.Web.Data.Repositories
             return product;
         }
 
-        /// <summary>
-        /// Return all products to the Shop
-        /// </summary>
 #nullable enable
         public async Task<IEnumerable<Product>> GetFullProducts(string? category)
         {
@@ -107,9 +153,6 @@ namespace Webx.Web.Data.Repositories
         }
 #nullable disable
 
-        /// <summary>
-        /// Return all product to the Views of Product CRUD Controller
-        /// </summary>
         public async Task<IEnumerable<Product>> GetAllProductsControllerAsync()
         {
             IEnumerable<Product> productAll;
@@ -119,6 +162,43 @@ namespace Webx.Web.Data.Repositories
                 .ToListAsync();
 
             return productAll;
+        }
+
+        public async Task<IEnumerable<Product>> GetProductAllAsync()
+        {
+            IEnumerable<Product> productAll;
+
+            productAll = await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Images)
+                .Include(p => p.Brand)
+                .OrderBy(p => p.Name)
+                .ToListAsync();
+
+            return productAll;
+        }
+
+        public async Task<Product> GetProductByIdAsync(int id)
+        {
+            var product =
+                await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Images)
+                .Include(p => p.Brand)
+                .Where(p => p.Id == id)
+                .OrderBy(p => p.Name)
+                .FirstOrDefaultAsync();
+
+            if (product == null)
+            {
+                return null;
+            }
+            return product;
+        }
+
+        public async Task<Product> GetProductByNameAsync(string name)
+        {
+            return await _context.Products.SingleOrDefaultAsync(b => b.Name == name);
         }
     }
 }
