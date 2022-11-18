@@ -139,8 +139,6 @@ namespace Webx.Web.Data
 
                 //Adiciona encomendas de / para produtos sem marcações
 
-                //TODO comentado por telmo há vezes que dá erro no formato da data, nem sempre - perceber o que se passa com o Filipe
-
                 for (int i = 0; i <= 2; i++)
                 {
                     var orderDate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, r.Next(DateTime.DaysInMonth(DateTime.UtcNow.Year, DateTime.UtcNow.Month)));

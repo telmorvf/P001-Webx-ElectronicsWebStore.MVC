@@ -60,6 +60,8 @@ namespace Webx.Web.Data
 
             builder.Entity<Store>().HasIndex(u => u.Name).IsUnique();
 
+            builder.Entity<Product>().HasIndex(u => u.Name).IsUnique();
+
             builder.Entity<Category>().HasIndex(u => u.Name).IsUnique();
 
             builder.Entity<Brand>().HasIndex(u => u.Name).IsUnique();

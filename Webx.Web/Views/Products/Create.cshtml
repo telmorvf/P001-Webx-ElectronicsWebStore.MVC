@@ -1,7 +1,7 @@
 ﻿@* Product CREATE *@
 
 
-@model Webx.Web.Models.ProductViewModel
+@model Webx.Web.Models.ProductAddViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -100,7 +100,7 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label asp-for="IsService" style="text-align:center" class="control-label"></label>
-                            <input asp-for="IsService" type="checkbox" style="text-align:center" class="form-control" />
+                            <input asp-for="IsService" type="checkbox" style="text-align:center" class="form-control" disabled="disabled"/>
                             <span asp-validation-for="IsService" class="text-danger"></span>
                         </div>
                     </div>
@@ -123,6 +123,9 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
+                            <label asp-for="ReceivedQuantity" class="control-label"></label>
+                            <input asp-for="ReceivedQuantity" style="text-align:right" class="form-control" />
+                            <span asp-validation-for="ReceivedQuantity" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -186,7 +189,7 @@
                     <div class="col-md-3"></div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <a id="return" asp-action="ViewAll" asp-controller="Products" asp-route-isActive="true" class="btn"><i class="fas fa-arrow-left"></i> Back</a>
+                            <a id="return" asp-action="ViewAll" asp-controller="Products" asp-route-isService="fase" class="btn"><i class="fas fa-arrow-left"></i> Back</a>
                         </div>
                     </div>
                     <div class="col-md-3">

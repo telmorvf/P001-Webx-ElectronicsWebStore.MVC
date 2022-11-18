@@ -23,6 +23,9 @@ namespace Webx.Web.Helpers
       
         StockViewModel StockToViewModel(Stock stock);
         Stock StockFromViewModel(StockViewModel model, bool isNew);
-
+        Product ProductAddFromViewModel(ProductAddViewModel model, bool isNew);
+        ProductAddViewModel ProductAddToViewModel(Product product);
+        ServiceViewModel ServiceToViewModel(Product product);
+        Product ServiceFromViewModel(ServiceViewModel model, bool isNew);
     }
 }

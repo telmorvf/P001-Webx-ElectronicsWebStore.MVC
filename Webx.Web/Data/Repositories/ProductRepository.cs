@@ -164,6 +164,7 @@ namespace Webx.Web.Data.Repositories
             return productAll;
         }
 
+
         public async Task<IEnumerable<Product>> GetProductAllAsync()
         {
             IEnumerable<Product> productAll;
@@ -172,18 +173,40 @@ namespace Webx.Web.Data.Repositories
                 .Include(p => p.Category)
                 .Include(p => p.Images)
                 .Include(p => p.Brand)
+                .Where(p => p.IsService == false)
                 .OrderBy(p => p.Name)
                 .ToListAsync();
 
             return productAll;
         }
-
         public async Task<Product> GetProductByIdAsync(int id)
         {
             var product =
                 await _context.Products
                 .Include(p => p.Category)
                 .Include(p => p.Images)
+                .Include(p => p.Brand)
+                .Where(p => p.Id == id && p.IsService == false)
+                .OrderBy(p => p.Name)
+                .FirstOrDefaultAsync();
+
+            if (product == null)
+            {
+                return null;
+            }
+            return product;
+        }
+        public async Task<Product> GetProductByNameAsync(string name)
+        {
+            return await _context.Products.SingleOrDefaultAsync(b => b.Name == name);
+        }
+
+        public async Task<Product> GetProSerByIdAsync(int id)
+        {
+            var product =
+                await _context.Products
+                .Include(p => p.Category)
+                //.Include(p => p.Images)
                 .Include(p => p.Brand)
                 .Where(p => p.Id == id)
                 .OrderBy(p => p.Name)
@@ -196,7 +219,36 @@ namespace Webx.Web.Data.Repositories
             return product;
         }
 
-        public async Task<Product> GetProductByNameAsync(string name)
+        public async Task<IEnumerable<Product>> GetServiceAllAsync()
+        {
+            IEnumerable<Product> productAll;
+
+            productAll = await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Brand)
+                .Where(p => p.IsService == true)
+                .OrderBy(p => p.Name)
+                .ToListAsync();
+
+            return productAll;
+        }
+        public async Task<Product> GetServiceByIdAsync(int id)
+        {
+            var product =
+                await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Brand)
+                .Where(p => p.Id == id && p.IsService == true)
+                .OrderBy(p => p.Name)
+                .FirstOrDefaultAsync();
+
+            if (product == null)
+            {
+                return null;
+            }
+            return product;
+        }
+        public async Task<Product> GetServiceByNameAsync(string name)
         {
             return await _context.Products.SingleOrDefaultAsync(b => b.Name == name);
         }

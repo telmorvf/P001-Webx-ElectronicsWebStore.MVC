@@ -1,6 +1,7 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,13 @@ using Webx.Web.Data.Entities;
 using Webx.Web.Data.Repositories;
 using Webx.Web.Helpers;
 using Webx.Web.Models;
+using Microsoft.AspNetCore.Http;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using System.IO;
+
+
+
 
 namespace Webx.Web.Controllers
 {
@@ -22,6 +30,7 @@ namespace Webx.Web.Controllers
         private readonly DataContext _dataContext;
         private readonly IImageHelper _imageHelper;
         private readonly INotyfService _toastNotification;
+        private readonly IBlobHelper _blobHelper;
         private readonly IConverterHelper _converterHelper;
 
         public ProductsController(
@@ -32,6 +41,7 @@ namespace Webx.Web.Controllers
             DataContext dataContext,
             IImageHelper imageHelper,
             INotyfService toastNotification,
+            IBlobHelper blobHelper,
             IConverterHelper converterHelper
             )
         {
@@ -42,6 +52,7 @@ namespace Webx.Web.Controllers
             _dataContext = dataContext;
             _imageHelper = imageHelper;
             _toastNotification = toastNotification;
+            _blobHelper = blobHelper;
             _converterHelper = converterHelper;
         }
 
@@ -97,40 +108,67 @@ namespace Webx.Web.Controllers
             return View(product);
         }
 
-        public async Task<IActionResult> ViewAll()
+
+        public async Task<IActionResult> ViewAll(bool isService)
         {
             IEnumerable<Product> products;
 
-            products = await _productRepository.GetProductAllAsync();
+            if (isService==true)
+            {
+                products = await _productRepository.GetServiceAllAsync();
+                ViewBag.IsService = true;
+                
+
+            }
+            else
+            {
+                products = await _productRepository.GetProductAllAsync();
+                ViewBag.IsService = false;
+                
+
+            }
 
             //vai buscar as dataAnnotations da class User para injectar na tabela do syncfusion
             ViewBag.Type = typeof(Product);
 
+            var stores = _dataContext.Stores.ToListAsync();
+            ViewBag.FilterStore = stores;   
+
+
             return View(products);
         }
+
+
 
         [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
-            var model = new ProductViewModel();
+            var model = new ProductAddViewModel();
 
             model.Categories = _productRepository.GetCategoriesCombo();
             model.Brands = _productRepository.GetBrandsCombo();
-
             return View(model);
+
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ProductViewModel model)
+        public async Task<IActionResult> Create(ProductAddViewModel model)
         {
-            if (this.ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
+                model.Categories = _productRepository.GetCategoriesCombo();
+                model.Brands = _productRepository.GetBrandsCombo();
+                return View(model);
+            }
+            else{
                 var product = _productRepository.GetProductByNameAsync(model.Name);
                 if (product.Result != null)
                 {
                     _toastNotification.Error("This Product Name Already Exists, Please try again...");
+                    model.Categories = _productRepository.GetCategoriesCombo();
+                    model.Brands = _productRepository.GetBrandsCombo();
                     return View(model);
                 }
 
@@ -139,25 +177,35 @@ namespace Webx.Web.Controllers
                     try
                     {
                         // TODO: Pictures
-                        Guid imageId = Guid.Empty;
                         if (model.PictureFile != null && model.PictureFile.Length > 0)
                         {
-
                             
+                            
+                            Guid imageId = Guid.Empty;
 
+                            using var image = Image.Load(model.PictureFile.OpenReadStream());
+                            image.Mutate(img => img.Resize(512, 0));
 
+                            using (MemoryStream m = new MemoryStream())
+                            {
+                                image.SaveAsJpeg(m);
+                                byte[] imageBytes = m.ToArray();
+                                imageId = await _blobHelper.UploadBlobAsync(imageBytes, "products");
+                            }
+
+                            //product.ImageId = imageId;
+                            //model.ImageId = imageId;
 
 
                             // Filipe: Convert image bit array and upload to Azure
                             //imageId = await _imageHelper.UploadImageAsync(model.PictureFile, model.ImagesId, "products");
                             //model.ImageFirst = imageId;
                         }
-
-                        // TODO: Telmo product validar no create se campos preenchidos (javascript)
-                        Product newProduct = _converterHelper.ProductFromViewModel(model, true);
+                        Product newProduct = _converterHelper.ProductAddFromViewModel(model, true);
 
                         // Create the product
                         var minQuantity = model.MinimumQuantity;
+                        var recQuantity = model.ReceivedQuantity;
                         await _productRepository.CreateAsync(newProduct);
 
 
@@ -170,16 +218,16 @@ namespace Webx.Web.Controllers
                                 Id = 0,
                                 ProductId = newProduct.Id,
                                 StoreId = store.Id,
-                                Quantity = 0,
+                                Quantity = recQuantity,
                                 MinimumQuantity = minQuantity,
                             });
                         }
                         await _dataContext.SaveChangesAsync();
                         // Stores & Stock - End
 
-                        _toastNotification.Success("Store created successfully!!!");
+                        _toastNotification.Success("Product created successfully!!!");
                         //converterHelper - refresh the create view after create
-                        model = _converterHelper.ProductToViewModel(newProduct);
+                        model = _converterHelper.ProductAddToViewModel(newProduct);
 
                         return View(model);
                     }
@@ -197,6 +245,65 @@ namespace Webx.Web.Controllers
         }
 
 
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult CreateService()
+        {
+            var model = new ServiceViewModel();
+
+            model.Categories = _productRepository.GetCategoriesCombo();
+            model.Brands = _productRepository.GetBrandsCombo();
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateService(ServiceViewModel model)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                model.Categories = _productRepository.GetCategoriesCombo();
+                model.Brands = _productRepository.GetBrandsCombo();
+                return View(model);
+            }
+            else
+            {
+                var product = _productRepository.GetProductByNameAsync(model.Name);
+                if (product.Result != null)
+                {
+                    _toastNotification.Error("This Service Name Already Exists, Please try again...");
+                    model.Categories = _productRepository.GetCategoriesCombo();
+                    model.Brands = _productRepository.GetBrandsCombo();
+                    return View(model);
+                }
+
+                if (product.Result == null)
+                {
+                    try
+                    {
+                        Product newService = _converterHelper.ServiceFromViewModel(model, true);
+
+                        await _productRepository.CreateAsync(newService);
+
+                        _toastNotification.Success("Service created successfully!!!");
+                        //converterHelper - refresh the create view after create
+                        model = _converterHelper.ServiceToViewModel(newService);
+
+                        return View(model);
+                    }
+                    catch (Exception)
+                    {
+                        _toastNotification.Error("There was a problem, When try creating the product. Please try again");
+
+                        model.Categories = _productRepository.GetCategoriesCombo();
+                        model.Brands = _productRepository.GetBrandsCombo();
+                        return View(model);
+                    }
+                }
+            };
+            return View(model);
+        }
 
 
 
@@ -222,12 +329,20 @@ namespace Webx.Web.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(ProductViewModel model)
         {
-            if (this.ModelState.IsValid)
+            if (!this.ModelState.IsValid)
+            {
+                model.Categories = _productRepository.GetCategoriesCombo();
+                model.Brands = _productRepository.GetBrandsCombo();
+                return View(model);
+            }
+            else
             {
                 var product = await _productRepository.GetProductByIdAsync(model.Id);
                 if (product == null)
                 {
                     _toastNotification.Error("Error, the brand was not found");
+                    model.Categories = _productRepository.GetCategoriesCombo();
+                    model.Brands = _productRepository.GetBrandsCombo();
                     return View(model);
                 };
 
@@ -235,8 +350,6 @@ namespace Webx.Web.Controllers
                 {
                     //converterHelper
                     //var product = _converterHelper.ProductFromViewModel(model, false);
-
-                    // TODO: Question Equipa: pq não concigo usar converterHelper acima, como descartar os nullos
                     product.Id = model.Id;
                     product.Name = model.Name;
                     product.Price = model.Price;
@@ -244,6 +357,7 @@ namespace Webx.Web.Controllers
                     product.IsService = model.IsService;
                     product.CategoryId = Convert.ToInt32(model.CategoryId);
                     product.BrandId = Convert.ToInt32(model.BrandId);
+
 
                     _dataContext.Products.Update(product);
                     await _dataContext.SaveChangesAsync();
@@ -263,20 +377,100 @@ namespace Webx.Web.Controllers
                     {
                         _toastNotification.Error($"There was a problem updating the product, try again later!");
                     }
-
+                    model.Categories = _productRepository.GetCategoriesCombo();
+                    model.Brands = _productRepository.GetBrandsCombo();
                     return View(model);
                 }
             };
+
             return View(model);
         }
 
 
 
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateService(int? id)
+        {
+            var product = await _productRepository.GetServiceByIdAsync(id.Value);
+            var model = new ServiceViewModel();
+            if (product != null)
+            {
+                //converterHelper
+                model = _converterHelper.ServiceToViewModel(product);
+            }
+            else
+            {
+                _toastNotification.Error("Service could not be found.");
+                return RedirectToAction(nameof(ViewAll));
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateService(ServiceViewModel model)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                model.Categories = _productRepository.GetCategoriesCombo();
+                model.Brands = _productRepository.GetBrandsCombo();
+                return View(model);
+            }
+            else
+            {
+                var product = await _productRepository.GetServiceByIdAsync(model.Id);
+                if (product == null)
+                {
+                    _toastNotification.Error("Error, the service was not found");
+                    model.Categories = _productRepository.GetCategoriesCombo();
+                    model.Brands = _productRepository.GetBrandsCombo();
+                    return View(model);
+                };
+
+                try
+                {
+                    product.Id = model.Id;
+                    product.Name = model.Name;
+                    product.Price = model.Price;
+                    product.Description = model.Description;
+                    product.IsService = model.IsService;
+                    product.CategoryId = Convert.ToInt32(model.CategoryId);
+                    product.BrandId = Convert.ToInt32(model.BrandId);
+
+
+                    _dataContext.Products.Update(product);
+                    await _dataContext.SaveChangesAsync();
+
+                    //converterHelper
+                    model = _converterHelper.ServiceToViewModel(product);
+
+                    _toastNotification.Success("Brand changes saved successfully!!!");
+                }
+                catch (Exception ex)
+                {
+                    if (ex.InnerException.Message.Contains("Cannot insert duplicate key row in object"))
+                    {
+                        _toastNotification.Error($"The service  {model.Name}  already exists!");
+                    }
+                    else
+                    {
+                        _toastNotification.Error($"There was a problem updating the service, try again later!");
+                    }
+                    
+                    model.Categories = _productRepository.GetCategoriesCombo();
+                    model.Brands = _productRepository.GetBrandsCombo();
+                    return View(model);
+                }
+            };
+
+            return View(model);
+        }
+
 
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        [Route("Product/ProductDetails")]
+        [Route("Products/ProductDetails")]
         public async Task<JsonResult> ProductDetails(int? Id)
         {
             if (Id == null)
@@ -285,7 +479,7 @@ namespace Webx.Web.Controllers
                 return null;
             }
 
-            var product = await _productRepository.GetProductByIdAsync(Id.Value);
+            var product = await _productRepository.GetProSerByIdAsync(Id.Value);
             ProductViewModel model = new ProductViewModel();
 
             if (product != null)
@@ -309,7 +503,7 @@ namespace Webx.Web.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        [Route("Product/ToastNotification")]
+        [Route("Products/ToastNotification")]
         public JsonResult ToastNotification(string message, string type)
         {
             bool result = false;

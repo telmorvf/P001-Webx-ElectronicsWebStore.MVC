@@ -1,11 +1,11 @@
-﻿@* Product Update  *@
+﻿@* Service Update  *@
 
 
-@model Webx.Web.Models.ProductViewModel
+@model Webx.Web.Models.ServiceViewModel
 
 @{
     ViewData["Title"] = "Update";
-    ViewData["BreadCrumb"] = "Edit Product";
+    ViewData["BreadCrumb"] = "Edit Service";
     Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
 }
 
@@ -77,7 +77,7 @@
 
     <div class="row">
         <div class="col-md-12" style="margin-top: 15px;">
-            <h4 style="text-align:center">Edit Product @Model.Name</h4>
+            <h4 style="text-align:center">Edit Service @Model.Name</h4>
             <hr />
         </div>
     </div>
@@ -102,7 +102,7 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label asp-for="IsService" style="text-align:center" class="control-label"></label>
-                            <input asp-for="IsService" type="checkbox" style="text-align:center" class="form-control" disabled="disabled"/>
+                            <input asp-for="IsService" type="checkbox" style="text-align:center" class="form-control"/>
                             <span asp-validation-for="IsService" class="text-danger"></span>
                         </div>
                     </div>
@@ -140,15 +140,15 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label asp-for="CategoryId" class="control-label"></label>
-                            <select asp-for="CategoryId" asp-items="Model.Categories" class="form-control"></select>
+                            <select asp-for="CategoryId" asp-items="Model.Categories" class="form-control" ></select>
                             <span asp-validation-for="CategoryId" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label asp-for="BrandId" class="control-label"></label>
-                            <select asp-for="BrandId" asp-items="Model.Brands" class="form-control"></select>
-                            <span asp-validation-for="BrandId" class="text-danger"></span>                       
+                            <select asp-for="BrandId" asp-items="Model.Brands" class="form-control" ></select>
+                            <span asp-validation-for="BrandId" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -156,7 +156,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-@*                            <label asp-for="PictureFile" class="control-label font-weight-bold"></label>
+                          @*<label asp-for="PictureFile" class="control-label font-weight-bold"></label>
                             <ejs-uploader id="PictureFile" autoUpload="false"></ejs-uploader>*@
                         </div>
                     </div>
@@ -185,12 +185,12 @@
                     <div class="col-md-3"></div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <a id="return" asp-action="ViewAll" asp-controller="Products" asp-route-isService="false" class="btn"><i class="fas fa-arrow-left"></i> Back</a>
+                            <a id="return" asp-action="ViewAll" asp-controller="Products" asp-route-isService="true" class="btn"><i class="fas fa-arrow-left"></i> Back</a>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <input id="submit" type="submit" value="Save" class="btn" />
+                            <input id="submit" type="submit" value="Update Service" asp-action="UpdateService" asp-controller="Products" class="btn" />
                         </div>
                     </div>
                 </div>

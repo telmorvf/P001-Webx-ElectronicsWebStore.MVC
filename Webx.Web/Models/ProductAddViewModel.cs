@@ -8,13 +8,13 @@ using Webx.Web.Data.Entities;
 
 namespace Webx.Web.Models
 {
-    public class ProductViewModel
+    public class ProductAddViewModel
     {
         [Key]
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(100, ErrorMessage = "The field {0} can contain {1} characteres lenght")]
+        [MaxLength(100, ErrorMessage = "The field {0} can contain {1} characteres lenght")]  
         public string Name { get; set; }
 
         public string Description { get; set; }
@@ -24,6 +24,8 @@ namespace Webx.Web.Models
         [Range(0, 99999.99, ErrorMessage = "Only greater than Zero")]
         public decimal Price { get; set; }
 
+        //[MinLength(0, ErrorMessage = "Only greater than Zero")]
+
         public bool IsService { get; set; }
 
 
@@ -31,7 +33,6 @@ namespace Webx.Web.Models
         [Display(Name = "Brand")]
         [Range(1, int.MaxValue, ErrorMessage = "You must select a brand.")]
         public string BrandId { get; set; }
-        public string BrandName { get; set; }
         public IEnumerable<SelectListItem> Brands { get; set; }
 
 
@@ -39,20 +40,19 @@ namespace Webx.Web.Models
         [Display(Name = "Category")]
         [Range(1, int.MaxValue, ErrorMessage = "You must select a category.")]
         public string CategoryId { get; set; }
-        public string CategoryName { get; set; }
 
         public IEnumerable<SelectListItem> Categories { get; set; }
 
 
+        [Display(Name = "Minimum Quantity Alert?")]
+        
+        [Range(1, int.MaxValue, ErrorMessage = "Only greater than Zero")]
+        public int MinimumQuantity { get; set; }
 
-        //[Display(Name = "Minimum Quantity Alert?")]
+        [Display(Name = "Quantity Received?")]
+        [Range(0, int.MaxValue, ErrorMessage = "Only Zero or greater than Zero")]
+        public int ReceivedQuantity { get; set; }
 
-        //[Range(1, int.MaxValue, ErrorMessage = "Only greater than Zero")]
-        //public int MinimumQuantity { get; set; }
-
-        //[Display(Name = "Quantity Received?")]
-        //[Range(0, int.MaxValue, ErrorMessage = "Only Zero or greater than Zero")]
-        //public int ReceivedQuantity { get; set; }
 
 
         [Display(Name = "Picture File")]

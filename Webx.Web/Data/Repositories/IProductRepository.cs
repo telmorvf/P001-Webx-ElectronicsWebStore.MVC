@@ -22,5 +22,9 @@ namespace Webx.Web.Data.Repositories
         Task<IEnumerable<Product>> GetProductAllAsync();
         Task<Product> GetProductByIdAsync(int id);
         Task<Product> GetProductByNameAsync(string name);
+        Task<Product> GetProSerByIdAsync(int id);
+        Task<IEnumerable<Product>> GetServiceAllAsync();
+        Task<Product> GetServiceByIdAsync(int id);
+        Task<Product> GetServiceByNameAsync(string name);
     }
 }

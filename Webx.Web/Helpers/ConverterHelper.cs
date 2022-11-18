@@ -160,12 +160,14 @@ namespace Webx.Web.Helpers
                 IsService = product.IsService,
                 ImageFirst = product.ImageFirst,
                 BrandId = product.BrandId.ToString(),
+                BrandName = product.Brand.Name,
                 Brands = _productRepository.GetBrandsCombo(product.BrandId),
                 CategoryId = product.CategoryId.ToString(),
+                CategoryName = product.Category.Name,
                 Categories = _productRepository.GetCategoriesCombo(product.CategoryId),
+
             };
         }
-
         public Product ProductFromViewModel(ProductViewModel model, bool isNew)
         {
             return new Product
@@ -180,7 +182,67 @@ namespace Webx.Web.Helpers
                 BrandId = Convert.ToInt32(model.BrandId),
             };
         }
+        public ProductAddViewModel ProductAddToViewModel(Product product)
+        {
+            return new ProductAddViewModel()
+            {
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                IsService = product.IsService,
+                ImageFirst = product.ImageFirst,
+                BrandId = product.BrandId.ToString(),
+                Brands = _productRepository.GetBrandsCombo(product.BrandId),
+                CategoryId = product.CategoryId.ToString(),
+                Categories = _productRepository.GetCategoriesCombo(product.CategoryId),
+            };
+        }
+        public Product ProductAddFromViewModel(ProductAddViewModel model, bool isNew)
+        {
+            return new Product
+            {
+                Id = isNew ? 0 : model.Id,
+                Name = model.Name,
+                Price = model.Price,
+                Description = model.Description,
+                IsService = model.IsService,
+                
+                
 
+                CategoryId = Convert.ToInt32(model.CategoryId),
+                BrandId = Convert.ToInt32(model.BrandId),
+            };
+        }
+
+        public ServiceViewModel ServiceToViewModel(Product product)
+        {
+            return new ServiceViewModel()
+            {
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                IsService = product.IsService,
+                ImageFirst = product.ImageFirst,
+                BrandId = product.BrandId.ToString(),
+                Brands = _productRepository.GetBrandsCombo(product.BrandId),
+                CategoryId = product.CategoryId.ToString(),
+                Categories = _productRepository.GetCategoriesCombo(product.CategoryId),
+            };
+        }
+        public Product ServiceFromViewModel(ServiceViewModel model, bool isNew)
+        {
+            return new Product
+            {
+                Id = isNew ? 0 : model.Id,
+                Name = model.Name,
+                Price = model.Price,
+                Description = model.Description,
+                IsService = model.IsService,
+
+                CategoryId = Convert.ToInt32(model.CategoryId),
+                BrandId = Convert.ToInt32(model.BrandId),
+            };
+        }
 
         public StockViewModel StockToViewModel(Stock stock)
         {
@@ -191,9 +253,9 @@ namespace Webx.Web.Helpers
                 Store = stock.Store,
                 MinimumQuantity = stock.MinimumQuantity,
                 Quantity = stock.Quantity,
+              
             };
         }
-
         public Stock StockFromViewModel(StockViewModel model, bool isNew)
         {
             return new Stock

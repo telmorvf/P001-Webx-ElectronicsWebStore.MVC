@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Syncfusion.EJ2.Spreadsheet;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using Webx.Web.Data.Entities;
+
 
 namespace Webx.Web.Models
 {
-    public class ProductViewModel
+    public class ServiceViewModel
     {
         [Key]
         public int Id { get; set; }
@@ -24,42 +22,25 @@ namespace Webx.Web.Models
         [Range(0, 99999.99, ErrorMessage = "Only greater than Zero")]
         public decimal Price { get; set; }
 
+        [Range(typeof(bool), "true", "true", ErrorMessage = "Tou Must Select Service = True")]
         public bool IsService { get; set; }
 
 
         [Required]
         [Display(Name = "Brand")]
-        [Range(1, int.MaxValue, ErrorMessage = "You must select a brand.")]
+        [Range(6, 6, ErrorMessage = "You must select the brand: WebX")]
         public string BrandId { get; set; }
-        public string BrandName { get; set; }
         public IEnumerable<SelectListItem> Brands { get; set; }
 
 
         [Required]
         [Display(Name = "Category")]
-        [Range(1, int.MaxValue, ErrorMessage = "You must select a category.")]
+        [Range(1, 1, ErrorMessage = "You must select a category: Services")]
         public string CategoryId { get; set; }
-        public string CategoryName { get; set; }
 
         public IEnumerable<SelectListItem> Categories { get; set; }
 
 
-
-        //[Display(Name = "Minimum Quantity Alert?")]
-
-        //[Range(1, int.MaxValue, ErrorMessage = "Only greater than Zero")]
-        //public int MinimumQuantity { get; set; }
-
-        //[Display(Name = "Quantity Received?")]
-        //[Range(0, int.MaxValue, ErrorMessage = "Only Zero or greater than Zero")]
-        //public int ReceivedQuantity { get; set; }
-
-
-        [Display(Name = "Picture File")]
-        public IFormFile PictureFile { get; set; }
-
-        public IEnumerable<ProductImages> Images { get; set; }
-        public Images ImagesId { get; set; }
 
         public string ImageFirst { get; set; }
 

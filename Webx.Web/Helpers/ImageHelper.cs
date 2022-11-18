@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System.IO;
-using System;
-using System.Threading.Tasks;
-using Webx.Web.Data.Entities;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using AspNetCoreHero.ToastNotification.Abstractions;
-using Webx.Web.Data.Repositories;
-using Webx.Web.Data;
+using System;
+using System.IO;
+using System.Threading.Tasks;
+
+
+
 
 namespace Webx.Web.Helpers
 {

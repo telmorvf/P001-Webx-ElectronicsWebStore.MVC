@@ -237,16 +237,16 @@
                             <ul class="nav nav-treeview">
 
                                 <li class="nav-item">
-                                    <a asp-area="" asp-action="ViewAll" asp-controller="Products" class="nav-link">
+                                    <a asp-area="" asp-action="ViewAll" asp-controller="Products" asp-route-isService="false" class="nav-link">
                                         <i class="far fa-eye nav-icon text-info"></i>
                                         <p>View All Products</p>
                                     </a>
                                 </li>
 
                                 <li class="nav-item">
-                                    <a asp-area="" asp-action="Create" asp-controller="Products" class="nav-link">
+                                    <a asp-area="" asp-action="ViewAll" asp-controller="Products" asp-route-isService="true" class="nav-link">
                                         <i class="fas fa-plus-circle nav-icon text-info"></i>
-                                        <p>Add Product</p>
+                                        <p>View All Services</p>
                                     </a>
                                 </li>
 
