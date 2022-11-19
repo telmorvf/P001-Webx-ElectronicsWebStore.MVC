@@ -206,9 +206,6 @@ namespace Webx.Web.Helpers
                 Price = model.Price,
                 Description = model.Description,
                 IsService = model.IsService,
-                
-                
-
                 CategoryId = Convert.ToInt32(model.CategoryId),
                 BrandId = Convert.ToInt32(model.BrandId),
             };

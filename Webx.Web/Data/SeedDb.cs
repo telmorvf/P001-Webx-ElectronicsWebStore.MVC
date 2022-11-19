@@ -334,6 +334,8 @@ namespace Webx.Web.Data
                         IsService = false,
                         Images = productImages
                     });
+
+                    
                 }
 
                 await _context.SaveChangesAsync();

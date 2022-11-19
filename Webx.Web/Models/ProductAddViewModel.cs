@@ -56,7 +56,12 @@ namespace Webx.Web.Models
 
 
         [Display(Name = "Picture File")]
-        public IFormFile PictureFile { get; set; }
+        public FormFile PictureFile { get; set; }
+
+
+        [Display(Name = "Uload Files")]
+        public IList<IFormFile> UploadFiles { get; set; }
+
 
         public IEnumerable<ProductImages> Images { get; set; }
         public Images ImagesId { get; set; }

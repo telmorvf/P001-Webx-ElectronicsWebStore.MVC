@@ -2,22 +2,19 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+//using Syncfusion.EJ2.Spreadsheet;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Webx.Web.Data;
 using Webx.Web.Data.Entities;
 using Webx.Web.Data.Repositories;
 using Webx.Web.Helpers;
 using Webx.Web.Models;
-using Microsoft.AspNetCore.Http;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
-using System.IO;
-
-
-
 
 namespace Webx.Web.Controllers
 {
@@ -113,18 +110,18 @@ namespace Webx.Web.Controllers
         {
             IEnumerable<Product> products;
 
-            if (isService==true)
+            if (isService == true)
             {
                 products = await _productRepository.GetServiceAllAsync();
                 ViewBag.IsService = true;
-                
+
 
             }
             else
             {
                 products = await _productRepository.GetProductAllAsync();
                 ViewBag.IsService = false;
-                
+
 
             }
 
@@ -132,14 +129,11 @@ namespace Webx.Web.Controllers
             ViewBag.Type = typeof(Product);
 
             var stores = _dataContext.Stores.ToListAsync();
-            ViewBag.FilterStore = stores;   
+            ViewBag.FilterStore = stores;
 
 
             return View(products);
         }
-
-
-
         [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
@@ -147,8 +141,8 @@ namespace Webx.Web.Controllers
 
             model.Categories = _productRepository.GetCategoriesCombo();
             model.Brands = _productRepository.GetBrandsCombo();
-            return View(model);
 
+            return View(model);
         }
 
         [HttpPost]
@@ -162,7 +156,8 @@ namespace Webx.Web.Controllers
                 model.Brands = _productRepository.GetBrandsCombo();
                 return View(model);
             }
-            else{
+            else
+            {
                 var product = _productRepository.GetProductByNameAsync(model.Name);
                 if (product.Result != null)
                 {
@@ -177,39 +172,97 @@ namespace Webx.Web.Controllers
                     try
                     {
                         // TODO: Pictures
-                        if (model.PictureFile != null && model.PictureFile.Length > 0)
+                        //List<ProductImages> ids = new List<ProductImages>();
+                        //foreach (var picture in model.PictureFile)
+                        //{
+                        //    ids.Add(new ProductImages
+                        //    {
+                        //        ImageId = Guid.Parse(picture.Name),
+                        //    });
+                        //}
+
+                        // CREATE
+
+                        List<ProductImages> productImages = new List<ProductImages>();
+                        Guid imageId = Guid.Empty;
+
+                        if (model.UploadFiles != null && model.UploadFiles.Count > 0)
                         {
-                            
-                            
-                            Guid imageId = Guid.Empty;
-
-                            using var image = Image.Load(model.PictureFile.OpenReadStream());
-                            image.Mutate(img => img.Resize(512, 0));
-
-                            using (MemoryStream m = new MemoryStream())
+                            foreach (var file in model.UploadFiles)
                             {
-                                image.SaveAsJpeg(m);
-                                byte[] imageBytes = m.ToArray();
-                                imageId = await _blobHelper.UploadBlobAsync(imageBytes, "products");
+                                if (file.Length > 0)
+                                {
+                                    using var image = Image.Load(file.OpenReadStream());
+                                    image.Mutate(img => img.Resize(512, 0));
+
+                                    using (MemoryStream m = new MemoryStream())
+                                    {
+                                        image.SaveAsJpeg(m);
+                                        byte[] imageBytes = m.ToArray();
+                                        imageId = await _blobHelper.UploadBlobAsync(imageBytes, "products");
+                                    }
+
+                                    productImages.Add(new ProductImages
+                                    {
+                                        ImageId = imageId
+                                    });
+                                }
                             }
-
-                            //product.ImageId = imageId;
-                            //model.ImageId = imageId;
-
-
-                            // Filipe: Convert image bit array and upload to Azure
-                            //imageId = await _imageHelper.UploadImageAsync(model.PictureFile, model.ImagesId, "products");
-                            //model.ImageFirst = imageId;
                         }
-                        Product newProduct = _converterHelper.ProductAddFromViewModel(model, true);
 
-                        // Create the product
-                        var minQuantity = model.MinimumQuantity;
-                        var recQuantity = model.ReceivedQuantity;
+
+                        //Guid imageId = Guid.Empty;
+                        //if (model.PictureFile != null && model.PictureFile.Length > 0)
+                        //{
+                        //using var image = Image.Load(model.PictureFile.OpenReadStream());
+                        //image.Mutate(img => img.Resize(512, 0));
+
+                        //using (MemoryStream m = new MemoryStream())
+                        //{
+                        //    //image.SaveAsJpeg(m);
+                        //    byte[] imageBytes = m.ToArray();
+                        //    imageId = await _blobHelper.UploadBlobAsync(imageBytes, "products");
+                        //}
+
+
+                        //Guarda lista de imagens na tabela
+
+                        //productImages.Add(new ProductImages
+                        //{
+                        //    ImageId = imageId
+                        //});
+
+                        //product.ImageId = imageId;
+                        //model.ImageId = imageId;
+
+
+                        // Filipe: Convert image bit array and upload to Azure
+                        //imageId = await _imageHelper.UploadImageAsync(model.PictureFile, model.ImagesId, "products");
+                        //model.ImageFirst = imageId;
+                        //}
+
+
+                        //TODO Passar a Lista de Imagens
+                        //newProduct = _converterHelper.ProductAddFromViewModel(model, true);
+                        Product newProduct = new Product
+                        {
+                            Id = 0,
+                            Name = model.Name,
+                            Price = model.Price,
+                            Description = model.Description,
+                            IsService = model.IsService,
+                            CategoryId = Convert.ToInt32(model.CategoryId),
+                            BrandId = Convert.ToInt32(model.BrandId),
+                            Images = productImages
+                        };
+                        //await _dataContext.SaveChangesAsync();
                         await _productRepository.CreateAsync(newProduct);
 
 
                         // Stores & Stock - Start: Creat the association product to the store - Stocks Table                        
+                        var minQuantity = model.MinimumQuantity;
+                        var recQuantity = model.ReceivedQuantity;
+
                         IEnumerable<Store> storeAll = await _storeRepository.GetAllStoresAsync();
                         foreach (var store in storeAll)
                         {
@@ -348,24 +401,67 @@ namespace Webx.Web.Controllers
 
                 try
                 {
+                    // UPDATE
+
+                    List<ProductImages> productImages = new List<ProductImages>();
+                    product.Id = model.Id;
+
+                    foreach (var file in product.Images)
+                    {
+                        productImages.Add(new ProductImages
+                        {
+                            //Id = file.Id,
+                            ImageId = file.ImageId,
+                        });
+                    }
+
+                    Guid imageId = Guid.Empty;
+                    if (model.UploadFiles != null && model.UploadFiles.Count > 0)
+                    {
+                        foreach (var file in model.UploadFiles)
+                        {
+                            if (file.Length > 0)
+                            {
+                                using var image = Image.Load(file.OpenReadStream());
+                                image.Mutate(img => img.Resize(512, 0));
+
+                                using (MemoryStream m = new MemoryStream())
+                                {
+                                    image.SaveAsJpeg(m);
+                                    byte[] imageBytes = m.ToArray();
+                                    imageId = await _blobHelper.UploadBlobAsync(imageBytes, "products");
+                                }
+
+                                productImages.Add(new ProductImages
+                                {
+                                    ImageId = imageId,
+                                });
+                            }
+                        }
+                    }
+
                     //converterHelper
                     //var product = _converterHelper.ProductFromViewModel(model, false);
-                    product.Id = model.Id;
+                    product.Id =   model.Id;
+
+                    //product.Images = Append(product.Images);
+                    product.Images = productImages;
+                    
                     product.Name = model.Name;
                     product.Price = model.Price;
                     product.Description = model.Description;
                     product.IsService = model.IsService;
                     product.CategoryId = Convert.ToInt32(model.CategoryId);
                     product.BrandId = Convert.ToInt32(model.BrandId);
-
-
+                    
+                    
                     _dataContext.Products.Update(product);
                     await _dataContext.SaveChangesAsync();
-                    
+
                     //converterHelper
                     model = _converterHelper.ProductToViewModel(product);
 
-                    _toastNotification.Success("Brand changes saved successfully!!!");
+                    _toastNotification.Success("Product changes saved successfully!!!");
                 }
                 catch (Exception ex)
                 {
@@ -385,7 +481,6 @@ namespace Webx.Web.Controllers
 
             return View(model);
         }
-
 
 
         [Authorize(Roles = "Admin")]
@@ -456,7 +551,7 @@ namespace Webx.Web.Controllers
                     {
                         _toastNotification.Error($"There was a problem updating the service, try again later!");
                     }
-                    
+
                     model.Categories = _productRepository.GetCategoriesCombo();
                     model.Brands = _productRepository.GetBrandsCombo();
                     return View(model);

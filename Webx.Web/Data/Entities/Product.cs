@@ -31,6 +31,7 @@ namespace Webx.Web.Data.Entities
 
         public IEnumerable<ProductImages> Images { get; set; }
 
+
         [Required]
         [Display(Name = "Is Service?")]
         public bool IsService { get; set; }

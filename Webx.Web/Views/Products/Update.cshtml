@@ -156,8 +156,9 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-@*                            <label asp-for="PictureFile" class="control-label font-weight-bold"></label>
-                            <ejs-uploader id="PictureFile" autoUpload="false"></ejs-uploader>*@
+                            <label asp-for="UploadFiles" class="control-label font-weight-bold"></label>
+                            <span id="drop"> File maximum size 5MB <br /> File type allowed: .jpg, .png </span>
+                            <ejs-uploader id="UploadFiles" allowedExtensions=".jpeg, .jpg, .png" autoUpload="false" maxFileSize="5120000"></ejs-uploader>
                         </div>
                     </div>
                     <div class="col-md-6">

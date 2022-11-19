@@ -232,6 +232,9 @@ namespace Webx.Web.Data.Repositories
 
             return productAll;
         }
+
+
+
         public async Task<Product> GetServiceByIdAsync(int id)
         {
             var product =
