@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Asn1.Ocsp;
+using PayPalCheckoutSdk.Orders;
 using Syncfusion.EJ2.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -182,7 +185,8 @@ namespace Webx.Web.Data.Repositories
         public async Task<ShopViewModel> GetInitialShopViewModelAsync()
         {
             var cookie = _httpContext.HttpContext.Request.Cookies["Cart"];
-            List<CartViewModel> cart = new List<CartViewModel>();            
+            List<CartViewModel> cart = new List<CartViewModel>();
+
 
             if (string.IsNullOrEmpty(cookie))
             {
@@ -198,8 +202,9 @@ namespace Webx.Web.Data.Repositories
                 var cookieItemList = JsonConvert.DeserializeObject<List<CookieItemModel>>(cookie);
                 foreach (var item in cookieItemList)
                 {
+                    var color = await GetStockColor(item.ProductId, item.StoreId);
                     var product = await GetFullProduct(item.ProductId);
-                    cart.Add(new CartViewModel { Product = product, Quantity = item.Quantity });                   
+                    cart.Add(new CartViewModel { Product = product, Quantity = item.Quantity,StoreId = item.StoreId,Color = color });                   
                 }
             }             
            
@@ -214,18 +219,54 @@ namespace Webx.Web.Data.Repositories
 
             var cookie = _httpContext.HttpContext.Request.Cookies["Cart"];
             var cookieItemList = JsonConvert.DeserializeObject<List<CookieItemModel>>(cookie);
-            if(cookieItemList != null && cookieItemList.Count() > 0)
+
+            if (cookieItemList != null && cookieItemList.Count() > 0)
             {
-                foreach (var item in cookieItemList)
-                {
+                foreach (var item in cookieItemList){
+                    var color = await GetStockColor(item.ProductId, item.StoreId);
                     var product = await GetFullProduct(item.ProductId);
-                    cart.Add(new CartViewModel { Product = product, Quantity = item.Quantity });                   
+                    cart.Add(new CartViewModel { Product = product, Quantity = item.Quantity, StoreId = item.StoreId,Color = color});                   
                 }
             }
             
             return cart;
 
         }
+
+        private async Task<string> GetStockColor(int productId, int storeId)
+        {
+            var product = await _context.Products.Where(p => p.Id == productId).FirstOrDefaultAsync();
+            var color = "";
+
+            if (product.IsService)
+            {
+                color = "Green";
+                return color;
+            }
+            else
+            {
+                var stock = await _context.Stocks.Where(s => s.Product.Id == productId && s.Store.Id == storeId).FirstOrDefaultAsync();
+                var productTotal = stock.Quantity;
+
+                if (productTotal < 10)
+                {
+                    color = "Red";
+                }
+
+                if (productTotal >= 10 && productTotal <= 25)
+                {
+                    color = "#ffb703";
+                }
+
+                if (productTotal > 25)
+                {
+                    color = "Green";
+                }
+
+                return color;
+            }
+        }
+
 
         public bool CheckCookieConsentStatus()
         {
@@ -256,7 +297,7 @@ namespace Webx.Web.Data.Repositories
                 List<CookieItemModel> cookieItemList = new List<CookieItemModel>();
                 foreach (var item in cart)
                 {
-                    cookieItemList.Add(new CookieItemModel { ProductId = item.Product.Id, Quantity = item.Quantity });
+                    cookieItemList.Add(new CookieItemModel { ProductId = item.Product.Id, Quantity = item.Quantity, StoreId = item.StoreId });
                 }
 
                 var serializedCart = JsonConvert.SerializeObject(cookieItemList);

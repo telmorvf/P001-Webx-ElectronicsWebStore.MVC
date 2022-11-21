@@ -121,7 +121,7 @@ namespace Webx.Web.Helpers
         }
 
         public async Task<SignInResult> LoginAsync(LoginViewModel model)
-        {
+        {            
             return await _signInManager.PasswordSignInAsync(
                 model.UserName,
                 model.Password,
@@ -267,6 +267,25 @@ namespace Webx.Web.Helpers
         public async Task<IdentityResult> RemoveFromCurrentRoleAsync(User user,string currentRole)
         {
             return await _userManager.RemoveFromRoleAsync(user, currentRole);
+        }
+
+        public async Task<SignInResult> FirstLoginAsync(User user)
+        {
+
+            try
+            {
+                await _signInManager.SignInAsync(user, false);
+                return SignInResult.Success;
+            }
+            catch (System.Exception)
+            {
+                return SignInResult.Failed;
+            }          
+        }
+
+        public async Task<User> GetUserByEmailWithCheckoutTempsAsync(string email)
+        {
+            return await _userManager.Users.Include(u=> u.CheckoutTempData).Where(u => u.Email == email).FirstOrDefaultAsync();
         }
     }
 }

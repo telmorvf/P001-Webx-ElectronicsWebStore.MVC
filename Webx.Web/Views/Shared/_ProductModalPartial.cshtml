@@ -123,18 +123,52 @@
                                   <h4>product details</h4>
                                   <p>@Model.Product.Description</p>
                               </div>
-                              <div class="borderDashed">             
-                                 <div class="row" style="margin-top:5px;">
-                                         <div class="col-md-12">
-                                             <h6 style="font-weight:500">Category </h6>
-                                             <h6>@Model.Product.Category.Name</h6>
-                                         </div>                    
-                                 </div>
-                                 <div class="row" style="margin-top:5px;">
-                                      <div class="col-md-12">
-                                          <h6 style="font-weight:500">Brand </h6>
-                                          <h6>@Model.Product.Brand.Name</h6>
-                                      </div>                    
+                              <div class="borderDashed">
+                                  <div class="row">
+                                      <div class="col-md-6">
+                                            <div class="row" style="margin-top:5px;">
+                                                    <div class="col-md-12">
+                                                        <h6 style="font-weight:500">Category </h6>
+                                                        <h6>@Model.Product.Category.Name</h6>
+                                                    </div>                    
+                                            </div>
+                                            <div class="row" style="margin-top:5px;">
+                                                 <div class="col-md-12">
+                                                     <h6 style="font-weight:500">Brand </h6>
+                                                     <h6>@Model.Product.Brand.Name</h6>
+                                                 </div>                    
+                                            </div>
+                                      </div>    
+                                      <div class="col-md-6">
+                                            @foreach(var item in Model.Stocks)
+                                            {
+                                                if(item.Product.Id == Model.Product.Id)
+                                                {
+                                                     <div class="row" style="margin-top:5px;">
+                                                          <div class="col-md-10" style="text-align:end">
+                                                              <h6 style="font-weight:500">@item.Store.Name :</h6>                                                              
+                                                          </div>                                                          
+                                                          <div class="col-md-2">
+                                                             @if(item.Quantity < 10)
+                                                             {
+                                                               <h6><i class="fas fa-circle" style="color:red"></i></h6> 
+                                                             }
+
+                                                             @if(item.Quantity >=10 && item.Quantity <= 25)
+                                                             {
+                                                                <h6><i class="fas fa-circle" style="color:#ffb703"></i></h6>
+                                                             }
+
+                                                             @if(item.Quantity > 25)
+                                                             {
+                                                                <h6><i class="fas fa-circle" style="color:green"></i></h6>
+                                                             }                                                              
+                                                          </div>                                                          
+                                                     </div>                                                  
+
+                                                }
+                                            }
+                                      </div>
                                  </div>
                               </div>
                               <div class="product-btns">

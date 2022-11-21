@@ -53,6 +53,8 @@
             <div class="box">
                 <form method="post">
 
+                    <input type="hidden" asp-for="ReturnUrl" />
+
                     <div class="login-title">
                         <h2>Login</h2>
                     </div>
@@ -99,7 +101,7 @@
                  @if(loginProviders.Count() > 0)
                  {
                     
-                        <form asp-controller="Account" asp-action="ExternalLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" role="form">
+                        <form asp-controller="Account" asp-action="ExternalLogin" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post" role="form">
                             <div class="row gx-md-3 gy-3">
                                 <div class="col-md-6">
                                     
@@ -125,7 +127,7 @@
 
                 
 
-                <p>Not a member? <a asp-action="Register" asp-controller="Account" class="theme-color">Sign up now</a></p>
+                <p>Not a member? <a asp-action="Register" asp-controller="Account" asp-route-returnUrl="@ViewData["ReturnUrl"]" class="theme-color">Sign up now</a></p>
 
             </div>
         </div>

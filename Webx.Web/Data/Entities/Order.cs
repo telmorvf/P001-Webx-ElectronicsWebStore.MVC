@@ -9,6 +9,7 @@ namespace Webx.Web.Data.Entities
 
         [Required]
         public User Customer { get; set; }
+        
         [Required]
         public Store Store { get; set; }
 
@@ -23,5 +24,7 @@ namespace Webx.Web.Data.Entities
         public int TotalQuantity { get; set; }
 
         public decimal TotalPrice { get; set; }
+
+        public OrderStatus Status { get; set; }
     }
 }

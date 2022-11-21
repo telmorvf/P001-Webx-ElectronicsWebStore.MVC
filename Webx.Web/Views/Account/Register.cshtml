@@ -1,10 +1,51 @@
 ﻿@model Webx.Web.Models.RegisterViewModel
+@using Microsoft.AspNetCore.Identity
+@using Webx.Web.Data.Entities
+@inject SignInManager<User> signInManager
 
 @{
     Layout = "~/Views/Shared/_LoginLayout.cshtml";
     ViewData["Title"] = "Register";
 }
 
+<style>
+    .SocialMediafacebook{
+            background-color: #43609c;
+            padding: 15px calc(10px + (25 - 10) * ((100vw - 320px) / (1920 - 320)));
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgb(199 199 197 / 60%);
+            align-items: center;
+            width: 100%;
+            font-family: Rubik, sans-serif;
+            font-weight:400;
+            font-size:18px;
+            line-height:1.2;
+            color:#fff;
+    }
+
+    .SocialMediafacebook:hover{
+        color:#fff;
+    }
+
+    .socialMediaGoogle{
+            padding: 15px calc(10px + (25 - 10) * ((100vw - 320px) / (1920 - 320)));
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgb(199 199 197 / 60%);
+            align-items: center;
+            width: 100%;
+            font-family: Rubik, sans-serif;
+            font-weight:400;
+            color: #000;
+            line-height:1.2;
+            font-size:18px;
+    }
+
+    .logoRedeSocial{
+        margin-right: 20px;
+        width: calc(8% + (18 - 8) * ((100vw - 320px) / (1920 - 320)));
+    }
+
+</style>
 <!-- Sign Up Section Start -->
   
     <div class="login-section">
@@ -15,7 +56,9 @@
                             <div class="login-title">
                                 <h2>Register</h2>
                             </div>
-                            <form method="post">                                      
+                            <form method="post"> 
+
+                                      <input type="hidden" asp-for="ReturnUrl" />
 
                                       <div class="input">
                                           <label asp-for="FirstName" style="line-height:0px"></label>
@@ -81,32 +124,38 @@
                                 <span>Or sign up with</span>
                             </p>
 
-                            <div class="row gx-md-3 gy-3" style="margin-top:30px">
-                                <div class="col-md-1"></div>
-                                <div class="col-md-10">
-                                    <a href="www.facebook.html">
-                                        <div class="social-media fb-media">
-                                            <img src="~/assets/images/inner-page/facebook.png" class="img-fluid blur-up lazyload"
-                                                alt="">
-                                            <h6>Facebook</h6>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-md-1"></div>
-                            </div>
-                            <div class="row gx-md-3 gy-3" style="margin-top:30px">
-                                <div class="col-md-1"></div>
-                                <div class="col-md-10">
-                                    <a href="www.gmail.html">
-                                        <div class="social-media google-media">
-                                            <img src="~/assets/images/inner-page/google.png" class="img-fluid blur-up lazyload"
-                                                alt="">
-                                            <h6>Google</h6>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-md-1"></div>
-                            </div>
+                             @{
+                                 var schemes = await signInManager.GetExternalAuthenticationSchemesAsync();
+                                 var loginProviders = schemes.ToList();
+                             }
+                             @if (loginProviders.Count() > 0)
+                             {
+                                 <form asp-controller="Account" asp-action="ExternalLogin" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post" role="form">
+                                          <div class="row gx-md-3 gy-3" style="margin-top:30px">
+                                              <div class="col-md-1"></div>
+                                              <div class="col-md-10">
+                                                  <button type="submit" class="btn btn-lg SocialMediafacebook" name="provider" value="@loginProviders[0].Name"
+                                                         title="@loginProviders[0].Name"><img src="~/assets/images/inner-page/facebook.png" class="img-fluid blur-up lazyload logoRedeSocial" alt="">                                                
+                                                        @loginProviders[0].Name
+                                                  </button>  
+
+                                                  
+                                              </div>
+                                              <div class="col-md-1"></div>
+                                          </div>
+                                          <div class="row gx-md-3 gy-3" style="margin-top:30px">
+                                              <div class="col-md-1"></div>
+                                              <div class="col-md-10">
+                                                  
+                                                  <button type="submit" class="btn btn-lg socialMediaGoogle" name="provider" value="@loginProviders[1].Name"
+                                                    title="@loginProviders[1].Name"><img src="~/assets/images/inner-page/google.png" class="img-fluid blur-up lazyload logoRedeSocial"  alt="">                                                
+                                                    @loginProviders[1].Name
+                                                  </button>
+                                              </div>
+                                              <div class="col-md-1"></div>
+                                          </div>
+                                  </form>
+                             }
                             <p><a asp-action="Login" asp-controller="Account" class="theme-color">Already have an account?</a></p>
                         </div>
                     </div>

@@ -28,6 +28,10 @@ namespace Webx.Web.Data
 
         public DbSet<Appointment> Appointments { get; set; }
 
+        public DbSet<CheckoutTempData> CheckoutTemps { get; set; }
+
+        public DbSet<OrderStatus> OrderStatus { get; set; }
+
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {

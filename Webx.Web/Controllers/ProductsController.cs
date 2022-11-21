@@ -24,6 +24,8 @@ namespace Webx.Web.Controllers
         private readonly INotyfService _toastNotification;
         private readonly IConverterHelper _converterHelper;
         private readonly IUserHelper _userHelper;
+        private readonly IStockRepository _stockRepository;
+        private readonly IStoreRepository _storeRepository;
 
         public ProductsController(
             IProductRepository productRepository,
@@ -31,7 +33,9 @@ namespace Webx.Web.Controllers
             IBrandRepository brandRepository,
             INotyfService toastNotification,
             IConverterHelper converterHelper,
-            IUserHelper userHelper
+            IUserHelper userHelper,
+            IStockRepository stockRepository,
+            IStoreRepository storeRepository
             )
         {
             _productRepository = productRepository;
@@ -40,6 +44,8 @@ namespace Webx.Web.Controllers
             _toastNotification = toastNotification;
             _converterHelper = converterHelper;
             _userHelper = userHelper;
+            _stockRepository = stockRepository;
+            _storeRepository = storeRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -304,7 +310,8 @@ namespace Webx.Web.Controllers
                 ResultsPerPage = resultsPerPage,
                 NumberOfProductsFound = products.Count(),
                 Categories = await _categoryRepository.GetAllCategoriesAsync(),
-                Brands = await _brandRepository.GetAllBrandsAsync()
+                Brands = await _brandRepository.GetAllBrandsAsync(),
+                Stocks = await _stockRepository.GetAllStockWithStoresAsync(),
             };
 
             return PartialView("_ProductModalPartial",model);
@@ -328,6 +335,7 @@ namespace Webx.Web.Controllers
             var cartCookie = Request.Cookies["Cart"];
             var cookieItemList = JsonConvert.DeserializeObject<List<CookieItemModel>>(cartCookie);
             int isInCartIndex = CheckProductExists(id.Value, cookieItemList); // verifica se produto que cliente está a inserir no carrinho já existe no carrinho e devolve o index do mesmo no carrinho
+            int defaultStoreId = await _storeRepository.GetOnlineStoreIdAsync();
 
             //se resultado for -1 significa que produto ainda não existe no carrinho, se não for, incrementa-se a quantidade do produto na posição que está
             if (isInCartIndex != -1) //produto já existe no carrinho
@@ -335,8 +343,8 @@ namespace Webx.Web.Controllers
                 cookieItemList[isInCartIndex].Quantity++;
             }
             else
-            {
-                cookieItemList.Add(new CookieItemModel { ProductId = id.Value, Quantity = 1 });
+            {             
+                cookieItemList.Add(new CookieItemModel { ProductId = id.Value, Quantity = 1,StoreId = defaultStoreId});
             }
 
             var serializedCart = JsonConvert.SerializeObject(cookieItemList);
@@ -345,10 +353,10 @@ namespace Webx.Web.Controllers
             options.Secure = true;
             Response.Cookies.Append("Cart", serializedCart, options);
             var cart = await _converterHelper.ToCartViewModelAsync(cookieItemList);
-
+            
             var model = new ShopViewModel
             {
-                Cart = cart,
+                Cart = cart,                 
             };
 
             return PartialView("_CartDropDownPartial", model);
