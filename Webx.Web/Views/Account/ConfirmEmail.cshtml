@@ -25,9 +25,11 @@
         <div class="materialContainer">
             <div class="box">
 
-                @if (string.IsNullOrEmpty(ViewBag.Success))
+                @if (string.IsNullOrEmpty(ViewBag.Success) || string.IsNullOrEmpty(ViewBag.Failed))
                 {
                     <form method="post">
+
+                        <input type="hidden" asp-for="ReturnUrl" />
 
                         <div class="login-title">
                             <h4>Your email as been confirmed!<br /><br /> To complete the proccess please add a password.</h4>
@@ -59,7 +61,7 @@
                 else
                 {
                       <div class="login-title">
-                            <h4>Thank you for creating your account!<br /><br />@ViewBag.Success</h4>
+                            <h4>Thank you for creating your account!<br /><br />@ViewBag.Success @ViewBag.Failed</h4>
                       </div>
                       <div class="btn btnPersonalizado">
                             <a  asp-action="Login" asp-controller="Account" style="color: #fff;">

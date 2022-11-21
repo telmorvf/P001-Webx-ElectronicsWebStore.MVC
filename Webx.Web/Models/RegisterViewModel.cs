@@ -32,5 +32,7 @@ namespace Webx.Web.Models
         [MinLength(9, ErrorMessage = "The {0} field must have {1} characters.")]
         [Display(Name = "Tax Identification number (NIF)")]
         public string NIF { get; set; }
+
+        public string ReturnUrl { get; set; }
     }
 }

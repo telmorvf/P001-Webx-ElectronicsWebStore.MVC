@@ -6,7 +6,6 @@
 }
 
 
-
 <div class="row">               
 
                 <div class="col-sm-12 table-responsive mt-4">
@@ -19,8 +18,10 @@
                                     <th scope="col">product name</th>
                                     <th scope="col">price</th>
                                     <th scope="col">quantity</th>
+                                    <th scope="col">Store</th>
+                                    <th scope="col">Stock</th>
                                     <th scope="col">action</th>
-                                    <th scope="col">total</th>
+                                    <th scope="col">total</th>                                    
                                 </tr>
                             </thead>
                         
@@ -70,15 +71,21 @@
                                         <td>
                                             <div class="qty-box" style="display:flex;justify-content:center;align-items:center">
                                                 <div class="input-group">
-                                                    <a style="cursor:pointer" onclick="updateCart(@item.Product.Id,'-1')">
+                                                    <a style="cursor:pointer" onclick="updateCart(@item.Product.Id,'-1',@item.Quantity)">
                                                         <span >
                                                             <i style="padding:10px;"class="fas fa-minus"></i>
                                                         </span>
                                                     </a>
                                                     <input style="display:inline-flex" type="number" name="quantity" class="form-control input-number" value="@item.Quantity" readonly>                                               
-                                                    <a style="cursor:pointer" onclick="updateCart(@item.Product.Id,'1')"><span style="padding:10px;"><i class="fas fa-plus"></i></span></a>
+                                                    <a style="cursor:pointer" onclick="updateCart(@item.Product.Id,'1',@item.Quantity)"><span style="padding:10px;"><i class="fas fa-plus"></i></span></a>
                                                 </div>
                                             </div>
+                                        </td>
+                                        <td>
+                                            <select asp-for="@item.StoreId" onchange="checkProductStock('@item.Product.Id',this.options[this.selectedIndex].value)" asp-items="Model.Stores"></select>
+                                        </td>
+                                        <td>
+                                            <h6><i class="fas fa-circle" style="color:@item.Color"></i></h6> 
                                         </td>
                                         <td>
                                             <a style="cursor:pointer" onclick="RemoveProduct(@item.Product.Id)">
@@ -88,6 +95,7 @@
                                         <td>
                                             <h2 class="td-color">@((item.Product.Price * item.Quantity).ToString("C2"))</h2>
                                         </td>
+                                      
                                     </tr>
                                 </tbody>
                             }
@@ -142,7 +150,7 @@
                                     {
                                         <div class="col-lg-4 col-sm-6 ">
                                             <div class="checkout-button">
-                                                <a asp-action="Index" asp-controller="CheckOut" class="btn btn-solid-default btn fw-bold">
+                                                <a asp-action="Index" asp-controller="Checkout" class="btn btn-solid-default btn fw-bold">
                                                     Check Out <i class="fas fa-arrow-right ms-1"></i></a>
                                             </div>
                                         </div>
@@ -158,7 +166,7 @@
                                                             <h6>Total With Discount <span><del>To do?</del></span></h6>
                                                         </div>
                                                         <div class="bottom-details">
-                                                            <a asp-action="Index" asp-controller="CheckOut">Process Checkout</a>
+                                                            <a asp-action="Index" asp-controller="Checkout">Process Checkout</a>
                                                         </div>
                                                     </div>
                                                 </div>

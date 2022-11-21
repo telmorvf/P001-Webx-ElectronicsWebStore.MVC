@@ -220,6 +220,36 @@ namespace Webx.Web.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("Webx.Web.Data.Entities.CheckoutTempData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NIF")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CheckoutTemps");
+                });
+
             modelBuilder.Entity("Webx.Web.Data.Entities.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -242,6 +272,9 @@ namespace Webx.Web.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("StatusId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("StoreId")
                         .HasColumnType("int");
 
@@ -256,6 +289,8 @@ namespace Webx.Web.Migrations
                     b.HasIndex("AppointmentId");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("StatusId");
 
                     b.HasIndex("StoreId");
 
@@ -316,6 +351,25 @@ namespace Webx.Web.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("OrderDetailTemps");
+                });
+
+            modelBuilder.Entity("Webx.Web.Data.Entities.OrderStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OrderStatus");
                 });
 
             modelBuilder.Entity("Webx.Web.Data.Entities.Product", b =>
@@ -464,6 +518,9 @@ namespace Webx.Web.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int?>("CheckoutTempDataId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -524,6 +581,8 @@ namespace Webx.Web.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CheckoutTempDataId");
 
                     b.HasIndex("NIF")
                         .IsUnique()
@@ -610,6 +669,10 @@ namespace Webx.Web.Migrations
                         .WithMany()
                         .HasForeignKey("CustomerId");
 
+                    b.HasOne("Webx.Web.Data.Entities.OrderStatus", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId");
+
                     b.HasOne("Webx.Web.Data.Entities.Store", "Store")
                         .WithMany()
                         .HasForeignKey("StoreId");
@@ -617,6 +680,8 @@ namespace Webx.Web.Migrations
                     b.Navigation("Appointment");
 
                     b.Navigation("Customer");
+
+                    b.Navigation("Status");
 
                     b.Navigation("Store");
                 });
@@ -686,6 +751,15 @@ namespace Webx.Web.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("Store");
+                });
+
+            modelBuilder.Entity("Webx.Web.Data.Entities.User", b =>
+                {
+                    b.HasOne("Webx.Web.Data.Entities.CheckoutTempData", "CheckoutTempData")
+                        .WithMany()
+                        .HasForeignKey("CheckoutTempDataId");
+
+                    b.Navigation("CheckoutTempData");
                 });
 
             modelBuilder.Entity("Webx.Web.Data.Entities.Product", b =>

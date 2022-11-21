@@ -11,11 +11,15 @@ namespace Webx.Web.Helpers
     {
         private readonly IUserHelper _userHelper;
         private readonly IProductRepository _productRepository;
+        private readonly IStoreRepository _storeRepository;
+        private readonly IStockRepository _stockRepository;
 
-        public ConverterHelper(IUserHelper userHelper,IProductRepository productRepository)
+        public ConverterHelper(IUserHelper userHelper,IProductRepository productRepository,IStoreRepository storeRepository,IStockRepository stockRepository)
         {
             _userHelper = userHelper;
             _productRepository = productRepository;
+            _storeRepository = storeRepository;
+            _stockRepository = stockRepository;
         }
      
         public async Task<EditEmployeeViewModel> ToEditEmployeeViewModelAsync(User user)
@@ -142,12 +146,16 @@ namespace Webx.Web.Helpers
         {
             List<CartViewModel> cart = new List<CartViewModel>();
 
-            foreach(var item in cookieItemList)
+
+            foreach (var item in cookieItemList)
             {
+                var color = await _stockRepository.GetProductStockColorFromStoreIdAsync(item.ProductId, item.StoreId);
                 cart.Add(new CartViewModel
                 {
                     Product = await _productRepository.GetFullProduct(item.ProductId),
                     Quantity = item.Quantity,
+                    StoreId = item.StoreId,
+                    Color = color
                 });
             }
 

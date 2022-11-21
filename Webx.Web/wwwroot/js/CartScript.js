@@ -1,66 +1,117 @@
 ﻿productId = 0;
 
-function updateCart(id, value) {
 
+
+function checkProductStock(productId, storeId) {
     debugger;
 
     $.ajax({
-        url: '/Cart/UpdateCart/',
+        url: '/Cart/ChangeStore/',
         type: 'GET',
         contentType: 'application/html',
         dataType: "html",
-        data: {id:id,quantity:value},
+        data: { id: productId , storeId : storeId},
         success: function (partial) {
-            debugger;
+            
             let content = $("#cartDetailsPartial").html(partial);
             eval(content);
+            
         },
         error: function (ex) {
             console.log("error");
         }
     })
+}
 
-    if (value === "1") {
+
+
+function updateCart(id, value,currentDesiredQuantity) {
+
+    debugger;
+        
         $.ajax({
-            url: '/Products/AddProduct/',
-            type: 'GET',
-            contentType: 'application/html',
-            dataType: "html",
-            data: { Id: id },
-            success: function (value) {
+            url: '/Cart/CheckStock/',
+            type: 'POST',            
+            dataType: "json",
+            data: { id: id, quantity: value,desiredQuantity:currentDesiredQuantity },
+            success: function (result) {
                 debugger;
+                console.log(result);
+                if (result.stock == false) {
+                    let dialog = document.getElementById("noStockDialog").ej2_instances[0];
+                    dialog.header = "No more stock available";
+                    dialog.content = "The product " + result.product + " has no stock available on " + result.store + ", please try to order from another store or come back later.";
+                    dialog.show();
+                    return;
+                }
+                else {
 
-                let content = $("#cartPartialDiv").html(value);
-                eval(content);
+                    $.ajax({
+                        url: '/Cart/UpdateCart/',
+                        type: 'GET',
+                        contentType: 'application/html',
+                        dataType: "html",
+                        data: { id: id, quantity: value },
+                        success: function (partial) {
+                            debugger;
+                            let content = $("#cartDetailsPartial").html(partial);
+
+                            eval(content);
+                        },
+                        error: function (ex) {
+                            console.log("error");
+                        }
+                    })
+
+                    if (value === "1") {
+                        $.ajax({
+                            url: '/Products/AddProduct/',
+                            type: 'GET',
+                            contentType: 'application/html',
+                            dataType: "html",
+                            data: { Id: id },
+                            success: function (value) {
+                                debugger;
+
+                                let content = $("#cartPartialDiv").html(value);
+                                eval(content);
+                            },
+                            error: function (ex) {
+                                debugger;
+
+                                console.log("error");
+                            }
+                        })
+                    }
+
+                    if (value === "-1") {
+
+                        $.ajax({
+                            url: '/Cart/RemoveProductFromDrowpDown/',
+                            type: 'GET',
+                            contentType: 'application/html',
+                            dataType: "html",
+                            data: { Id: id, quantity: value },
+                            success: function (value) {
+                                debugger;
+                                let content = $("#cartPartialDiv").html(value);
+                                eval(content);
+                            },
+                            error: function (ex) {
+                                debugger;
+
+                                console.log("error");
+                            }
+                        })
+                    }
+                }
+
             },
             error: function (ex) {
-                debugger;
-
                 console.log("error");
             }
         })
-    }
-
-    if (value === "-1") {
-
-        $.ajax({
-            url: '/Cart/RemoveProductFromDrowpDown/',
-            type: 'GET',
-            contentType: 'application/html',
-            dataType: "html",
-            data: { Id: id,quantity:value },
-            success: function (value) {
-                debugger;
-                let content = $("#cartPartialDiv").html(value);
-                eval(content);
-            },
-            error: function (ex) {
-                debugger;
-
-                console.log("error");
-            }
-        })
-    }
+      
         
 }
 
@@ -89,6 +140,11 @@ function RemoveProduct(id) {
 
 function onDeleteOverlayClick() {
     var dialog = document.getElementById("deleteDialog").ej2_instances[0];
+    dialog.hide();
+}
+
+function onNoStockOverlayClick() {
+    var dialog = document.getElementById("noStockDialog").ej2_instances[0];
     dialog.hide();
 }
 

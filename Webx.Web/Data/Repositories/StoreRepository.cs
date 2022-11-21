@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Syncfusion.EJ2.Linq;
 using Webx.Web.Data.Entities;
@@ -93,7 +94,22 @@ namespace Webx.Web.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public IEnumerable<SelectListItem> GetComboStores()
+        {
+            var list = _context.Stores.Select(s => new SelectListItem
+            {
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }).OrderBy(s => s.Text);
 
+            return list;
+        }
 
+        public async Task<int> GetOnlineStoreIdAsync()
+        {
+            var store = await _context.Stores.Where(s => s.Name.Contains("Online") && s.IsOnlineStore == true).FirstOrDefaultAsync();
+
+            return store.Id;
+        }
     }
 }

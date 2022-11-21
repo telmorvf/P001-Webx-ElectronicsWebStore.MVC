@@ -17,6 +17,7 @@ using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
 using Webx.Web.Data.Repositories;
 using System;
+using Webx.Web.Extensions;
 
 namespace Webx.Web
 {
@@ -45,6 +46,8 @@ namespace Webx.Web
                 cfg.Password.RequireNonAlphanumeric = false;
                 cfg.Password.RequiredLength = 6;
             }).AddDefaultTokenProviders().AddEntityFrameworkStores<DataContext>();
+
+            
 
             services.Configure<RequestLocalizationOptions>(options =>
             {
@@ -104,6 +107,9 @@ namespace Webx.Web
             services.AddScoped<IMailHelper, MailHelper>();
             services.AddScoped<IBlobHelper, BlobHelper>();
             services.AddScoped<IConverterHelper, ConverterHelper>();
+            services.AddScoped<IAPIServiceHelper, APIServiceHelper>();
+            services.AddScoped<ITemplateHelper, TemplateHelper>();
+            services.AddScoped<IPdfHelper, PdfHelper>();
 
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
@@ -131,7 +137,7 @@ namespace Webx.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
+            
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Mgo+DSMBPh8sVXJ0S0R+XE9HcFRDX3xKf0x/TGpQb19xflBPallYVBYiSV9jS3xTf0RgWH5dc3ZQRmNUUQ==;Mgo+DSMBMAY9C3t2VVhiQlFadVlJXGFWfVJpTGpQdk5xdV9DaVZUTWY/P1ZhSXxRdkxiWn5fc3dXQ2BZUEQ=");
             if (env.IsDevelopment())
             {
@@ -143,6 +149,9 @@ namespace Webx.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+
+           
 
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
@@ -161,6 +170,8 @@ namespace Webx.Web
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            app.PreparePuppeteerAsync(env).GetAwaiter().GetResult();            
 
             app.UseNotyf();
 

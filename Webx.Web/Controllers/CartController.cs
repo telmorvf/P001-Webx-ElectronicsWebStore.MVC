@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Webx.Web.Data.Entities;
 using Webx.Web.Data.Repositories;
@@ -20,12 +21,20 @@ namespace Webx.Web.Controllers
         private readonly IProductRepository _productRepository; 
         private readonly INotyfService _toastNotification;
         private readonly IUserHelper _userHelper;
+        private readonly IStockRepository _stockRepository;
+        private readonly IStoreRepository _storeRepository;
 
-        public CartController(IProductRepository productRepository, INotyfService toastNotification,IUserHelper userHelper)
+        public CartController(IProductRepository productRepository,
+            INotyfService toastNotification,
+            IUserHelper userHelper,
+            IStockRepository stockRepository,
+            IStoreRepository storeRepository)
         {
             _productRepository = productRepository;        
             _toastNotification = toastNotification;
             _userHelper = userHelper;
+            _stockRepository = stockRepository;
+            _storeRepository = storeRepository;
         }
 
       
@@ -39,6 +48,9 @@ namespace Webx.Web.Controllers
             }
 
             var model = await _productRepository.GetInitialShopViewModelAsync();
+            model.Stocks = await _stockRepository.GetAllStockWithStoresAsync();
+            model.Stores = _storeRepository.GetComboStores();
+
             return View(model);
         }
 
@@ -70,7 +82,10 @@ namespace Webx.Web.Controllers
             var response = _productRepository.UpdateCartCookie(cart);
             if (response.IsSuccess == true)
             {
-                var model = new ShopViewModel { Cart = cart };
+                var model = new ShopViewModel { 
+                    Cart = cart,
+                    Stores = _storeRepository.GetComboStores()
+                };
 
                 return PartialView("_CartPartialView", model);
             }
@@ -83,6 +98,66 @@ namespace Webx.Web.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> ChangeStore(int id, int storeId)
+        {
+            var product = await _productRepository.GetFullProduct(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            var cart = await _productRepository.GetCurrentCartAsync();
+
+            if (cart == null)
+            {
+                return NotFound();
+            }
+
+            var store = await _storeRepository.GetByIdAsync(storeId);
+
+            if(store == null)
+            {
+                return NotFound();
+            }
+
+          
+            foreach (var item in cart)
+            {
+                if (item.Product.Id == product.Id)
+                {
+                    item.StoreId = storeId;
+                    if (product.IsService)
+                    {
+                        item.Color = "Green";
+                    }
+                    else
+                    {
+                        var color = await _stockRepository.GetProductStockColorFromStoreIdAsync(product.Id, storeId);
+                        item.Color = color;
+                    }                    
+                }
+            }
+
+            var response = _productRepository.UpdateCartCookie(cart);
+            if (response.IsSuccess == true)
+            {
+                var model = new ShopViewModel
+                {
+                    Cart = cart,
+                    Stores = _storeRepository.GetComboStores()
+                };
+
+                return PartialView("_CartPartialView", model);
+            }
+            else
+            {
+                _toastNotification.Error($"There was an error updating the cart. {response.Message}");
+                return NotFound();
+            }
+        }
+
+
+            [HttpGet]
         public async Task<IActionResult> UpdateCart(int? id, string quantity)
         {
             var product = await _productRepository.GetFullProduct(id.Value);
@@ -91,6 +166,7 @@ namespace Webx.Web.Controllers
             {
                 return NotFound();
             }
+
             var cart = await _productRepository.GetCurrentCartAsync();
 
             if (cart == null)
@@ -127,13 +203,21 @@ namespace Webx.Web.Controllers
 
                 if (!productInCart && value == 1)
                 {
-                    cart.Add(new CartViewModel { Product = product, Quantity = 1 });
+                    cart.Add(new CartViewModel {
+                        Product = product,
+                        Quantity = 1,
+                        StoreId = await _storeRepository.GetOnlineStoreIdAsync(),
+                        //Color = await _stockRepository.GetProductStockColorFromStoreIdAsync(product.Id,StoreId)
+                    });
                 }
 
                 var response = _productRepository.UpdateCartCookie(cart);
                 if(response.IsSuccess == true)
                 {
-                    var model = new ShopViewModel { Cart = cart };
+                    var model = new ShopViewModel {
+                        Cart = cart,
+                        Stores = _storeRepository.GetComboStores()
+                    };
 
                     return PartialView("_CartPartialView", model);
                 }
@@ -217,7 +301,10 @@ namespace Webx.Web.Controllers
 
             if (response.IsSuccess)
             {
-                var model = new ShopViewModel { Cart = new List<CartViewModel>() };                
+                var model = new ShopViewModel {
+                    Cart = new List<CartViewModel>(),
+                    Stores = _storeRepository.GetComboStores()
+                };                
                 return PartialView("_CartPartialView", model);
             }
             else
@@ -239,6 +326,63 @@ namespace Webx.Web.Controllers
         {
             var product = await _productRepository.GetFullProduct(id);
             return Json(product);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> CheckStock(int id,int quantity,int desiredQuantity)
+        {
+            if(quantity == 1)
+            {
+                var product = await _productRepository.GetFullProduct(id);
+                var cart = await _productRepository.GetCurrentCartAsync();
+                bool isInStock = false;
+                var storeName = "";
+
+                foreach (var item in cart)
+                {
+                    if (item.Product.Id == product.Id)
+                    {
+                        if (product.IsService)
+                        {
+                            isInStock = true;
+                        }
+                        else
+                        {
+                            var stock = await _stockRepository.GetProductStockInStoreAsync(product.Id, item.StoreId);
+                            var store = await _storeRepository.GetAllStoreByIdAsync(item.StoreId);
+                            storeName = store.Name;
+                            if ((stock.Quantity - (desiredQuantity + 1)) > 0)
+                            {
+                                isInStock = true;
+                            }
+                            else
+                            {
+                                isInStock = false;
+                            }
+                        }                        
+                    }
+                }
+
+                var itemToJson = new
+                {
+                    stock = isInStock,
+                    product = product.Name,
+                    store = storeName
+                };
+
+                return Json(itemToJson);
+            }
+            else
+            {
+                var itemToJson = new
+                {
+                    stock = true,                 
+                };
+
+                return Json(itemToJson);
+            }           
+
+            
         }
 
 

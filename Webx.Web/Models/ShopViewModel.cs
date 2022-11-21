@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Webx.Web.Data.Entities;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Webx.Web.Models
 {
@@ -35,6 +36,13 @@ namespace Webx.Web.Models
 
         public ChangeUserViewModel UserViewModel { get; set; }
 
+        public CheckoutViewModel CheckoutViewModel { get; set; }
+
+        public List<Stock> Stocks { get; set; }
+
+        public IEnumerable<SelectListItem> Stores { get; set; }
+        
+        public List<InvoiceViewModel> Invoices { get; set; }
 
     }
 }
