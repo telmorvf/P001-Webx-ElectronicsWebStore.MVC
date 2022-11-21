@@ -1,0 +1,24 @@
+﻿@model Webx.Web.Models.ShopViewModel
+@using Syncfusion.EJ2.Schedule
+
+@{
+    ViewData["Title"] = "MakeAppointment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    List<ScheduleView> viewOption = new List<ScheduleView>()
+    {
+        new ScheduleView { Option = Syncfusion.EJ2.Schedule.View.Week },
+        new ScheduleView { Option = Syncfusion.EJ2.Schedule.View.TimelineDay }
+    };
+
+
+}
+
+<div class="container">
+    <div style="margin-top:50px">
+        <ejs-schedule id="schedule" height="600" views="viewOption"></ejs-schedule>
+    </div>
+    
+</div>
+
+
