@@ -20,5 +20,6 @@ namespace Webx.Web.Helpers
 
         EditCustomerViewModel ToEditCustomerViewModel(User user);
 
+        OrderViewModel ToOrderViewModel(Order order);
     }
 }

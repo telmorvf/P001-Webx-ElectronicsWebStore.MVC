@@ -28,6 +28,7 @@ namespace Webx.Web.Data
 
         public DbSet<Appointment> Appointments { get; set; }
 
+        public DbSet<Status> Statuses { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {

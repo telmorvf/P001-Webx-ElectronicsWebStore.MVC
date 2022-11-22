@@ -1,4 +1,6 @@
-﻿namespace Webx.Web.Data.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Webx.Web.Data.Entities
 {
     public class OrderDetail : IEntity
     {
@@ -7,9 +9,9 @@
         public Order Order { get; set; }
 
         public Product Product { get; set; }
-
         public int Quantity { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:C2}")]
         public decimal Price { get; set; }
 
     }

@@ -1,0 +1,243 @@
+﻿@using Webx.Web.Models;
+@model Webx.Web.Models.OrderViewModel;
+
+@{
+    ViewData["Title"] = "View Order Details";
+    ViewData["Breadcrumb"] = null;
+    Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
+
+    var yesButton = new ButtonModel() { content = "Yes", cssClass = "e-flat" };
+    var noButton = new ButtonModel() { content = "No", cssClass = "e-flat" };
+ }    
+
+  <ejs-dialog id='statusDialog' visible="false" isModal="true" width="300px" showCloseIcon="true" allowDragging="true" overlayClick="onOverlayClick" target="#container" 
+     header="Close Order">
+            <e-dialog-animationsettings effect="Fade" duration="400" delay="0"></e-dialog-animationsettings>
+            
+            <e-dialog-buttons>              
+                <e-dialog-dialogbutton buttonModel="@yesButton" click="ondlgYesClick"></e-dialog-dialogbutton>
+                <e-dialog-dialogbutton buttonModel="@noButton" click="ondlgNoClick"></e-dialog-dialogbutton>
+            </e-dialog-buttons>
+     </ejs-dialog>
+
+<style>
+    body{
+        background:#eee;
+}
+    .card {
+        box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
+}
+    .card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 0 solid rgba(0,0,0,.125);
+        border-radius: 1rem;
+}
+    .text-reset {
+        --bs-text-opacity: 1;
+        color: inherit!important;
+}
+    a {
+        color: #5465ff;
+        text-decoration: none;
+    }
+
+     #submit_btn{
+       border: solid 1px;
+       border-color: #46BAED;
+       color:#fff;
+       background-color:#46BAED;
+       width:100%;
+       transition:ease-in-out 0.3s;
+   }
+
+   #submit_btn:hover{
+       background-color:#edebe9;
+       color:#000;
+   }  
+
+   #return{
+       border: solid 1px;
+       border-color: #46BAED;
+       color:#fff;
+       background-color:#46BAED;
+       width:100%;
+       transition:ease-in-out 0.3s;
+   }
+
+   #return:hover{
+       background-color:#edebe9;
+       color:#000;
+   }
+
+    #span {
+    position: absolute;
+    bottom: 0;
+}
+
+</style>
+
+<div id="container" class="container">
+     <div class="d-flex justify-content-between align-items-center py-3">
+          <h1 class="h2 mb-0"> Order #@Html.DisplayFor(model => model.Id)</h1>
+     </div>
+     <form id="myForm" enctype="multipart/form-data" asp-action="Update">
+         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                   <input type="hidden" asp-for="Id"/>
+                   <input type="hidden" asp-for="Customer"/>                         
+                   <input type="hidden" asp-for="Status" />
+                   <input type="hidden" asp-for="Appointment" />
+                   <input type="hidden" asp-for="OrderDetails" />
+                   <input type="hidden" asp-for="DeliveryDate" />
+                   <input type="hidden" asp-for="InvoiceId" />
+                   <input type="hidden" asp-for="OrderDate" />
+                   <input type="hidden" asp-for="Store" />
+         <div class="row">
+             <div class="col-lg-8">
+                 <div class="card mb-5">
+                     <div class="card-body">
+                         <table class="table" display="flex">
+                             <thead>
+                                 <tr>
+                                     <th>@Html.DisplayNameFor(model => model.OrderDetails.FirstOrDefault().Product)</th>
+                                     <th>@Html.DisplayNameFor(model => model.OrderDetails.FirstOrDefault().Quantity)</th>
+                                     <th width="100px">@Html.DisplayNameFor(model => model.OrderDetails.FirstOrDefault().Product.Price)</th>
+                                 </tr>
+                             </thead>
+                             <tbody>
+                                @foreach(var item in Model.OrderDetails)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(model => item.Product.Name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(model => item.Quantity)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(model => item.Product.Price)
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td class="font-weight-bold" colspan="2">Total</td>
+                                    <td>@Html.DisplayFor(model => model.TotalPrice)</td>
+                                </tr>
+                            </tfoot>
+                         </table>
+                     </div>
+                 </div>
+             </div>
+             <div class="col-lg-4">
+                 <!-- Customer information -->
+                 <div class="card mb-4">
+                     <div class="card-body">
+                         <h5><strong>Customer Information</strong></h5>
+                         <hr />
+                         <div class="row">
+                             <div class="font-weight-bold col-3">Name:</div>
+                             <div class="col-9">@Html.DisplayFor(model => model.Customer.FullName)</div>
+                         </div>
+                         <div class="row">
+                             <div class="font-weight-bold col-3">NIF: </div>
+                             <div class="col-9">@Html.DisplayFor(model => model.Customer.NIF)</div>
+                         </div>
+                         <div class="row">
+                             <div class="font-weight-bold col-3">Email: </div>
+                              <div class="col-9">@Html.DisplayFor(model => model.Customer.Email)</div>
+                         </div>
+                         <div class="row">
+                             <div class="font-weight-bold col-3">Phone Number: </div>
+                             <div class="col-9"><span id="span">@Html.DisplayFor(model => model.Customer.PhoneNumber)</span></div>
+                         </div>
+                         <div class="row">
+                             <div class="font-weight-bold col-3">Adress: </div>
+                             <div>@Html.DisplayFor(model => model.Customer.Address)</div>
+                         </div>
+                     </div>
+                 </div>
+                 <!-- Order Information -->
+                 <div class="card mb-4">
+                     <div class="card-body">
+                         <h5><strong>Order Information</strong></h5>
+                         <hr>
+                         <div class="row">
+                             <div class="font-weight-bold col-3">Created: </div>
+                             <div class="col-9">@Html.DisplayFor(model => model.OrderDate)</div>
+                         </div>
+                         <div class="row">
+                             <div class="font-weight-bold col-3">Store: </div>
+                             <div class="col-9">@Html.DisplayFor(model => model.Store.Name)</div>
+                         </div>
+                         <div class="row">
+                             <div class="font-weight-bold col-3">Status: </div>
+                             <div class="col-9">
+                                @if(Model.Status.Name=="Order Closed")
+                                {
+                                    @Html.DisplayFor(model => model.Status.Name)
+                                }
+                                else
+                                {
+                                    <select id="statusSelect" asp-for="StatusId" asp-items="Model.Statuses" id="statusSelect" class="form-control"></select>
+                                    <span asp-validation-for="StatusId" class="text-danger"></span>
+                                }
+                            </div>
+                         </div>
+                     </div>
+                 </div>
+                 <div class="row">
+                 <div class="col-6">
+                     <a id="return" asp-action="ViewAll" asp-controller="Order" class="btn"><i class="fas fa-arrow-left"></i> Back</a>
+                 </div>
+                 <div class="col-6">
+                        @if(Model.Status.Name!="Order Closed")
+                        {
+                            <button id="submit_btn" onclick="saveClick()" type="button"  class="btn">Save</button>
+                        }
+                 </div>
+             </div>
+             </div>
+         </div>
+     </form>
+</div>
+
+<script>
+
+    function saveClick(){
+        var dropDown = document.getElementById("statusSelect");
+        var selected= $("#statusSelect :selected").text();
+        var dialog = document.getElementById("statusDialog").ej2_instances[0];
+        
+        if(selected === "Order Closed"){
+              
+            dialog.content = "Are you sure you want to close this order?"; 
+            dialog.show();
+
+        }
+        else{
+            document.getElementById("myForm").submit();
+        }
+    }
+
+    function onOverlayClick() {
+            var dialog = document.getElementById("statusDialog").ej2_instances[0];              
+            dialog.hide();        
+    };
+
+    function ondlgNoClick() {
+        var dialog = document.getElementById("statusDialog").ej2_instances[0];              
+        dialog.hide();
+    }
+
+    function ondlgYesClick() {
+        document.getElementById("myForm").submit();
+    }
+
+</script>

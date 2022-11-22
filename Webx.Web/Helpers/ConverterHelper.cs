@@ -10,14 +10,17 @@ namespace Webx.Web.Helpers
     {
         private readonly IUserHelper _userHelper;
         private readonly IProductRepository _productRepository;
+        private readonly IStatusRepository _statusRepository;
 
         public ConverterHelper(
             IUserHelper userHelper,
-            IProductRepository productRepository
+            IProductRepository productRepository,
+            IStatusRepository statusRepository
             )
         {
             _userHelper = userHelper;
             _productRepository = productRepository;
+            _statusRepository = statusRepository;
         }
 
         public async Task<EditEmployeeViewModel> ToEditEmployeeViewModelAsync(User user)
@@ -137,6 +140,24 @@ namespace Webx.Web.Helpers
                 NormalizedUserName = user.NormalizedUserName,
                 PhoneNumber = user.PhoneNumber,
                 UserName = user.UserName,
+            };
+        }
+
+        public OrderViewModel ToOrderViewModel(Order order)
+        {
+            return new OrderViewModel
+            {
+                Id = order.Id,
+                Customer = order.Customer,
+                Store = order.Store,
+                Appointment = order.Appointment,
+                OrderDate = order.OrderDate,
+                DeliveryDate = order.DeliveryDate,
+                InvoiceId = order.InvoiceId,
+                TotalQuantity = order.TotalQuantity,
+                TotalPrice = order.TotalPrice,
+                Status= order.Status,
+                Statuses= _statusRepository.GetStatusesCombo(),
             };
         }
 

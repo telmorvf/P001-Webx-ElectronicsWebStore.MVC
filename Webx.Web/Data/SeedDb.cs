@@ -38,9 +38,9 @@ namespace Webx.Web.Data
             await AddStoresAsync();
             await AddStocksAsync();
             await AddAppointmentsAsync();
+            await AddStatusesAsync();
             await AddOrdersAsync();
             await AddOrdersDetailsAsync();
-
         }
 
         private async Task AddOrdersDetailsAsync()
@@ -115,6 +115,41 @@ namespace Webx.Web.Data
             }
         }
 
+        private async Task AddStatusesAsync()
+        {
+            if (!_context.Statuses.Any())
+            {
+                int nTimes = 6;
+                string[] OrderStatusName = new string[6] {
+                    "Order Created",
+                    "Appointment Created",
+                    "Pending Appointment",
+                    "Order Shipped",
+                    "Appointment Done",
+                    "Order Closed"
+                };
+
+                string[] OrderStatusDesc = new string[6] {
+                    "Pagamento Efetuado S/ marcação",
+                    "Pagamento Efetuado C/ marcação",
+                    "Pagamento Efetuado C/marcação por efetuar",
+                    "",
+                    "",
+                    ""
+                };
+
+                for (int i = 0; i < nTimes; i++)
+                {
+                    _context.Statuses.Add( new Status
+                    {
+                        Name = OrderStatusName[i],
+                        Description = OrderStatusDesc[i],
+                    });
+                }
+                await _context.SaveChangesAsync();
+            }
+        }
+
         private async Task AddOrdersAsync()
         {
             if (!_context.Orders.Any())
@@ -122,38 +157,41 @@ namespace Webx.Web.Data
                 var appointments = await _context.Appointments.ToListAsync();
                 var customers = await _userHelper.GetUsersInRoleAsync("Customer");
                 var stores = await _context.Stores.Where(s => s.IsOnlineStore == false).ToListAsync();
+                
                 Random r = new Random();
 
                 //Adiciona as Encomendas das marcações
                 foreach(var appointment in appointments)
-                {                
+                {
                     _context.Orders.Add(new Order
                     {
-                         Customer = customers[r.Next(customers.Count)],
-                         Store = stores[r.Next(stores.Count)],
-                         Appointment = appointment,
-                         OrderDate = appointment.AppointmentDate.AddDays(r.Next(-10,-1)),
-                         DeliveryDate = appointment.AppointmentDate,                            
-                    });
+                        Customer = customers[r.Next(customers.Count)],
+                        Store = stores[r.Next(stores.Count)],
+                        Appointment = appointment,
+                        OrderDate = appointment.AppointmentDate.AddDays(r.Next(-10,-1)),
+                        DeliveryDate = appointment.AppointmentDate,
+                        Status= _context.Statuses.Where(s => s.Name == "Appointment Created").FirstOrDefault()
+                    }) ; ;
                 }
 
                 //Adiciona encomendas de / para produtos sem marcações
 
                 //TODO comentado por telmo há vezes que dá erro no formato da data, nem sempre - perceber o que se passa com o Filipe
 
-                //for (int i = 0; i <= 2; i++)
-                //{
-                //    var orderDate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, r.Next(DateTime.DaysInMonth(DateTime.UtcNow.Year, DateTime.UtcNow.Month)));
+                for (int i = 0; i <= 2; i++)
+                {
+                    var orderDate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, r.Next(DateTime.DaysInMonth(DateTime.UtcNow.Year, DateTime.UtcNow.Month)));
 
-                //    _context.Orders.Add(new Order
-                //    {
-                //        Customer = customers[r.Next(customers.Count)],
-                //        Store = stores[r.Next(stores.Count)],
-                //        Appointment = null,
-                //        OrderDate = orderDate,
-                //        DeliveryDate = orderDate.AddDays(r.Next(0, 4)),
-                //    });
-                //}
+                    _context.Orders.Add(new Order
+                    {
+                        Customer = customers[r.Next(customers.Count)],
+                        Store = stores[r.Next(stores.Count)],
+                        Appointment = null,
+                        OrderDate = orderDate,
+                        DeliveryDate = orderDate.AddDays(r.Next(0, 4)),
+                        Status= _context.Statuses.Where(s => s.Name == "Order Created").FirstOrDefault()
+                    });
+                }
 
                 await _context.SaveChangesAsync();
             }

@@ -14,6 +14,7 @@ namespace Webx.Web.Data.Entities
 
         public Appointment Appointment { get; set; }
         [Required]
+        //[DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm tt}")]
         public DateTime OrderDate { get; set; }
 
         public DateTime DeliveryDate { get; set; }
@@ -21,7 +22,9 @@ namespace Webx.Web.Data.Entities
         public int InvoiceId { get; set; }
 
         public int TotalQuantity { get; set; }
-
+        [DisplayFormat(DataFormatString = "{0:C2}")]
         public decimal TotalPrice { get; set; }
+
+        public Status Status { get; set; }
     }
 }
