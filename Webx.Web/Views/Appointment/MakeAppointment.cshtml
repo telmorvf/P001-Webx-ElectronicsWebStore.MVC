@@ -1,24 +1,261 @@
 ﻿@model Webx.Web.Models.ShopViewModel
-@using Syncfusion.EJ2.Schedule
+
 
 @{
     ViewData["Title"] = "MakeAppointment";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
-    List<ScheduleView> viewOption = new List<ScheduleView>()
-    {
-        new ScheduleView { Option = Syncfusion.EJ2.Schedule.View.Week },
-        new ScheduleView { Option = Syncfusion.EJ2.Schedule.View.TimelineDay }
-    };
-
-
 }
 
-<div class="container">
-    <div style="margin-top:50px">
-        <ejs-schedule id="schedule" height="600" views="viewOption"></ejs-schedule>
-    </div>
+<script type="text/javascript">
+    let appointmentStart;
+    let appointmentEnd;
+
+   
+   document.addEventListener('DOMContentLoaded', function() {
+     debugger;     
+     
+
+     var calendarEl = document.getElementById('calendar');
+
+     var calendar = new FullCalendar.Calendar(calendarEl, {
+
+            themeSystem: 'bootstrap',
+            timeZone: 'UTC',
+            aspectRatio: 1.8,
+            height:750,
+            initialView: 'timeGridWeek',            
+            nowIndicator: true,
+            businessHours: [{
+                daysOfWeek: [1, 2, 3, 4, 5],
+                startTime: '09:00',
+                endTime: '18:00'
+            },
+            {
+                daysOfWeek: [0, 6],
+                startTime: '09:00',
+                endTime: '13:00'
+            }
+            ],
+            headerToolbar: {
+                left: 'next today',
+                center: 'title',
+                right: 'timeGridWeek,timeGridDay'
+            },
+            slotLabelInterval: "00:30",
+            slotLabelFormat: {
+                hour: 'numeric',
+                minute: '2-digit',
+                omitZeroMinute: false,
+                meridiem: false,
+                hour12: false
+            },
+            slotMinTime: "07:00:00",
+            slotMaxTime: "20:00:00",
+            allDaySlot: false,
+            editable: true,
+            events: @Html.Raw(ViewData["Events"]),
+            eventClick: function(info) {
+                                              
+                debugger;               
+                var eventObj = info.event;
+
+                if (eventObj.extendedProps.eventClickable === true) {
+                    var dialog = document.getElementById("dialog").ej2_instances[0];
+                    let eventStartTime = eventObj.start;
+                    let content = eventObj.title + eventObj.extendedProps.eventDescription;
+                    console.log(content);
+                    dialog.content = eventObj.extendedProps.eventDescription;
+                    dialog.header = eventStartTime.toUTCString();
+                    dialog.show();
+                }
+                
+            },            
+            dayMaxEvents: true,
+            //dateClick: function(info) {
+            //    let currentView = info.view.type;
+            //    let date = info.date;                
+            //    if (currentView == "timeGridWeek") {
+            //        calendar.changeView("timeGridDay", date);
+            //    }
+            //    if (currentView == "timeGridDay") {
+            //        calendar.changeView("timeGridWeek", date);
+            //    }
+            //},
+            droppable:true,
+            selectable: true,
+            selectOverlap:false,
+            selectConstraint:"businessHours",
+            selectMinDistance: 0,
+            selectMirror: true,
+            select: function(selectInfo) {
+                console.log(selectInfo);
+                appointmentStart = selectInfo.start;
+                appointmentEnd = selectInfo.end;
+              
+            },
+            selectAllow: function(selectInfo) {
+                
+                let startDate = selectInfo.start;
+                let endDate = selectInfo.end;             
+                let timeDifference = (endDate - startDate)/1000;
+                
+                
+                if (timeDifference > 7200) {
+                    var dialog = document.getElementById("dialog").ej2_instances[0];
+                    dialog.header = "Appointment too long";
+                    dialog.content = "The appointment may only have a max time of 2 hours!";
+                    dialog.show();
+                    return false;                   
+                }
+                else {
+                    return true;
+                }                
+            }
+
+     });
+
+      calendar.render();
+
+   });
+
+   function confirmAppointment(orderId,day,month,year) {
+       debugger; 
+
+       let orderDate = new Date(year,month-1,day+3);
+       console.log(orderDate);
+
+       var dialog = document.getElementById("dialog").ej2_instances[0];
+
+       if (appointmentEnd === "" || appointmentEnd === undefined || appointmentEnd === null) {           
+               dialog.header = "Appointment is undefined";
+               dialog.content = "Please chose the day and time that you wish to appoint for this service.";
+               dialog.show();
+           return;
+       }
+       if (appointmentStart === "" || appointmentStart === undefined || appointmentStart === null) {           
+               dialog.header = "Appointment is undefined";
+               dialog.content = "Please chose the day and time that you wish to appoint for this service.";
+               dialog.show();
+           return;
+       }
+
+       if (appointmentStart < orderDate) {
+           dialog.header = "Booking too early"
+           dialog.content = "The appointment must be at least three days apart from the day of the order.";
+           dialog.show();
+           return;
+       }
     
+       let timeDifference = (appointmentEnd - appointmentStart)/1000;
+       console.log(timeDifference); 
+
+       if (timeDifference < 7200) {
+           dialog.header = "Period too short"
+           dialog.content = "The appointment must have a period of two hours.";
+           dialog.show();
+           appointmentEnd = null;
+           appointmentStart = null;
+           return;
+       }
+
+       startDateConverted = appointmentStart.getFullYear().toString()+"-"+((appointmentStart.getMonth()+1).toString().length==2?(appointmentStart.getMonth()+1).toString():"0"+(appointmentStart.getMonth()+1).toString())+"-"+(appointmentStart.getDate().toString().length==2?appointmentStart.getDate().toString():"0"+appointmentStart.getDate().toString())+" "+(appointmentStart.getHours().toString().length==2?appointmentStart.getHours().toString():"0"+appointmentStart.getHours().toString())+":"+((parseInt(appointmentStart.getMinutes()/5)*5).toString().length==2?(parseInt(appointmentStart.getMinutes()/5)*5).toString():"0"+(parseInt(appointmentStart.getMinutes()/5)*5).toString())+":00";
+       endDateConverted = appointmentEnd.getFullYear().toString()+"-"+((appointmentEnd.getMonth()+1).toString().length==2?(appointmentEnd.getMonth()+1).toString():"0"+(appointmentEnd.getMonth()+1).toString())+"-"+(appointmentEnd.getDate().toString().length==2?appointmentEnd.getDate().toString():"0"+appointmentEnd.getDate().toString())+" "+(appointmentEnd.getHours().toString().length==2?appointmentEnd.getHours().toString():"0"+appointmentEnd.getHours().toString())+":"+((parseInt(appointmentEnd.getMinutes()/5)*5).toString().length==2?(parseInt(appointmentEnd.getMinutes()/5)*5).toString():"0"+(parseInt(appointmentEnd.getMinutes()/5)*5).toString())+":00";
+       let comment = document.getElementById("customerComment").innerHTML;
+
+       console.log(startDateConverted);
+
+       var urlRoute = "/Appointment/SaveAppointment?startDate=" + startDateConverted + "&endDate=" + endDateConverted+"&orderId="+orderId+"&comment="+comment;
+       
+       window.location.href = urlRoute;
+   }
+
+</script>
+
+<style>
+    .borderBottom{
+        border-bottom:solid 1px var(--theme-color);
+    }
+</style>
+
+
+
+<div class="container-fluid" style="height:550px">
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-4" style="position:relative">
+           <div class="row" style="padding:15px"> 
+               <div class="col-md-12" style="text-align:center;margin-top:50px">
+                   <h5>Schedule Order <b>#@Model.OrderToSchedule.InvoiceId</b></h5>
+               </div>              
+           </div>
+           <div class="row" style="padding:15px">
+               <div class="col-md-1"></div>
+               <div class="col-md-2 borderBottom" style="text-align:end">
+                   <b>Store:</b>
+               </div>
+               <div class="col-md-4 borderBottom"></div>
+               <div class="col-md-4 borderBottom" style="text-align:center">
+                   @Model.OrderToSchedule.Store.Name
+               </div>
+               <div class="col-md-1"></div>
+           </div>
+           <div class="row" style="padding:15px">
+               <div class="col-md-1"></div>
+               <div class="col-md-10">
+                   <p>
+                    - To make the appointment choose the desired day and select the desired period.<br/><br/>
+                    - It is not possible to make appointments in periods outside the store's opening hours.<br/><br/>                    
+                    - The appointment must have a period of two hours.<br/><br/>
+                    - The appointment must be at least three days apart from the day of the order.
+                   </p>
+               </div>
+               <div class="col-md-1"></div>
+           </div>
+           <div class="row" style="padding:15px">
+               <div class="col-md-1"></div>
+               <div class="col-md-10">
+                   <h6><b>Observations:</b></h6><br />
+                   <textarea style="width:100%;" rows="4" placeholder="Is there anything we should know about? please inform us!" id="customerComment"></textarea>
+               </div>
+               <div class="col-md-1"></div>
+           </div>
+           <div class="row">
+               <div class="col-md-1"></div>
+                @{
+                    var orderDay = Model.OrderToSchedule.OrderDate.Day;
+                    var orderMonth = Model.OrderToSchedule.OrderDate.Month;
+                    var orderYear = Model.OrderToSchedule.OrderDate.Year;                    
+                }
+               <div class="col-md-10" style="position:absolute;bottom:60px;left:50px;">
+                   <a onclick="confirmAppointment(@Model.OrderToSchedule.Id,@orderDay,@orderMonth,@orderYear)" class="btn btnPersonalizado">Save appointment</a>
+               </div>               
+               <div class="col-md-1"></div>
+           </div>
+        </div>
+        <div class="col-md-6">
+           <div id='calendar' style="max-height: 550px; margin-top:50px;margin-bottom:50px">
+
+            </div>             
+        </div>
+        <div class="col-md-1"></div>
+    </div>   
 </div>
 
+<div id='container' style="height:auto">
+    <ejs-dialog id='dialog' visible="false" isModal="true" width="400px" showCloseIcon="true" allowDragging="true" overlayClick="onOverlayClick" target="#container"></ejs-dialog>
+</div>
 
+<script>     
+     function onOverlayClick() {
+         var dialog = document.getElementById("dialog").ej2_instances[0];
+         dialog.hide();
+      }   
+
+</script>  
+
+ @section Scripts {
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");} 
+
+    
+ }

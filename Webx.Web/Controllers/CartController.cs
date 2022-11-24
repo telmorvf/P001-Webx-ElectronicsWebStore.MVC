@@ -50,6 +50,7 @@ namespace Webx.Web.Controllers
             var model = await _productRepository.GetInitialShopViewModelAsync();
             model.Stocks = await _stockRepository.GetAllStockWithStoresAsync();
             model.Stores = _storeRepository.GetComboStores();
+            model.PhysicalStores = _storeRepository.GetComboPhysicalStores();
 
             return View(model);
         }
@@ -84,8 +85,9 @@ namespace Webx.Web.Controllers
             {
                 var model = new ShopViewModel { 
                     Cart = cart,
-                    Stores = _storeRepository.GetComboStores()
-                };
+                    Stores = _storeRepository.GetComboStores(),
+                    PhysicalStores = _storeRepository.GetComboPhysicalStores()
+            };
 
                 return PartialView("_CartPartialView", model);
             }
@@ -144,9 +146,10 @@ namespace Webx.Web.Controllers
                 var model = new ShopViewModel
                 {
                     Cart = cart,
-                    Stores = _storeRepository.GetComboStores()
+                    Stores = _storeRepository.GetComboStores(),
+                    PhysicalStores = _storeRepository.GetComboPhysicalStores()
                 };
-
+                
                 return PartialView("_CartPartialView", model);
             }
             else
@@ -216,7 +219,8 @@ namespace Webx.Web.Controllers
                 {
                     var model = new ShopViewModel {
                         Cart = cart,
-                        Stores = _storeRepository.GetComboStores()
+                        Stores = _storeRepository.GetComboStores(),
+                        PhysicalStores = _storeRepository.GetComboPhysicalStores()
                     };
 
                     return PartialView("_CartPartialView", model);
@@ -303,7 +307,8 @@ namespace Webx.Web.Controllers
             {
                 var model = new ShopViewModel {
                     Cart = new List<CartViewModel>(),
-                    Stores = _storeRepository.GetComboStores()
+                    Stores = _storeRepository.GetComboStores(),
+                    PhysicalStores = _storeRepository.GetComboPhysicalStores()
                 };                
                 return PartialView("_CartPartialView", model);
             }

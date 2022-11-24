@@ -22,7 +22,9 @@ namespace Webx.Web.Data.Repositories
 
         IEnumerable<SelectListItem> GetComboStores();
 
-        Task<int> GetOnlineStoreIdAsync();
+        IEnumerable<SelectListItem> GetComboPhysicalStores();
 
+        Task<int> GetOnlineStoreIdAsync();
+        
     }
 }

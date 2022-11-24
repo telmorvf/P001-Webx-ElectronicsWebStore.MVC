@@ -81,9 +81,18 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>
-                                            <select asp-for="@item.StoreId" onchange="checkProductStock('@item.Product.Id',this.options[this.selectedIndex].value)" asp-items="Model.Stores"></select>
-                                        </td>
+                                        @if(item.Product.IsService == true)
+                                        {
+                                            <td>
+                                                <select asp-for="@item.StoreId" onchange="checkProductStock('@item.Product.Id',this.options[this.selectedIndex].value)" asp-items="Model.PhysicalStores"></select>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td>
+                                                <select asp-for="@item.StoreId" onchange="checkProductStock('@item.Product.Id',this.options[this.selectedIndex].value)" asp-items="Model.Stores"></select>
+                                            </td>
+                                        }                                        
                                         <td>
                                             <h6><i class="fas fa-circle" style="color:@item.Color"></i></h6> 
                                         </td>

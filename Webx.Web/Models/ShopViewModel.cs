@@ -41,8 +41,17 @@ namespace Webx.Web.Models
         public List<Stock> Stocks { get; set; }
 
         public IEnumerable<SelectListItem> Stores { get; set; }
-        
+
+        public IEnumerable<SelectListItem> PhysicalStores { get; set; }
+
         public List<InvoiceViewModel> Invoices { get; set; }
+
+        public List<OrderWithDetailsViewModel> CustomerOrders { get; set; }
+
+        public Order OrderToSchedule { get; set; }
+
+        public bool HasAppointmentToDo { get; set; }
+        
 
     }
 }

@@ -27,9 +27,10 @@ namespace Webx.Web.Controllers
         private readonly IBlobHelper _blobHelper;
         private readonly INotyfService _toastNotification;
         private readonly IProductRepository _productRepository;
+        private readonly IOrderRepository _orderRepository;
 
         public AccountController(IUserHelper userHelper,IMailHelper mailHelper, ICategoryRepository categoryRepository,IBlobHelper blobHelper
-            , INotyfService toastNotification, IProductRepository productRepository)
+            , INotyfService toastNotification, IProductRepository productRepository,IOrderRepository orderRepository)
         {
             _userHelper = userHelper;
             _mailHelper = mailHelper;
@@ -37,6 +38,7 @@ namespace Webx.Web.Controllers
             _blobHelper = blobHelper;
             _toastNotification = toastNotification;
             _productRepository = productRepository;
+            _orderRepository = orderRepository;
         }
 
         public IActionResult Login(string returnUrl = null)
@@ -473,9 +475,7 @@ namespace Webx.Web.Controllers
             if (user == null)
             {
                 return NotFound();
-            }
-
-         
+            }         
 
             var hasPassword = await _userHelper.HasPasswordAsync(user);
 
@@ -491,16 +491,30 @@ namespace Webx.Web.Controllers
                 HasPassword = hasPassword,
             };
 
+            var custOrders = await _orderRepository.GetAllCustomerOrdersAsync(user.Id);
+            bool hasAppointmentToDo = false;
+            
+            foreach(var order in custOrders)
+            {
+                if(order.Order.Status.Name == "Pending Appointment")
+                {
+                    hasAppointmentToDo = true;
+                    break;
+                }
+            }
+
             var model = new ShopViewModel
             {
                 UserViewModel = changeUserViewModel,
                 Cart = await _productRepository.GetCurrentCartAsync(),
+                CustomerOrders = custOrders,
+                HasAppointmentToDo = hasAppointmentToDo
             };
 
             ViewBag.JsonModel = JsonConvert.SerializeObject(model);
             ViewBag.UserFullName = user.FullName;
             ViewBag.IsActive = user.Active;
-            ViewBag.Categories = await _categoryRepository.GetAllCategoriesAsync();
+            //ViewBag.Categories = await _categoryRepository.GetAllCategoriesAsync();
 
             return View(model);
         }

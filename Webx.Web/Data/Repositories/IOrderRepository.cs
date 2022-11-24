@@ -15,6 +15,7 @@ namespace Webx.Web.Data.Repositories
         Task<OrderStatus> GetOrderStatusByNameAsync(string orderStatusName);
         Task<List<OrderDetail>> GetOrderDetailsAsync(int id);
         Task AddOrderAsync(OrderViewModel orderVm,int storeId);
-        Task<Order> GetCompleteOrderByIdAsync(int orderId);
+        Task<Order> GetCompleteOrderByIdAsync(int orderId);        
+        Task<List<OrderWithDetailsViewModel>> GetAllCustomerOrdersAsync(string customerId);
     }
 }
