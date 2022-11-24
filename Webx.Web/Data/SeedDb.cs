@@ -26,6 +26,7 @@ namespace Webx.Web.Data
         {
             await _context.Database.EnsureCreatedAsync();
 
+            await AddStatusesAsync();
             await CheckCreatedRoles();
             await AddAdminsAsync();
             await AddTechniciansAsync();
@@ -40,7 +41,7 @@ namespace Webx.Web.Data
             await AddAppointmentsAsync();
             await AddOrdersAsync();
             await AddOrdersDetailsAsync();
-            await AddStatusesAsync();
+            
 
         }
 
@@ -170,7 +171,8 @@ namespace Webx.Web.Data
                          Store = stores[r.Next(stores.Count)],
                          Appointment = appointment,
                          OrderDate = appointment.AppointmentDate.AddDays(r.Next(-10,-1)),
-                         DeliveryDate = appointment.AppointmentDate,                            
+                         DeliveryDate = appointment.AppointmentDate,
+                         Status = await _context.OrderStatus.Where(os => os.Name== "Appointment Created").FirstOrDefaultAsync()
                     });
                 }
 
@@ -220,7 +222,7 @@ namespace Webx.Web.Data
                         BegginingHour = bHour,
                         EndHour = eHour,
                         Comments = "No Comments",
-                        HasAttended = randomBool
+                        HasAttended = randomBool                        
                     });
                 }
                 await _context.SaveChangesAsync();

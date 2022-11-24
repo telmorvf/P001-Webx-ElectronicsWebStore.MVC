@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Syncfusion.EJ2.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +50,37 @@ namespace Webx.Web.Data.Repositories
             {
                 return new Response { IsSuccess = false, Message = ex.Message };
             }
+        }
+
+        public async Task<List<OrderWithDetailsViewModel>> GetAllCustomerOrdersAsync(string customerId)
+        {
+            List<OrderWithDetailsViewModel> ordersWithDetails = new List<OrderWithDetailsViewModel>();
+            List<Order> orders = new List<Order>();
+
+            orders = await _context.Orders
+                .Include(o => o.Customer)
+                .Include(o => o.Store)
+                .Include(o => o.Status)
+                .Include(o => o.Appointment)
+                .Where(o => o.Customer.Id == customerId).ToListAsync();
+
+            foreach(var order in orders)
+            {
+                List<OrderDetail> orderDetails = new List<OrderDetail>();
+
+                orderDetails = await _context.OrderDetails
+                    .Include(od => od.Product)
+                        .ThenInclude(p => p.Images)                    
+                    .Where(od => od.Order.Id == order.Id).ToListAsync();
+
+                ordersWithDetails.Add(new OrderWithDetailsViewModel
+                {
+                    Order = order,
+                    OrderDetails = orderDetails
+                });
+            }
+
+            return ordersWithDetails;
         }
 
         public async Task<Order> GetCompleteOrderByIdAsync(int orderId)

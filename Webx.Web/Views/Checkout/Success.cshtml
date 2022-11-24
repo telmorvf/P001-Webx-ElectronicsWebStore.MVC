@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Success";
     Layout = "~/Views/Shared/_Layout.cshtml";
+   
 }
 
 
@@ -144,15 +145,54 @@
                                 </ul>
                             </div>                          
 
-                            <div class="col-md-12">
-                                <div class="delivery-sec">
-                                    <h3>expected date of delivery: <span>@DateTime.UtcNow.AddDays(3).ToString("dddd, dd MMMM yyyy")</span></h3>                                    
-                                </div>
-                            </div>
+                        @{
+                            string orderIds = "";
+                            bool asItem = false;
+                        }                   
 
-                            @*<div class="col-sm-12">
-                                <a class="btn" asp-action="Printpdf" asp-route-OrderId="@Model.Invoices[0].Order.Id" target="_blank">Print invoices</a>
-                            </div>*@
+
+                            @foreach(var invoice in Model.Invoices)
+                            {
+                                foreach(var item in invoice.orderDetails)
+                                {
+                                    if(item.Product.IsService == false)
+                                    {
+                                        asItem = true;
+                                        break;
+                                    }
+                                }
+
+                                if(invoice.Order.Status.Name == "Pending Appointment")
+                                {
+                                    if(orderIds == "")
+                                    {
+                                    orderIds += $"{invoice.Order.Id.ToString()}";
+                                }
+                                    else
+                                    {
+                                        orderIds += $",{invoice.Order.Id.ToString()}";
+                                    }
+                                }
+                            }
+
+                            @if(asItem){
+                                <div class="col-md-12">
+                                    <div class="delivery-sec">
+                                        <h3 style="text-align:center">expected date of delivery: <span>@DateTime.UtcNow.AddDays(3).ToString("dddd, dd MMMM yyyy")</span></h3>                                                                       
+                                    </div>
+                                </div>
+                            }                            
+
+                            
+                            @if(!string.IsNullOrEmpty(orderIds))
+                            {
+                                <div class="col-sm-12">
+                                    <h3 style="text-align:center">For purchasing a service, <span>make your appointment now!</span></h3>
+                                    <a class="btn btnPersonalizado" asp-action="ViewUser" asp-controller="Account">Make service appointment</a>
+                                </div>                                  
+                            }
+                            
+                        
                         </div>
                     </div>
                 </div>

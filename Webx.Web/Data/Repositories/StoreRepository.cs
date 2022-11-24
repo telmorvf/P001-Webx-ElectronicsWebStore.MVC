@@ -111,5 +111,16 @@ namespace Webx.Web.Data.Repositories
 
             return store.Id;
         }
+
+        public IEnumerable<SelectListItem> GetComboPhysicalStores()
+        {
+            var list = _context.Stores.Where(s=>s.IsOnlineStore == false).Select(s => new SelectListItem
+            {
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }).OrderBy(s => s.Text);
+
+            return list;
+        }
     }
 }

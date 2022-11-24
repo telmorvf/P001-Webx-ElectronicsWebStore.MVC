@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Webx.Web.Data.Entities
 {
@@ -10,8 +11,10 @@ namespace Webx.Web.Data.Entities
 
         public DateTime AppointmentDate { get; set; }
 
+        [DataType(DataType.DateTime)]
         public DateTime BegginingHour { get; set; }
 
+        [DataType(DataType.DateTime)]
         public DateTime EndHour { get; set; }
 
         public string Comments { get; set; }

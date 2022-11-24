@@ -5,6 +5,7 @@
 
 //Get Profile Picture
 
+
 function getBackgroundProfilePicture() {
 
     $.ajax({
