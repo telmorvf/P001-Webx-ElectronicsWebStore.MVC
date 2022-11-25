@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Webx.Web.Data.Entities;
 using Webx.Web.Data.Repositories;
 using Webx.Web.Helpers;
 using Webx.Web.Models;
@@ -47,6 +48,14 @@ namespace Webx.Web.Controllers
             {
                 return NotFound();
             }
+
+            List<Product> sugestedProducts = new List<Product>();
+            sugestedProducts.Add(await _productRepository.GetProductByNameAsync("Motherboard ATX Asus Prime B550-Plus"));
+            sugestedProducts.Add(await _productRepository.GetProductByNameAsync("RAM Memory Corsair Vengeance RGB 32GB (2x16GB) DDR5-6000MHz CL36 White"));
+
+            model.SuggestedProducts = sugestedProducts;
+            model.Product = await _productRepository.GetProductByNameAsync("Intel Core i9-11900K 8-Core 3.5GHz W/Turbo 5.3GHz 16MB Skt1200 Processor");
+
 
             if (User.Identity.IsAuthenticated)
             {

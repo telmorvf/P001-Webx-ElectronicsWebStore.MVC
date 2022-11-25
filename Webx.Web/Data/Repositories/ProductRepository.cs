@@ -334,5 +334,15 @@ namespace Webx.Web.Data.Repositories
             }           
 
         }
+
+        public async Task<Product> GetProductByNameAsync(string productName)
+        {
+            return await _context.Products
+                .Include(p => p.Brand)
+                .Include(p => p.Category)
+                .Include(p => p.Images)
+                .Where(p => p.Name == productName)
+                .FirstOrDefaultAsync();
+        }
     }
 }

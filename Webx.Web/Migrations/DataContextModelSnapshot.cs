@@ -353,25 +353,6 @@ namespace Webx.Web.Migrations
                     b.ToTable("OrderDetailTemps");
                 });
 
-            modelBuilder.Entity("Webx.Web.Data.Entities.OrderStatus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OrderStatus");
-                });
-
             modelBuilder.Entity("Webx.Web.Data.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -438,6 +419,7 @@ namespace Webx.Web.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -687,9 +669,7 @@ namespace Webx.Web.Migrations
                         .WithMany()
                         .HasForeignKey("CustomerId");
 
-
                     b.HasOne("Webx.Web.Data.Entities.Status", "Status")
-
                         .WithMany()
                         .HasForeignKey("StatusId");
 

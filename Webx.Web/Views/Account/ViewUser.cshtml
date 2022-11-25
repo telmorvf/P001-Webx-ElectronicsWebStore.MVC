@@ -319,7 +319,7 @@
                                     {
                                         <tr>
                                             <td>
-                                                <a href="product-left-sidebar.html">
+                                                <a href="#">
                                                     @if(order.OrderDetails.FirstOrDefault().Product.Images.Count() > 0)
                                                     {
                                                         <img src="@order.OrderDetails.FirstOrDefault().Product.Images.ElementAt(0).ImageFullPath" class="blur-up lazyload" alt="">
@@ -373,7 +373,7 @@
                                                 <p class="theme-color fs-6">@order.Order.TotalPrice.ToString("C2")</p>
                                             </td>
                                             <td>
-                                                <a href="javascript:void(0)">
+                                                <a asp-action="OrderDetails" asp-controller="Account" asp-route-id="@order.Order.Id">
                                                     <i class="far fa-eye"></i>
                                                 </a>
                                             </td>

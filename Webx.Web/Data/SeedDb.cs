@@ -47,7 +47,7 @@ namespace Webx.Web.Data
 
         private async Task AddStatusesAsync()
         {
-            if (!_context.OrderStatus.Any())
+            if (!_context.Statuses.Any())
             {
                 int nTimes = 6;
                 string[] OrderStatusName = new string[6] {
@@ -70,12 +70,12 @@ namespace Webx.Web.Data
 
                 for (int i = 0; i < nTimes; i++)
                 {
-                    var orderSatus = new OrderStatus
+                    var orderSatus = new Status
                     {
                         Name = OrderStatusName[i],
                         Description = OrderStatusDesc[i],
                     };
-                    _context.OrderStatus.Add(orderSatus);
+                    _context.Statuses.Add(orderSatus);
                 }
                 await _context.SaveChangesAsync();
             }

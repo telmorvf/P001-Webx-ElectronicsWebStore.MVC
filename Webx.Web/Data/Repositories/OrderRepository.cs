@@ -160,12 +160,12 @@ namespace Webx.Web.Data.Repositories
 
         public async Task<List<OrderDetail>> GetOrderDetailsAsync(int id)
         {
-            return await _context.OrderDetails.Include(od => od.Product).Include(od=> od.Order).Where(od => od.Order.Id == id).ToListAsync();
+            return await _context.OrderDetails.Include(od => od.Product).ThenInclude(p => p.Images).Include(od=> od.Order).Where(od => od.Order.Id == id).ToListAsync();
         }
 
-        public async Task<OrderStatus> GetOrderStatusByNameAsync(string orderStatusName)
+        public async Task<Status> GetOrderStatusByNameAsync(string orderStatusName)
         {
-            return await _context.OrderStatus.Where(os => os.Name == orderStatusName).FirstOrDefaultAsync();
+            return await _context.Statuses.Where(os => os.Name == orderStatusName).FirstOrDefaultAsync();
         }
     }
 }
