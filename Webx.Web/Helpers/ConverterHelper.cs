@@ -13,13 +13,16 @@ namespace Webx.Web.Helpers
         private readonly IProductRepository _productRepository;
         private readonly IStoreRepository _storeRepository;
         private readonly IStockRepository _stockRepository;
+        private readonly IStatusRepository _statusRepository;     
 
-        public ConverterHelper(IUserHelper userHelper,IProductRepository productRepository,IStoreRepository storeRepository,IStockRepository stockRepository)
+        public ConverterHelper(IUserHelper userHelper,IProductRepository productRepository,IStoreRepository storeRepository,IStockRepository stockRepository,IStatusRepository statusRepository)
         {
             _userHelper = userHelper;
             _productRepository = productRepository;
             _storeRepository = storeRepository;
             _stockRepository = stockRepository;
+            _statusRepository = statusRepository;
+
         }
      
         public async Task<EditEmployeeViewModel> ToEditEmployeeViewModelAsync(User user)
@@ -161,6 +164,24 @@ namespace Webx.Web.Helpers
 
             return cart;
           }
+
+        public OrderViewModel ToOrderViewModel(Order order)
+        {
+            return new OrderViewModel
+            {
+                Id = order.Id,
+                Customer = order.Customer,
+                Store = order.Store,
+                Appointment = order.Appointment,
+                OrderDate = order.OrderDate,
+                DeliveryDate = order.DeliveryDate,
+                InvoiceId = order.InvoiceId,
+                TotalQuantity = order.TotalQuantity,
+                TotalPrice = order.TotalPrice,
+                Status= order.Status,
+                Statuses= _statusRepository.GetStatusesCombo(),
+            };
+        }
 
     }
 }
