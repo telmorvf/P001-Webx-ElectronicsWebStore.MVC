@@ -4,108 +4,116 @@
     ViewData["Title"] = "WebX";
 }
 
+<style>
+    .customBg{
+        position:relative;
+        background-image:none !important;
+        background-color:rgba(0,0,0,0.9);
+    }
+
+    .customBg:before{
+        content: ' ';
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.85 !important;
+        background-image: url('assets/images/electronics/slider/1.jpg') !important;
+        background-repeat: no-repeat !important;
+        background-position: 50% 0 !important;
+        background-size: cover !important;
+    }
+
+
+</style>
+
     <!-- home slider start -->
     <section class="home-section">
         <div class="container-fluid">
             <div class="slick-1 classic-arrow">
                 <div>
-                    <div class="home-slider">
+                    @*home-slider*@
+                    <div class=" bg-size blur-up lazyloaded customBg">
                         <img src="assets/images/electronics/slider/1.jpg" class="bg-img blur-up lazyload" alt="">
                         <div class="home-wrap row">
                             <div class="col-lg-4 col-md-6 col-sm-9 left-content">
                                 <div>
                                     <div class="offer-wrap">
-                                        <h4 class="theme-color mb-2">NEW OFFER</h4>
-                                        <h6>Buy One Get One Free</h6>
+                                        <h4 class="mb-2" style="color:#fff">NEW PRODUCT</h4>
+                                        @*<h6>Buy One Get One Free</h6>*@
                                     </div>
                                     <div class="home-content">
-                                        <h1 data-animation-in="fadeInUp">4k</h1>
-                                        <h1 class="mb-2" data-delay-in="0.3" data-animation-in="fadeInUp">CAMERA</h1>
-                                        <h2 class="mb-4 d-sm-block d-none" data-animation-in="fadeInUp"
+                                        <h1 data-animation-in="fadeInUp" style="color:#fff">INTEL</h1>
+                                        <h1 class="mb-2" data-delay-in="0.3" data-animation-in="fadeInUp" style="color:#fff">i9-11900K Processor</h1>
+                                        <h2 style="color:#fff" class="mb-4 d-sm-block d-none" data-animation-in="fadeInUp"
                                             data-delay-in="0.4">
-                                            Wishing for is right</h2>
+                                            Experience What’s Inside.</h2>
+                                            @*class="theme-color"*@
                                         <h3 class="mb-3" data-animation-in="fadeInUp" data-delay-in="0.5"><span
-                                                class="theme-color">$456.00</span> <span
-                                                class="text-decoration-line-through">$480.00</span></h3>
+                                                 style="color:#fff">413,90 €</span> @*<span
+                                                class="text-decoration-line-through">$480.00</span>*@</h3>
                                         <p class="mb-0 d-sm-block d-none" data-animation-in="fadeInUp"
-                                            data-delay-in="0.6">
-                                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                                            data-delay-in="0.6" style="color:#fff">
+                                            Designed for intelligent performance, optimized creating, and enhanced tuning to allow gamers to game with up to 5.8 GHz clock speed.
                                         </p>
-                                        <div class="discover-block d-sm-block d-none" data-animation-in="fadeInUp"
-                                            data-delay-in="0.7">
-                                            <div class="d-flex">
-                                                <a href="javascript:void(0)" class="play-icon theme-bg-color">
-                                                    <i class="fas fa-play"></i>
-                                                </a>
-                                                <div class="discover-content">
-                                                    <h4 class="theme-color mb-1">Discover</h4>
-                                                    <h6>Our Collection</h6>
-                                                </div>
-                                            </div>
+                                        <div class="discover-block d-sm-block d-none" data-animation-in="fadeInUp"  data-delay-in="0.7">                                          
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-3 offset-lg-5 right-content d-lg-flex d-none">
                                 <div>
-                                    <h4 class="theme-color mb-2" data-animation-in="fadeInUp">Sugestion Product</h4>
-                                    <h6 class="mb-4" data-animation-in="fadeInUp" data-delay-in="0.3">Our Collection
-                                    </h6>
-                                    <p class="mb-0" data-animation-in="fadeInUp" data-delay-in="0.4">Lorem Ipsum is
-                                        simply dummy text of the printing and typesetting industry.</p>
+                                    <h4 class="mb-2" style="color:#fff" data-animation-in="fadeInUp">Suggested products</h4>
+                                    <h6 class="mb-4" style="color:#fff" data-animation-in="fadeInUp" data-delay-in="0.3">from our collection </h6>                                
                                     <div class="product-img" data-animation-in="fadeInUp" data-delay-in="0.5">
                                         <ul>
-                                            <li>
-                                                <a href="shop-left-sidebar.html"
-                                                    data-source="assets/images/electronics/slider/1.jpg">
-                                                    <img src="assets/images/electronics/slider/2.jpg"
-                                                        class="img-fluid blur-up lazyload" alt="">
+                                        @foreach(var product in Model.SuggestedProducts)
+                                        {
+                                            <li style="box-shadow: rgb(204 219 232) 3px 3px 6px 0px , rgb(255 255 255 / 50%) -3px -3px 6px 1px; border-radius: 10%;">
+                                                <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@product.Id" data-source="assets/images/electronics/slider/1.jpg">
+                                                    <img style="height: 157px;border-radius: 10%;" src="@product.Images.ElementAt(0).ImageFullPath" class="img-fluid blur-up lazyload" alt="">                                                        
                                                 </a>
                                             </li>
-                                            <li>
-                                                <a href="shop-left-sidebar.html"
-                                                    data-source="assets/images/electronics/slider/1.jpg">
-                                                    <img src="assets/images/electronics/slider/3.jpg"
-                                                        class="img-fluid blur-up lazyload" alt="">
-                                                </a>
-                                            </li>
+                                        }
+                                                                                
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="home-social">
                                     <ul>
                                         <li>
-                                            <a href="product-left-sidebar.html" class="font-default">
+                                            <a href="https://www.facebook.com/profile.php?id=100088391940410" target="_blank" class="font-default">
                                                 <img src="assets/images/social-icon/1.png"
                                                     class="img-fluid blur-up lazyload" alt="">
-                                                <span>Facebook</span>
+                                                <span style="color:#fff">Facebook</span>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="product-left-sidebar.html" class="font-default">
+                                            <a href="#" class="font-default">
                                                 <img src="assets/images/social-icon/2.png"
                                                     class="img-fluid blur-up lazyload" alt="">
-                                                <span>Instagram</span>
+                                                <span style="color:#fff">Instagram</span>
                                             </a>
                                         </li>
                                         <li class="mb-0">
-                                            <a href="product-left-sidebar.html" class="font-default">
+                                            <a href="#" class="font-default">
                                                 <img src="assets/images/social-icon/3.png"
                                                     class="img-fluid blur-up lazyload" alt="">
-                                                <span>Twitter</span>
+                                                <span style="color:#fff">Twitter</span>
                                             </a>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
-                        <div class="group-btn">
-                            <button onclick="location.href = 'shop-left-sidebar.html';" type="button"
-                                class="btn btn-solid-default">Show details</button>
+                        <div class="group-btn lazyload">
+                            <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@Model.Product.Id" class="btn btn-solid-default lazyload">Show details</a>                                
                         </div>
                     </div>
                 </div>
-                <div>
+                @*<div>
                     <div class="home-slider">
                         <img src="assets/images/electronics/slider/1.jpg" class="bg-img blur-up lazyload" alt="">
                         <div class="home-wrap row">
@@ -164,22 +172,23 @@
                                 </div>
                                 <div class="home-social">
                                     <ul>
+                                        
                                         <li>
-                                            <a href="product-left-sidebar.html" class="font-default">
-                                                <img src="assets/images/social-icon/1.png"
-                                                    class="img-fluid blur-up lazyload" alt="">
+                                            <!--https://www.facebook.com/profile.php?id=100088391940410-->
+                                            <a href="#" target="_blank" class="font-default">
+                                                <img src="assets/images/social-icon/1.png" class="img-fluid blur-up lazyload" alt="">                                                    
                                                 <span>Facebook</span>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="product-left-sidebar.html" class="font-default">
+                                            <a href="#" class="font-default">
                                                 <img src="assets/images/social-icon/2.png"
                                                     class="img-fluid blur-up lazyload" alt="">
                                                 <span>Instagram</span>
                                             </a>
                                         </li>
                                         <li class="mb-0">
-                                            <a href="product-left-sidebar.html" class="font-default">
+                                            <a href="#" class="font-default">
                                                 <img src="assets/images/social-icon/3.png"
                                                     class="img-fluid blur-up lazyload" alt="">
                                                 <span>Twitter</span>
@@ -195,7 +204,7 @@
                             </button>
                         </div>
                     </div>
-                </div>
+                </div>*@
             </div>
         </div>
     </section>
@@ -213,7 +222,7 @@
                             </svg>
                         </div>
                         <div class="service-content">
-                            <h3 class="mb-2">Customer Servcies</h3>
+                            <h3 class="mb-2">Customer Services</h3>
                             <span class="font-light">Top notch customer service.</span>
                         </div>
                     </div>
@@ -227,7 +236,7 @@
                         </div>
                         <div class="service-content">
                             <h3 class="mb-2">Pickup At Any Store</h3>
-                            <span class="font-light">Free shipping on orders over $65.</span>
+                            <span class="font-light">Always Free shipping</span>
                         </div>
                     </div>
                 </div>
@@ -240,7 +249,7 @@
                         </div>
                         <div class="service-content">
                             <h3 class="mb-2">Secured Payment</h3>
-                            <span class="font-light">We accept all major credit cards.</span>
+                            <span class="font-light">With Paypal</span>
                         </div>
                     </div>
                 </div>
@@ -727,7 +736,7 @@
     </section>
     <!-- product section end -->
 
-    <!-- Banner section 2 start -->
+@*    <!-- Banner section 2 start -->
     <section class="ratio2_1">
         <div class="container">
             <div class="row gy-3">
@@ -2698,7 +2707,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section>*@
     <!-- tab banner section end -->
 
     @if(Model.CookieConsent == false){

@@ -60,7 +60,7 @@ namespace Webx.Web.Controllers
 
             model.OrderToSchedule = order;         
 
-            var events = await _appointmentRepository.GetAllEventsCustomerCanSeeAsync();
+            var events = await _appointmentRepository.GetAllEventsCustomerCanSeeAsync(order.Store.Id);
             ViewData["Events"] = events;
 
             return View(model);

@@ -51,6 +51,8 @@ namespace Webx.Web.Models
         public Order OrderToSchedule { get; set; }
 
         public bool HasAppointmentToDo { get; set; }
+
+        public List<Product> SuggestedProducts { get; set; }
         
 
     }

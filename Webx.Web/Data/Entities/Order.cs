@@ -25,6 +25,6 @@ namespace Webx.Web.Data.Entities
 
         public decimal TotalPrice { get; set; }
 
-        public OrderStatus Status { get; set; }
+        public Status Status { get; set; }
     }
 }

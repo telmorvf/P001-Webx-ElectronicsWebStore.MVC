@@ -16,6 +16,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using Webx.Web.Data.Repositories;
+using System.Collections.Generic;
 
 namespace Webx.Web.Controllers
 {
@@ -684,6 +685,56 @@ namespace Webx.Web.Controllers
 
 
             return new ObjectResult(new { Status = "fail" });
+        }
+
+        public async Task<IActionResult> OrderDetails(int? id)
+        {
+
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var order = await _orderRepository.GetCompleteOrderByIdAsync(id.Value);
+
+            if(order == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            if(order.Customer.Id != user.Id)
+            {
+                return RedirectToAction("NotAuthorized");
+            }
+
+            var orderDetails = await _orderRepository.GetOrderDetailsAsync(order.Id);
+
+            if(orderDetails == null)
+            {
+                return NotFound();
+            }
+
+            List<OrderWithDetailsViewModel> customerOrders = new List<OrderWithDetailsViewModel>();
+            customerOrders.Add(new OrderWithDetailsViewModel
+            {
+                Order = order,
+                OrderDetails = orderDetails
+            });
+
+            var model = await _productRepository.GetInitialShopViewModelAsync();
+            model.CustomerOrders = customerOrders;
+            
+            ViewBag.UserFullName = user.FullName;
+            ViewBag.IsActive = user.Active;
+
+            return View(model);
         }
 
         public async Task<IActionResult> NotAuthorized()

@@ -5,6 +5,6 @@ namespace Webx.Web.Data.Repositories
 {
     public interface IAppointmentRepository : IGenericRepository<Appointment>
     {
-        Task<string> GetAllEventsCustomerCanSeeAsync();
+        Task<string> GetAllEventsCustomerCanSeeAsync(int storeId);
     }
 }

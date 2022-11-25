@@ -2,7 +2,7 @@
 
 namespace Webx.Web.Data.Entities
 {
-    public class OrderStatus : IEntity
+    public class Status : IEntity
     {
         public int Id { get; set; }
         [Required]

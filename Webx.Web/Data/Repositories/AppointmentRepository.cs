@@ -17,10 +17,10 @@ namespace Webx.Web.Data.Repositories
             _context = context;
         }
 
-        public async Task<string> GetAllEventsCustomerCanSeeAsync()
+        public async Task<string> GetAllEventsCustomerCanSeeAsync(int storeId)
         {
             var appointments = await _context.Appointments.Include(a => a.WorkerID).ToListAsync();
-            var orders = await _context.Orders.Include(o => o.Store).Include(o => o.Appointment).Include(o => o.Status).Include(o => o.Customer).Where(o => o.Appointment != null).ToListAsync();
+            var orders = await _context.Orders.Include(o => o.Store).Include(o => o.Appointment).Include(o => o.Status).Include(o => o.Customer).Where(o => o.Appointment != null && o.Store.Id == storeId).ToListAsync();
             List<EventModel> eventsModel = new List<EventModel>();
             List<string> colors = new List<string>() {"#fca311", "#14213d", "#023047", "#ef233c"};
             Random r = new Random();
@@ -32,7 +32,6 @@ namespace Webx.Web.Data.Repositories
                 {
 
                     //var date = appointment.BegginingHour.ToString("yyyy-MM-dd HH:mm:ss");
-
 
                     if(order.Appointment.Id == appointment.Id)
                     {

@@ -10,8 +10,8 @@ using Webx.Web.Data;
 namespace Webx.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20221120005400_redoneDbMigrations")]
-    partial class redoneDbMigrations
+    [Migration("20221125165508_UpdateDatabase")]
+    partial class UpdateDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -355,25 +355,6 @@ namespace Webx.Web.Migrations
                     b.ToTable("OrderDetailTemps");
                 });
 
-            modelBuilder.Entity("Webx.Web.Data.Entities.OrderStatus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OrderStatus");
-                });
-
             modelBuilder.Entity("Webx.Web.Data.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -427,6 +408,25 @@ namespace Webx.Web.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductImages");
+                });
+
+            modelBuilder.Entity("Webx.Web.Data.Entities.Status", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Statuses");
                 });
 
             modelBuilder.Entity("Webx.Web.Data.Entities.Stock", b =>
@@ -671,7 +671,7 @@ namespace Webx.Web.Migrations
                         .WithMany()
                         .HasForeignKey("CustomerId");
 
-                    b.HasOne("Webx.Web.Data.Entities.OrderStatus", "Status")
+                    b.HasOne("Webx.Web.Data.Entities.Status", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId");
 

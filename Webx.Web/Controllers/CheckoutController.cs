@@ -296,7 +296,7 @@ namespace Webx.Web.Controllers
                 {
                     decimal orderTotal = 0;
                     int orderTotalQuantity = 0;
-                    OrderStatus status = await _orderRepository.GetOrderStatusByNameAsync("Order Created");
+                    Status status = await _orderRepository.GetOrderStatusByNameAsync("Order Created");
 
                     foreach (var item in model.Cart)
                     {
