@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using static System.Net.WebRequestMethods;
 
@@ -29,8 +30,14 @@ namespace Webx.Web.Data.Entities
         public Category Category { get; set; }
         public int CategoryId { get; set; }
 
-        public IEnumerable<ProductImages> Images { get; set; }
+        
 
+        // ToDo Teste Telmo
+        [ForeignKey("ProductId")]
+        public ICollection<ProductImages> Images { get; set; }
+        //public IEnumerable<ProductImages> Images { get; set; }
+
+        // End
 
         [Required]
         [Display(Name = "Is Service?")]

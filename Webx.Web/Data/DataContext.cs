@@ -14,6 +14,9 @@ namespace Webx.Web.Data
 
         public DbSet<ProductImages> ProductImages { get; set; }
 
+        //ToDo Teste telmo
+        //public DbSet<ProductImages> Product_Images { get; set; }
+
         public DbSet<Brand> Brands { get; set; }
 
         public DbSet<Category> Categories { get; set; }

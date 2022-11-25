@@ -171,18 +171,7 @@ namespace Webx.Web.Controllers
                 {
                     try
                     {
-                        // TODO: Pictures
-                        //List<ProductImages> ids = new List<ProductImages>();
-                        //foreach (var picture in model.PictureFile)
-                        //{
-                        //    ids.Add(new ProductImages
-                        //    {
-                        //        ImageId = Guid.Parse(picture.Name),
-                        //    });
-                        //}
-
                         // CREATE
-
                         List<ProductImages> productImages = new List<ProductImages>();
                         Guid imageId = Guid.Empty;
 
@@ -210,40 +199,7 @@ namespace Webx.Web.Controllers
                             }
                         }
 
-
-                        //Guid imageId = Guid.Empty;
-                        //if (model.PictureFile != null && model.PictureFile.Length > 0)
-                        //{
-                        //using var image = Image.Load(model.PictureFile.OpenReadStream());
-                        //image.Mutate(img => img.Resize(512, 0));
-
-                        //using (MemoryStream m = new MemoryStream())
-                        //{
-                        //    //image.SaveAsJpeg(m);
-                        //    byte[] imageBytes = m.ToArray();
-                        //    imageId = await _blobHelper.UploadBlobAsync(imageBytes, "products");
-                        //}
-
-
-                        //Guarda lista de imagens na tabela
-
-                        //productImages.Add(new ProductImages
-                        //{
-                        //    ImageId = imageId
-                        //});
-
-                        //product.ImageId = imageId;
-                        //model.ImageId = imageId;
-
-
-                        // Filipe: Convert image bit array and upload to Azure
-                        //imageId = await _imageHelper.UploadImageAsync(model.PictureFile, model.ImagesId, "products");
-                        //model.ImageFirst = imageId;
-                        //}
-
-
                         //TODO Passar a Lista de Imagens
-                        //newProduct = _converterHelper.ProductAddFromViewModel(model, true);
                         Product newProduct = new Product
                         {
                             Id = 0,
@@ -255,9 +211,7 @@ namespace Webx.Web.Controllers
                             BrandId = Convert.ToInt32(model.BrandId),
                             Images = productImages
                         };
-                        //await _dataContext.SaveChangesAsync();
                         await _productRepository.CreateAsync(newProduct);
-
 
                         // Stores & Stock - Start: Creat the association product to the store - Stocks Table                        
                         var minQuantity = model.MinimumQuantity;
@@ -402,18 +356,8 @@ namespace Webx.Web.Controllers
                 try
                 {
                     // UPDATE
-
-                    List<ProductImages> productImages = new List<ProductImages>();
+                    List<ProductImages> productImagesTemp = new List<ProductImages>();
                     product.Id = model.Id;
-
-                    foreach (var file in product.Images)
-                    {
-                        productImages.Add(new ProductImages
-                        {
-                            //Id = file.Id,
-                            ImageId = file.ImageId,
-                        });
-                    }
 
                     Guid imageId = Guid.Empty;
                     if (model.UploadFiles != null && model.UploadFiles.Count > 0)
@@ -432,7 +376,7 @@ namespace Webx.Web.Controllers
                                     imageId = await _blobHelper.UploadBlobAsync(imageBytes, "products");
                                 }
 
-                                productImages.Add(new ProductImages
+                                productImagesTemp.Add(new ProductImages
                                 {
                                     ImageId = imageId,
                                 });
@@ -441,19 +385,27 @@ namespace Webx.Web.Controllers
                     }
 
                     //converterHelper
-                    //var product = _converterHelper.ProductFromViewModel(model, false);
-                    product.Id =   model.Id;
+                    List<ProductImages> productImages = new List<ProductImages>();
+                    foreach (var file in product.Images)
+                    {
+                        productImages.Add(new ProductImages
+                        {
+                            //Id = file.Id,
+                            ImageId = file.ImageId,
+                        });
+                    }
+                    if (productImagesTemp.Count > 0) 
+                        productImages.AddRange(productImagesTemp);
 
-                    //product.Images = Append(product.Images);
                     product.Images = productImages;
-                    
+
+                    product.Id = model.Id;
                     product.Name = model.Name;
                     product.Price = model.Price;
                     product.Description = model.Description;
                     product.IsService = model.IsService;
                     product.CategoryId = Convert.ToInt32(model.CategoryId);
                     product.BrandId = Convert.ToInt32(model.BrandId);
-                    
                     
                     _dataContext.Products.Update(product);
                     await _dataContext.SaveChangesAsync();

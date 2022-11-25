@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Syncfusion.EJ2.Spreadsheet;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -34,7 +35,6 @@ namespace Webx.Web.Models
         public string BrandName { get; set; }
         public IEnumerable<SelectListItem> Brands { get; set; }
 
-
         [Required]
         [Display(Name = "Category")]
         [Range(1, int.MaxValue, ErrorMessage = "You must select a category.")]
@@ -42,7 +42,6 @@ namespace Webx.Web.Models
         public string CategoryName { get; set; }
 
         public IEnumerable<SelectListItem> Categories { get; set; }
-
 
 
         //[Display(Name = "Minimum Quantity Alert?")]
@@ -58,13 +57,17 @@ namespace Webx.Web.Models
         [Display(Name = "Picture File")]
         public IFormFile PictureFile { get; set; }
 
-        [Display(Name = "Uload Files")]
+        [Display(Name = "Upload Files")]
         public IList<IFormFile> UploadFiles { get; set; }
 
-        public IEnumerable<ProductImages> Images { get; set; }
+        // ToDo Telmo
+        public ICollection<ProductImages> Images { get; set; }
+        public Product Product { get; set; }
+        //public List<ProductImages> product_Images { get; set; }
         public Images ImagesId { get; set; }
 
         public string ImageFirst { get; set; }
+
 
     }
 }
