@@ -90,11 +90,18 @@
                 <input type="hidden" asp-for="ImageFirst" />
 
                 <div class="row">
-                    <div class="col-md-10">
+                    <div class="col-md-8">
                         <div class="form-group">
                             <label asp-for="Name" class="control-label"></label>
                             <input asp-for="Name" class="form-control" />
                             <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label asp-for="IsPromotion" style="text-align:center" class="control-label"></label>
+                            <input asp-for="IsPromotion" type="checkbox" style="text-align:center" class="form-control" />
+                            <span asp-validation-for="IsPromotion" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-2">

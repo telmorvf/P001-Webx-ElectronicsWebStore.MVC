@@ -27,6 +27,7 @@ namespace Webx.Web.Models
 
         public bool IsService { get; set; }
 
+        public bool IsPromotion { get; set; }
 
         [Required]
         [Display(Name = "Brand")]

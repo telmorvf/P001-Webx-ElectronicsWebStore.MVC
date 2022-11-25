@@ -114,15 +114,11 @@ namespace Webx.Web.Controllers
             {
                 products = await _productRepository.GetServiceAllAsync();
                 ViewBag.IsService = true;
-
-
             }
             else
             {
                 products = await _productRepository.GetProductAllAsync();
                 ViewBag.IsService = false;
-
-
             }
 
             //vai buscar as dataAnnotations da class User para injectar na tabela do syncfusion
@@ -130,7 +126,6 @@ namespace Webx.Web.Controllers
 
             var stores = _dataContext.Stores.ToListAsync();
             ViewBag.FilterStore = stores;
-
 
             return View(products);
         }
@@ -207,6 +202,7 @@ namespace Webx.Web.Controllers
                             Price = model.Price,
                             Description = model.Description,
                             IsService = model.IsService,
+                            IsPromotion = model.IsPromotion,
                             CategoryId = Convert.ToInt32(model.CategoryId),
                             BrandId = Convert.ToInt32(model.BrandId),
                             Images = productImages
@@ -250,7 +246,6 @@ namespace Webx.Web.Controllers
             };
             return View(model);
         }
-
 
 
         [Authorize(Roles = "Admin")]
@@ -311,7 +306,6 @@ namespace Webx.Web.Controllers
             };
             return View(model);
         }
-
 
 
         [Authorize(Roles = "Admin")]
@@ -404,6 +398,7 @@ namespace Webx.Web.Controllers
                     product.Price = model.Price;
                     product.Description = model.Description;
                     product.IsService = model.IsService;
+                    product.IsPromotion = model.IsPromotion;
                     product.CategoryId = Convert.ToInt32(model.CategoryId);
                     product.BrandId = Convert.ToInt32(model.BrandId);
                     

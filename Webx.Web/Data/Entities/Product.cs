@@ -29,15 +29,18 @@ namespace Webx.Web.Data.Entities
         [Required]
         public Category Category { get; set; }
         public int CategoryId { get; set; }
-
-        
+   
 
         // ToDo Teste Telmo
         [ForeignKey("ProductId")]
         public ICollection<ProductImages> Images { get; set; }
         //public IEnumerable<ProductImages> Images { get; set; }
 
-        // End
+
+        [Required]
+        [Display(Name = "Promotion?")]
+        public bool IsPromotion { get; set; }
+
 
         [Required]
         [Display(Name = "Is Service?")]

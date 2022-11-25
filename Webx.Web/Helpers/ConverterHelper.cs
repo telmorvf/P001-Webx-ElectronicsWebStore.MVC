@@ -158,6 +158,7 @@ namespace Webx.Web.Helpers
                 Description = product.Description,
                 Price = product.Price,
                 IsService = product.IsService,
+                IsPromotion = product.IsPromotion,
                 ImageFirst = product.ImageFirst,
                 BrandId = product.BrandId.ToString(),
                 BrandName = product.Brand.Name,
@@ -177,7 +178,7 @@ namespace Webx.Web.Helpers
                 Price = model.Price,
                 Description = model.Description,
                 IsService = model.IsService,
- 
+                IsPromotion = model.IsPromotion,
                 CategoryId = Convert.ToInt32(model.CategoryId),
                 BrandId = Convert.ToInt32(model.BrandId),
             };
@@ -190,6 +191,7 @@ namespace Webx.Web.Helpers
                 Description = product.Description,
                 Price = product.Price,
                 IsService = product.IsService,
+                IsPromotion = product.IsPromotion,
                 ImageFirst = product.ImageFirst,
                 BrandId = product.BrandId.ToString(),
                 Brands = _productRepository.GetBrandsCombo(product.BrandId),
@@ -206,6 +208,7 @@ namespace Webx.Web.Helpers
                 Price = model.Price,
                 Description = model.Description,
                 IsService = model.IsService,
+                IsPromotion = model.IsPromotion,
                 CategoryId = Convert.ToInt32(model.CategoryId),
                 BrandId = Convert.ToInt32(model.BrandId),
             };

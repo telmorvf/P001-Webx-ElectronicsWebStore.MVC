@@ -26,8 +26,11 @@ namespace Webx.Web.Models
 
         //[MinLength(0, ErrorMessage = "Only greater than Zero")]
 
+        [Display(Name = "Is Service?")]
         public bool IsService { get; set; }
 
+        [Display(Name = "Promotion")]
+        public bool IsPromotion { get; set; }
 
         [Required]
         [Display(Name = "Brand")]
@@ -59,7 +62,7 @@ namespace Webx.Web.Models
         public FormFile PictureFile { get; set; }
 
 
-        [Display(Name = "Uload Files")]
+        [Display(Name = "Upload Files")]
         public IList<IFormFile> UploadFiles { get; set; }
 
 

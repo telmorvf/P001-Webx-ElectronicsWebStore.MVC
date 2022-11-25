@@ -77,7 +77,8 @@
         <e-grid-columns>
             <e-grid-column headerText="Product Picture" template="#template" width="160" textAlign="Center" allowEditing="false"></e-grid-column>
             <e-grid-column field="Id" isPrimaryKey="true" width="0px"></e-grid-column>
-            <e-grid-column field="IsService" headerText="Is Service?" template="#templateCheckbox" textAlign="Center" width="65px"></e-grid-column>
+            <e-grid-column field="IsService" headerText="IsServ.?" template="#templateCheckbox" textAlign="Center" width="65px"></e-grid-column>
+            <e-grid-column field="IsPromotion" headerText="Promo?" template="#templateCheckbox1" textAlign="Center" width="65px"></e-grid-column>
             <e-grid-column field="Name" textAlign="Left" allowEditing="false" width="320px"></e-grid-column>        
             <e-grid-column field="Price" format="# ###.00 '€'" textAlign="Right" width="60px"></e-grid-column>
             <e-grid-column field="" isPrimaryKey="true" width="20px"></e-grid-column>
@@ -137,6 +138,15 @@
 <script id="templateCheckbox" type="text/x-template">
     <div class="template_checkbox">
         ${if(IsService)}
+            <input type="checkbox" checked disabled="disabled" > ${else}
+            <input type="checkbox" disabled="disabled">
+        ${/if}
+    </div>
+</script>
+
+<script id="templateCheckbox1" type="text/x-template">
+    <div class="template_checkbox1">
+        ${if(IsPromotion)}
             <input type="checkbox" checked disabled="disabled" > ${else}
             <input type="checkbox" disabled="disabled">
         ${/if}
@@ -273,6 +283,7 @@
                     dialog.header = productData.name + " Details"; // defini o titolo do dialog e apresenta-o no Header
                     
                     let isServiceStatus;
+                    let isPromotionStatus;
 
                     if (productData.isService === true) 
                     {
@@ -282,10 +293,18 @@
                         isServiceStatus = "Product";
                     }
 
+                    if (productData.isPromotion === true) {
+                        isPromotionStatus = "Yes";
+                    }
+                    else {
+                        isPromotionStatus = "No";
+                    }
+
                     dialog.content = "<b>Price: </b>" + productData.price + " €uros <br/>" + //Define a mensagem/conteudo do dialog
                         "<b>Brand: </b>" + productData.brandName + "<br/>" +
                         "<b>Category: </b>" + productData.categoryName + "<br/>" +
-                        "<b>Is Service?: </b>" + isServiceStatus + "<br/><br/>" +
+                        "<b>Is Service?: </b>" + isServiceStatus + "<br/>" +
+                        "<b>Promotion?: </b>" + isPromotionStatus + "<br/><br/>" +
                         "<b>Description: </b>" + productData.description + "<br/>";
 
                     dialog.show(); // faz popup do dialog
