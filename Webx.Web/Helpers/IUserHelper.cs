@@ -76,5 +76,7 @@ namespace Webx.Web.Helpers
         Task<IdentityRole> GetRoleByIdAsync(string roleId);
         Task<IdentityRole> GetRoleByNameAsync(string roleName);
         Task<IdentityResult> RemoveFromCurrentRoleAsync(User user,string currentRole);
+        Task <SignInResult>FirstLoginAsync(User user);
+        Task<User> GetUserByEmailWithCheckoutTempsAsync(string email);
     }
 }

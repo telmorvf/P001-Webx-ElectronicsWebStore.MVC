@@ -26,25 +26,37 @@ namespace Webx.Web.Controllers
         private readonly ICategoryRepository _categoryRepository;
         private readonly IBlobHelper _blobHelper;
         private readonly INotyfService _toastNotification;
+        private readonly IProductRepository _productRepository;
+        private readonly IOrderRepository _orderRepository;
 
         public AccountController(IUserHelper userHelper,IMailHelper mailHelper, ICategoryRepository categoryRepository,IBlobHelper blobHelper
-            , INotyfService toastNotification)
+            , INotyfService toastNotification, IProductRepository productRepository,IOrderRepository orderRepository)
         {
             _userHelper = userHelper;
             _mailHelper = mailHelper;
             _categoryRepository = categoryRepository;            
             _blobHelper = blobHelper;
             _toastNotification = toastNotification;
+            _productRepository = productRepository;
+            _orderRepository = orderRepository;
         }
 
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl = null)
         {
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Home");
             }
 
-            return View();
+            var model = new LoginViewModel();
+
+            if (returnUrl != null)
+            {
+                model.ReturnUrl = returnUrl;
+                ViewData["ReturnUrl"] = returnUrl;
+            }
+
+            return View(model);
         }
 
         [HttpPost]
@@ -66,6 +78,12 @@ namespace Webx.Web.Controllers
 
                     if (user != null)
                     {
+
+                        if (model.ReturnUrl != null)
+                        {
+                            return Redirect(model.ReturnUrl);
+                                
+                        }
 
                         return this.RedirectToAction("Index", "Home");
 
@@ -96,9 +114,14 @@ namespace Webx.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Register()
+        public IActionResult Register(string returnUrl = null)
         {
-            return View();
+
+            var model = new RegisterViewModel();
+            model.ReturnUrl = returnUrl;
+            ViewData["ReturnUrl"] = returnUrl;
+
+            return View(model);
         }
 
         [HttpPost]
@@ -149,9 +172,13 @@ namespace Webx.Web.Controllers
                         string tokenLink = Url.Action("ConfirmEmail", "Account", new
                         {
                             userId = user.Id,
-                            token = userToken
+                            token = userToken,
+                            returnUrl = model.ReturnUrl,                            
                         }, protocol: HttpContext.Request.Scheme);
-                        var returnLink = Url.Action("Index", "Home", null, protocol: HttpContext.Request.Scheme);
+
+                                        
+                        string returnLink = Url.Action("Index", "Home", null, protocol: HttpContext.Request.Scheme);
+                     
 
                         Response response = await _mailHelper.SendConfirmationEmail(model.UserName, tokenLink, user,returnLink);
 
@@ -173,7 +200,7 @@ namespace Webx.Web.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        public async Task<IActionResult> ConfirmEmail(string userId, string token, string returnUrl = null)
         {
             if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
             {
@@ -198,6 +225,7 @@ namespace Webx.Web.Controllers
             var model = new AddUserPasswordViewModel
             {
                 UserId = userId,
+                ReturnUrl = returnUrl
             };
 
             return View(model);
@@ -214,6 +242,21 @@ namespace Webx.Web.Controllers
                     var result = await _userHelper.ChangePasswordAsync(user, "DefaultPassword123", model.Password);
                     if (result.Succeeded)
                     {
+                        if(model.ReturnUrl != null)
+                        {
+                            var loginAttempt = await _userHelper.FirstLoginAsync(user);
+                            if (loginAttempt.Succeeded)
+                            {
+                                return Redirect(model.ReturnUrl);
+                            }
+                            else
+                            {
+                                ViewBag.Failed = "Unfurtunaly theere was a problem redirecting you to the checkout page.";
+                                return View(model);
+                            }
+                            
+                        }                       
+
                         ViewBag.Success = "You can now login into the system.";
                         return View(model);
                     }
@@ -324,15 +367,15 @@ namespace Webx.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public IActionResult ExternalLogin(string provider, string returnurl = null)
+        public IActionResult ExternalLogin(string provider, string returnUrl = null)
         {
-            var redirect = Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnurl });
+            var redirect = Url.Action("ExternalLoginCallback", "Account", new { returnUrl = returnUrl });
             var properties = _userHelper.ConfigureExternalAuthenticationProperties(provider, redirect);
             return Challenge(properties, provider);
         }
 
         [HttpGet]
-        public async Task<IActionResult> ExternalLoginCallback(string returnurl = null, string remoteError = null)
+        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
         {
             if (remoteError != null)
             {
@@ -352,15 +395,15 @@ namespace Webx.Web.Controllers
             if (result.Succeeded)
             {
                 await _userHelper.UpdateExternalAuthenticationTokensAsync(info);
-                if (returnurl != null)
+                if (returnUrl != null)
                 {
-                    return LocalRedirect(returnurl);
+                    return LocalRedirect(returnUrl);
                 }
                 else return RedirectToAction("Index", "Home");
             }
             else
             {
-                ViewData["ReturnUrl"] = returnurl;
+                ViewData["ReturnUrl"] = returnUrl;
                 ViewData["ProvierDisplayName"] = info.ProviderDisplayName;
                 var email = info.Principal.FindFirstValue(ClaimTypes.Email);
                 return View("ExternalLoginConfirmation", new ExternalLoginViewModel { Email = email });
@@ -371,9 +414,9 @@ namespace Webx.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginViewModel model, string? returnurl = null)
+        public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginViewModel model, string? returnUrl = null)
         {
-            returnurl = returnurl ?? Url.Content("~/");
+            returnUrl = returnUrl ?? Url.Content("~/");
 
             if (ModelState.IsValid)
             {
@@ -413,13 +456,13 @@ namespace Webx.Web.Controllers
                     {
                         await _userHelper.SignInAsync(user, isPersistent: false);
                         await _userHelper.UpdateExternalAuthenticationTokensAsync(info);
-                        return LocalRedirect(returnurl);
+                        return LocalRedirect(returnUrl);
                     }
                 }
                 ModelState.AddModelError("Email", "User already exists");
             }
 
-            ViewData["ReturnUrl"] = returnurl;
+            ViewData["ReturnUrl"] = returnUrl;
             return View(model);
         }
 #nullable disable
@@ -432,11 +475,11 @@ namespace Webx.Web.Controllers
             if (user == null)
             {
                 return NotFound();
-            }
+            }         
 
             var hasPassword = await _userHelper.HasPasswordAsync(user);
 
-            var model = new ChangeUserViewModel
+            var changeUserViewModel = new ChangeUserViewModel
             {
                 PhoneNumber = user.PhoneNumber,
                 FirstName = user.FirstName,
@@ -448,9 +491,30 @@ namespace Webx.Web.Controllers
                 HasPassword = hasPassword,
             };
 
+            var custOrders = await _orderRepository.GetAllCustomerOrdersAsync(user.Id);
+            bool hasAppointmentToDo = false;
+            
+            foreach(var order in custOrders)
+            {
+                if(order.Order.Status.Name == "Pending Appointment")
+                {
+                    hasAppointmentToDo = true;
+                    break;
+                }
+            }
+
+            var model = new ShopViewModel
+            {
+                UserViewModel = changeUserViewModel,
+                Cart = await _productRepository.GetCurrentCartAsync(),
+                CustomerOrders = custOrders,
+                HasAppointmentToDo = hasAppointmentToDo
+            };
+
             ViewBag.JsonModel = JsonConvert.SerializeObject(model);
             ViewBag.UserFullName = user.FullName;
-            ViewBag.Categories = await _categoryRepository.GetAllCategoriesAsync();
+            ViewBag.IsActive = user.Active;
+            //ViewBag.Categories = await _categoryRepository.GetAllCategoriesAsync();
 
             return View(model);
         }
@@ -624,9 +688,10 @@ namespace Webx.Web.Controllers
 
         public async Task<IActionResult> NotAuthorized()
         {
-            ViewBag.Categories = await _categoryRepository.GetAllCategoriesAsync();
+            var model = await _productRepository.GetInitialShopViewModelAsync();
+            model.Categories = await _categoryRepository.GetAllCategoriesAsync();
 
-            return View();
+            return View(model);
         }
     }
 }

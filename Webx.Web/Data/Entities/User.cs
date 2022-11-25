@@ -45,5 +45,7 @@ namespace Webx.Web.Data.Entities
             ? $"https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg"
             : $"https://webx2022.blob.core.windows.net/users/{ImageId}";
 
+        public CheckoutTempData CheckoutTempData { get; set; }
+
     }
 }

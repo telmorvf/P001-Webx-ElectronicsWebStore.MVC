@@ -12,6 +12,6 @@ namespace Webx.Web.Models
         public IEnumerable<SelectListItem> Statuses { get; set; }
 
         [Display(Name = "Status")]
-        public string StatusId  { get; set; }   
+        public string StatusId  { get; set; } 
     }
 }

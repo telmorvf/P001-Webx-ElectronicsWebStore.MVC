@@ -107,3 +107,206 @@ body {
      -webkit-transform: scale(0.5, 0.5) !important;
      transform: scale(0.5, 0.5) !important;
  }
+
+
+ /*slider*/
+.price-input {
+    width: 100%;
+    display: flex;
+    margin: 30px 0 35px;
+}
+
+.price-input .field {
+    display: flex;
+    width: 100%;
+    height: 25px;
+    align-items: center;
+}
+
+.field input {
+    width: 100%;
+    height: 100%;
+    outline: none;
+    font-size: 16px;
+    margin-left: 12px;
+    border-radius: 5px;
+    text-align: center;
+    border: 1px solid #999;
+    -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+.price-input .separator {
+    width: 50px;
+    display: flex;
+    font-size: 14px;
+    align-items: center;
+    justify-content: center;
+}
+
+.slider {
+    height: 5px;
+    position: relative;
+    background: #ddd;
+    border-radius: 5px;
+}
+
+    .slider .progress {
+        height: 100%;
+        left: 0%;
+        right: 1%;
+        position: absolute;
+        border-radius: 5px;
+        background: var(--theme-color);
+    }
+
+.range-input {
+    position: relative;
+}
+
+    .range-input input {
+        position: absolute;
+        width: 100%;
+        height: 5px;
+        top: -5px;
+        background: none;
+        pointer-events: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+
+input[type="range"]::-webkit-slider-thumb {
+    height: 17px;
+    width: 17px;
+    border-radius: 50%;
+    background:  var(--theme-color);
+    pointer-events: auto;
+    -webkit-appearance: none;
+    box-shadow: 0 0 6px rgba(0,0,0,0.05);
+}
+
+input[type="range"]::-moz-range-thumb {
+    height: 17px;
+    width: 17px;
+    border: none;
+    border-radius: 50%;
+    background: #17A2B8;
+    pointer-events: auto;
+    -moz-appearance: none;
+    box-shadow: 0 0 6px rgba(0,0,0,0.05);
+}
+
+/* Custom css */
+
+.e-footer-content .e-btn.e-flat:not([DISABLED]) {
+    background-color: #0163D2 !important;
+    border-color: #fff !important;
+    color: #fff !important;
+    font-weight: 400 !important;
+    transition: ease-in-out 0.5s;
+}
+
+    .e-footer-content .e-btn.e-flat:not([DISABLED]):hover {
+        background-color: #fff !important;
+        border-color: #0163D2 !important;
+        color: #0163D2 !important;
+        border-radius: 0px !important;
+    }
+
+.fontawesome {
+    font-size: 18px;
+    color: grey;
+    cursor: pointer;
+}
+
+    .fontawesome:hover .fa-eye-slash:before {
+        content: "\f06e";
+        color: #0163D2;
+        opacity: 0.4;
+    }
+
+.my_file {
+    bottom: 0px;
+    outline: none;
+    color: transparent;
+    width: 100%;
+    height: 350px;
+    padding: 15px 100px;
+    cursor: pointer;
+    transition: 1s;
+    background: rgba(0,0,0,0.5);
+    opacity: 0;
+    border-radius: 50%;
+    margin: auto;
+}
+
+    .my_file::-webkit-file-upload-button {
+        visibility: hidden;
+    }
+
+    .my_file::before {
+        content: 'Update';
+        font-size: 14px;
+        font-family: Arial;
+        font-weight: bold;
+        color: rgba(85, 150, 223,0.8);
+        display: block;
+        text-align: center;
+    }
+
+    .my_file:hover {
+        opacity: 1;
+    }
+
+.imageStyle {
+    height: 350px;
+    width: auto;
+    position: relative;
+    overflow: hidden;
+    box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+}
+
+.pad {
+    padding: 15px;
+}
+
+.appointmentWarning {
+    width: 100%;
+    margin: 0;
+    display: flex;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+    .appointmentWarning > div {
+        width: 100%;
+        height: 50px;
+        /*background-color: #FFCA2C;*/
+        justify-content: center;
+        text-align: center;
+        line-height: 50px;
+        font-weight: 500;
+        border: solid 1px;
+        animation-name: backgroundColorWarning;
+        animation-duration: 4s;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+    }
+
+@keyframes backgroundColorWarning {
+    0% {
+        background: #FFCA2C;
+    }
+
+    50% {
+        background: #FFF;
+    }
+
+    100% {
+        background: #FFCA2C;
+    }
+}

@@ -1,0 +1,220 @@
+﻿@model Webx.Web.Models.ShopViewModel
+
+@{
+    ViewData["Title"] = "Success";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+   
+}
+
+
+<!-- Order Success Section Start -->
+    <section class="pt-0">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 p-0">
+                    <div class="success-icon">                        
+                        <div class="success-contain">
+                            <h4>Order Success</h4>
+                            <h5 class="font-light">Payment Is Successfully Processsed And Your Order Is On The Way</h5>
+                            <h6 class="font-light">Transaction ID:@ViewBag.PaymentId</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Order Success Section End -->
+
+    <!-- Oder Details Section Start -->
+    <section class="section-b-space cart-section order-details-table">
+        <div class="container">
+            <div class="title title1 title-effect mb-1 title-left">
+                <h2 class="mb-3">Order Details</h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="col-sm-12 table-responsive">
+                        <table class="table cart-table table-borderless">
+                            <tbody>
+
+                                @foreach(var item in Model.Cart)
+                                {
+                                    <tr class="table-order">
+                                        
+                                        <td>                                           
+                                            @if(item.Product.Images.Count() > 0)
+                                            {
+                                                <img src="@item.Product.Images.ElementAt(0).ImageFullPath" class="img-fluid blur-up lazyload" alt="">   
+                                            }
+                                            else
+                                            {
+                                                <img src="https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg" class="img-fluid blur-up lazyload" alt="">
+                                            }
+                                        </td>
+                                        <td>
+                                            <p>Product Name</p>
+                                            <h5>@item.Product.Name</h5>
+                                        </td>
+                                        <td>
+                                            <p>Quantity</p>
+                                            <h5>@item.Quantity</h5>
+                                        </td>
+                                        <td>
+                                            <p>Price</p>
+                                            <h5>@item.TotalPrice</h5>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr class="table-order">
+                                    <td colspan="3">
+                                        <h5 class="font-light">Subtotal :</h5>
+                                    </td>
+                                    <td>
+                                        <h4>@Model.CartGrandTotal</h4>
+                                    </td>
+                                </tr>
+
+                                <tr class="table-order">
+                                    <td colspan="3">
+                                        <h5 class="font-light">Shipping :</h5>
+                                    </td>
+                                    <td>
+                                        <h4>Free</h4>
+                                    </td>
+                                </tr>
+                                                               
+
+                                <tr class="table-order">
+                                    <td colspan="3">
+                                        <h4 class="theme-color fw-bold">Total Price :</h4>
+                                    </td>
+                                    <td>
+                                        <h4 class="theme-color fw-bold">@Model.CartGrandTotal</h4>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="order-success">
+                        <div class="row g-4">
+                            <div class="col-sm-6">
+                                <h4>summery</h4>
+                                <ul class="order-details">
+                                    @if(Model.Invoices.Count() > 1)
+                                    {   <li>Order ID's:
+                                                 @for(int i = 0; i < Model.Invoices.Count(); i++)
+                                                 {
+                                                     if(i == 0)
+                                                     {
+                                                        @Model.Invoices[i].Id
+                                                     }
+                                                     else
+                                                     {
+                                                        @Html.Raw($"- {Model.Invoices[i].Id}")
+                                                     }
+                                                 }
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li>Order ID: @Model.Invoices[0].Id </li>
+                                    }                                
+                                    <li>Order Date: @DateTime.UtcNow.ToString("dddd, dd MMMM yyyy") </li>
+                                    <li>Order Total: @Model.CartGrandTotal</li>
+                                </ul>
+                            </div>
+
+                            <div class="col-sm-6">
+                               <div class="payment-mode">
+                                    <h4>payment method</h4>
+                                    <p><img src="~/images/images/Paypal.png" style="max-width:100px"/></p>
+                                </div>
+                            </div>
+
+                             <div class="col-12">
+                                <h4>shipping address</h4>
+                                <ul class="order-details">
+                                    <li>@Model.CheckoutViewModel.User.FirstName @Model.CheckoutViewModel.User.LastName</li>
+                                    <li>@Model.CheckoutViewModel.User.Email</li>
+                                    <li>@Model.CheckoutViewModel.User.PhoneNumber</li>
+                                    <li>@Model.CheckoutViewModel.User.Address</li>                                   
+                                </ul>
+                            </div>                          
+
+                        @{
+                            string orderIds = "";
+                            bool asItem = false;
+                        }                   
+
+
+                            @foreach(var invoice in Model.Invoices)
+                            {
+                                foreach(var item in invoice.orderDetails)
+                                {
+                                    if(item.Product.IsService == false)
+                                    {
+                                        asItem = true;
+                                        break;
+                                    }
+                                }
+
+                                if(invoice.Order.Status.Name == "Pending Appointment")
+                                {
+                                    if(orderIds == "")
+                                    {
+                                    orderIds += $"{invoice.Order.Id.ToString()}";
+                                }
+                                    else
+                                    {
+                                        orderIds += $",{invoice.Order.Id.ToString()}";
+                                    }
+                                }
+                            }
+
+                            @if(asItem){
+                                <div class="col-md-12">
+                                    <div class="delivery-sec">
+                                        <h3 style="text-align:center">expected date of delivery: <span>@DateTime.UtcNow.AddDays(3).ToString("dddd, dd MMMM yyyy")</span></h3>                                                                       
+                                    </div>
+                                </div>
+                            }                            
+
+                            
+                            @if(!string.IsNullOrEmpty(orderIds))
+                            {
+                                <div class="col-sm-12">
+                                    <h3 style="text-align:center">For purchasing a service, <span>make your appointment now!</span></h3>
+                                    <a class="btn btnPersonalizado" asp-action="ViewUser" asp-controller="Account">Make service appointment</a>
+                                </div>                                  
+                            }
+                            
+                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Order Details Section End -->
+
+    @section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+        <script src="~/js/CartScript.js"></script>
+
+        <script type="text/javascript">
+
+           $(document).ready(function(){
+               clearDropDownList();
+           });
+
+        </script>
+    }
+
+    

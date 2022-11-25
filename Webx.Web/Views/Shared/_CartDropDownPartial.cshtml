@@ -1,0 +1,92 @@
+﻿@model Webx.Web.Models.ShopViewModel
+
+
+<div class="menu-right">
+    <ul>       
+        <li class="onhover-dropdown wislist-dropdown">
+            <div class="cart-media">
+                <div class="cart-icon">
+                    <i class="fal fa-heart" style="font-size: 22px"></i>
+                    <span class="label label-theme rounded-pill">0</span>
+                </div>
+                <div class="cart-content">
+                    <h6>Empty</h6>
+                    <span>Wish List</span>
+                </div>
+            </div>
+            <div class="onhover-div">
+                <a href="wishlist.html">
+                    <div class="wislist-empty">
+                        <i class="fab fa-gratipay"></i>
+                        <h6 class="mb-1">Your wislist empty !!</h6>
+                        <p class="font-light mb-0">explore more and shortlist items.</p>
+                    </div>
+                </a>
+            </div>
+        </li>
+        <li class="onhover-dropdown cart-dropdown">
+            <a asp-action="Index" asp-controller="Cart" class="btn btn-solid-default btn-spacing"> 
+               <i class="fal fa-shopping-cart pe-2" style="font-size:18px" ></i>
+                    <span id="TotalPrice">@Model.CartGrandTotal</span>
+            </a>
+           @if(Model.Cart != null && Model.Cart.Count() > 0)
+           {
+                <div class="onhover-div">
+                    <div class="cart-menu">
+                        <div class="cart-title">
+                            <h6>
+                                <i data-feather="shopping-bag"></i>
+                                <span class="label label-theme rounded-pill">@Model.TotalProductsInCart</span>
+                            </h6>
+                            <span class="d-md-none d-block">
+                                <i class="fas fa-arrow-right back-cart"></i>
+                            </span>
+                        </div>
+                        <ul class="custom-scroll" style="max-height:500px;overflow:auto">
+                            @foreach(var item in Model.Cart)
+                            {
+                                <li>
+                                    <div class="media">
+                                        @if(item.Product.Images.Count() > 0)
+                                        {
+                                            <img src="@item.Product.Images.ElementAt(0).ImageFullPath" class="img-fluid blur-up lazyload" alt="">
+                                        }
+                                        else
+                                        {
+                                            <img src="https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg" class="img-fluid blur-up lazyload" alt="">
+                                        }
+                                        <div class="media-body">
+                                            <h6>@item.Product.Name</h6>
+                                            <div class="qty-with-price">
+                                                <span>@((item.Product.Price * item.Quantity).ToString("C2"))</span>
+                                                <span>
+                                                    <span>Qty. x @item.Quantity</span>                                             
+                                                </span>
+                                            </div>
+                                        </div>
+                                        @*<button type="button" class="btn-close d-block d-md-none"
+                                            aria-label="Close">
+                                            <i class="fas fa-times"></i>
+                                        </button>*@
+                                    </div>
+                                </li>
+                            }               
+                        </ul>
+                    </div>
+                    
+                
+                    <div class="cart-btn">
+                        <h6 class="cart-total"><span class="font-light"></span>
+                            </h6>
+                        <a asp-action="Index" asp-controller="Cart" class="btn btn-solid-default btn-block">                            
+                            Proceed to payment
+                        </a>
+                    </div>
+                </div>
+           }
+        
+           
+        </li>
+
+    </ul>
+</div>

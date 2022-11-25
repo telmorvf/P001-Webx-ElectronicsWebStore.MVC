@@ -13,5 +13,7 @@ namespace Webx.Web.Models
         [Required]
         [Compare("Password")]
         public string Confirm { get; set; }
+
+        public string ReturnUrl { get; set; }
     }
 }

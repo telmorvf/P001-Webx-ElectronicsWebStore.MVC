@@ -1,0 +1,96 @@
+﻿@model Webx.Web.Models.ShopViewModel
+
+@{
+
+}
+
+
+
+
+<!-- Checkout Section Start -->
+    <section class="section-b-space">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <h3 class="mb-3">Billing address</h3>
+                    <form class="needs-validation">
+                        <input type="hidden" asp-for="Cart" />
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label asp-for="CheckoutViewModel.User.FirstName" class="form-label"></label>
+                                <input asp-for="CheckoutViewModel.User.FirstName" class="form-control" placeholder="Enter First Name"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-For="CheckoutViewModel.User.LastName" class="form-label"></label>
+                                <input asp-For="CheckoutViewModel.User.LastName" class="form-control" placeholder="Enter Last Name"/>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="CheckoutViewModel.User.Email" class="form-label"></label>
+                                <input asp-For="CheckoutViewModel.User.Email" class="form-control" >
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="CheckoutViewModel.User.PhoneNumber" class="form-label"></label>
+                                <input asp-For="CheckoutViewModel.User.PhoneNumber" class="form-control" >
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-For="CheckoutViewModel.ShippingAddress" class="form-label"></label>
+                                <input asp-For="CheckoutViewModel.ShippingAddress" class="form-control">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="CheckoutViewModel.User.NIF" class="form-label"></label>
+                                <input asp-for="CheckoutViewModel.User.NIF" class="form-control">
+                            </div>
+
+                            
+                        </div>
+                        <div class="form-check ps-0 mt-3 custome-form-check">
+                            <span asp-validation-for="CheckoutViewModel.User.FirstName" class="text-danger"></span>
+                            <span asp-validation-for="CheckoutViewModel.User.LastName" class="text-danger"></span>
+                            <span asp-validation-for="CheckoutViewModel.User.Email" class="text-danger"></span>
+                            <span asp-validation-for="CheckoutViewModel.ShippingAddress" class="text-danger"></span>
+                            <span asp-validation-for="CheckoutViewModel.User.PhoneNumber" class="text-danger"></span>
+                            <span asp-validation-for="CheckoutViewModel.User.NIF" class="text-danger"></span>
+                        </div>
+
+                        <hr class="my-lg-5 my-4">
+
+                        <h3 class="mb-3">Payment</h3>
+
+                                               
+                        <button class="btn btn-solid-default mt-4" asp-action="SaveFormData" asp-controller="Checkout" type="submit">Buy now with <i class="fab fa-paypal"></i> </button>
+                    </form>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="your-cart-box">
+                        <h3 class="mb-3 d-flex text-capitalize">Your cart<span
+                                class="badge bg-theme new-badge rounded-pill ms-auto bg-dark">@Model.TotalProductsInCart</span>
+                        </h3>
+                        <ul class="list-group mb-3">
+                            @foreach(var item in Model.Cart)
+                            {
+                                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                    <div>
+                                        <h6 class="my-0">@item.Product.Name</h6>                                    
+                                    </div>
+                                    <span>@item.Product.Price</span>
+                                </li>
+                            }                       
+                            
+                            <li class="list-group-item d-flex lh-condensed justify-content-between">
+                                <span class="fw-bold">Total (EURO)</span>
+                                <strong>@Model.CartGrandTotal</strong>
+                            </li>
+                        </ul>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Checkout Section End -->

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Webx.Web.Data.Entities;
 using Webx.Web.Models;
 
@@ -6,7 +7,7 @@ namespace Webx.Web.Helpers
 {
     public interface IConverterHelper
     {
-        Task<EditEmployeeViewModel> ToEditEmployeeViewModelAsync(User user);
+        Task<EditEmployeeViewModel> ToEditEmployeeViewModelAsync(User user);        
 
         public StoreViewModel StoreToViewModel(Store store);
 
@@ -19,6 +20,8 @@ namespace Webx.Web.Helpers
         StockViewModel StockToViewModel(Stock stock);
 
         EditCustomerViewModel ToEditCustomerViewModel(User user);
+        
+        Task<List<CartViewModel>> ToCartViewModelAsync(List<CookieItemModel> cookieItemList);
 
         OrderViewModel ToOrderViewModel(Order order);
     }
