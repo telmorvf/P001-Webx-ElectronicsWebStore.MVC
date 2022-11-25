@@ -23,5 +23,6 @@ namespace Webx.Web.Helpers
         
         Task<List<CartViewModel>> ToCartViewModelAsync(List<CookieItemModel> cookieItemList);
 
+        OrderViewModel ToOrderViewModel(Order order);
     }
 }

@@ -1,0 +1,133 @@
+﻿@model IEnumerable<Webx.Web.Data.Entities.Order>
+
+@{
+    ViewData["Title"] = "View All Orders";
+    ViewData["Breadcrumb"] = null;
+    Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
+    List<Object> toolbarItems = new List<Object>();
+   
+    toolbarItems.Add("Search");
+    toolbarItems.Add(new { text = "Info", tooltipText = "Order Details", prefixIcon = "e-expand", id = "infoOrder" });
+}
+<style>
+
+    #infoOrder > .e-expand::before{
+        content: '\e800' !important;
+    }
+
+    .increase-size {
+            font-size: .95em;
+        }
+   
+</style>
+
+<!--Div que permite dar espaçamento entre ejs grid e topo-->
+<div class="container-fluid" style="min-height:25px;background-color: #f4f6f9;">
+   
+</div>
+
+<div id='container' class="container-fluid">
+
+    <!-- Tabela/Grid do syncfusion  -->
+    <ejs-grid id="grid" TValue="@ViewBag.Type" dataSource="Model" rowSelected="rowSelected" allowSelection="true" allowPaging="true" allowSorting="true" allowFiltering="false" toolbarClick="toolbarClick" toolbar="toolbarItems" >
+        <e-grid-selectionsettings type="Single" mode="Row"></e-grid-selectionsettings>
+        <e-grid-pagesettings pageSize="7"></e-grid-pagesettings>        
+        <e-grid-columns>            
+            <e-grid-column field="Id" headertext="Order #" textAlign="Center" isPrimaryKey="true" width="100px"></e-grid-column>
+            <e-grid-column field="Customer.FullName" headertext="Customer" textAlign="Left" width="150px"></e-grid-column>
+            <e-grid-column field="Store.Name" headertext="Store" textAlign="Left" allowEditing="false" width="150px"></e-grid-column>
+            <e-grid-column field="OrderDate" headertext="Created"  type='dateTime' format='dd/MM/yyyy hh:mm' textAlign="Left" width="150px"></e-grid-column>
+            <e-grid-column field="Status.Name" template="#status" headerText="Status" textAlign="Left" width="150px"></e-grid-column>
+            <e-grid-column template="#total" headertext="Total" textAlign="Left" width="100px"></e-grid-column>
+        </e-grid-columns>
+    </ejs-grid>
+    
+</div>
+
+
+<!-- Script template para a grid do syncfusion, este template permite colocar a checkbox numa determinada coluna -->
+<script id="templateCheckbox" type="text/x-template">
+    <div class="template_checkbox">
+        ${if(Active)}
+            <input type="checkbox" checked disabled="disabled" > ${else}
+            <input type="checkbox" disabled="disabled"> 
+        ${/if}
+    </div>
+</script>
+
+<!-- Script  -->
+<script id="total" type="text/x-template">
+    <div>
+       <p>${parseFloat(TotalPrice).toFixed(2)} €</p>
+    </div>
+</script>
+
+<script id="status" type="text/x-template">
+    <!-- Else if não estava a funcionar -->
+    ${if(Status.Name==="Order Created" || Status.Name==="Appointment Created")}
+        <div class="badge rounded-pill bg-info increase-size">
+            ${Status.Name}
+        </div>
+    ${/if}
+    ${if(Status.Name==="Order Shipped" || Status.Name==="Appointment Done")}
+        <div class="badge rounded-pill bg-success increase-size">
+            ${Status.Name}
+        </div>
+    ${/if}
+    ${if(Status.Name==="Pending Appointment")} 
+        <div class="badge rounded-pill bg-warning increase-size">
+            ${Status.Name}
+        </div>
+    ${/if}
+    ${if(Status.Name==="Order Closed")}
+        <div class="badge rounded-pill bg-danger increase-size">
+            ${Status.Name}
+        </div>
+    ${/if}
+    
+</script>
+
+<!-- Script com as funçoes dos botoes da grid do syncfusion -->
+<script>
+
+    let id;
+
+    function rowSelected(args){
+       // obtem a linha da tabela selecionada     
+       var selectedrecords = this.getSelectedRecords();  
+     
+       // atribui à variàvel id o valor do user id selecionado na tabela
+       id = selectedrecords[0].Id;   
+    }
+
+    function toolbarClick(args) {        
+
+        //determina se o botão da tabela clicado foi o de info do Order, o infoOrder é o id do botão definido na linha 18
+        if (args.item.id === 'infoOrder') {            
+            //ler linhas 140 a 142, faz exatamente o mesmo.
+            if (id === "" || id === null || id === undefined) {
+
+                let message = "You must select an order!";
+                let type = "warning";
+
+                $.ajax({
+                    url: '@Url.Action("ToastNotification","Order")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { message: message, type: type },
+                    success: function(result) {
+                        console.log(result);
+                    },
+                    error: function(ex) {
+                        console.log(ex);
+                    }
+                });
+
+                return;
+            }
+            
+           window.location.href = '/Order/Details/' + id;
+        }
+    }
+
+ </script>

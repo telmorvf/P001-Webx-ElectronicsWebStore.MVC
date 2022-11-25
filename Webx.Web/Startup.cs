@@ -118,7 +118,9 @@ namespace Webx.Web
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IStockRepository, StockRepository>();
             services.AddScoped<IStoreRepository, StoreRepository>();
-   
+            services.AddScoped<IStatusRepository, StatusRepository>();
+
+
 
             services.AddHttpContextAccessor();
 
