@@ -1,4 +1,4 @@
-﻿@model Webx.Web.Models.ChangeUserViewModel
+﻿@model Webx.Web.Models.ShopViewModel
 @using Webx.Web.Models
 
 @{
@@ -9,7 +9,7 @@
 }
 
 <style>
-    .e-footer-content .e-btn.e-flat:not([DISABLED])
+    /*.e-footer-content .e-btn.e-flat:not([DISABLED])
     {
          background-color: #0163D2 !important;
          border-color: #fff !important;
@@ -79,8 +79,40 @@
         padding: 15px;
     }
 
+    .appointmentWarning{
+        width: 100%;
+        margin: 0;
+        display: flex;
+        position: relative;        
+        margin-bottom: 20px;
+    }
+
+    .appointmentWarning > div{
+        width: 100%;
+        height: 50px;        
+        /*background-color: #FFCA2C;*/
+   /*     justify-content: center;
+        text-align: center;
+        line-height: 50px;
+        font-weight: 500;
+        border: solid 1px;
+        animation-name: backgroundColorWarning;
+        animation-duration:4s;
+        animation-iteration-count:infinite;
+        animation-direction:alternate;
+    }
+
+    @@keyframes backgroundColorWarning{
+        0%{
+            background: #FFCA2C;
+        }
+        50%{
+            background: #FFF;
+        }
+    }*/
 
 </style>
+
 
 <!-- user dashboard section start -->
     <section class="section-b-space">
@@ -88,21 +120,31 @@
             <div class="row">
                 <div class="col-lg-3">
                     <ul class="nav nav-tabs custome-nav-tabs flex-column category-option" id="myTab">
-                        <li class="nav-item mb-2">
-                            <button class="nav-link font-light active" id="tab" data-bs-toggle="tab"
-                                data-bs-target="#dash" type="button"><i
-                                    class="fas fa-angle-right"></i>Profile</button>
-                        </li>
+                        @if(Model.HasAppointmentToDo == false)
+                        {
+                                <li class="nav-item mb-2">
+                                    <button class="nav-link font-light active" id="tab" data-bs-toggle="tab" data-bs-target="#dash" type="button"><i class="fas fa-angle-right"></i>Profile</button>
+                                </li>
+
+                                <li class="nav-item mb-2">
+                                    <button class="nav-link font-light" id="1-tab" data-bs-toggle="tab" data-bs-target="#order" type="button"><i class="fas fa-angle-right"></i>Orders</button>
+                                </li>
+                        }
+                        else
+                        {
+                                <li class="nav-item mb-2">
+                                    <button class="nav-link font-light" id="tab" data-bs-toggle="tab" data-bs-target="#dash" type="button"><i class="fas fa-angle-right"></i>Profile</button>
+                                </li>
+
+                                <li class="nav-item mb-2">
+                                    <button class="nav-link font-light active" id="1-tab" data-bs-toggle="tab" data-bs-target="#order" type="button"><i class="fas fa-angle-right"></i>Orders</button>
+                                </li>
+                        }
+
+                        
 
                         <li class="nav-item mb-2">
-                            <button class="nav-link font-light" id="1-tab" data-bs-toggle="tab" data-bs-target="#order"
-                                type="button"><i class="fas fa-angle-right"></i>Orders</button>
-                        </li>
-
-                        <li class="nav-item mb-2">
-                            <button class="nav-link font-light" id="2-tab" data-bs-toggle="tab"
-                                data-bs-target="#wishlist" type="button"><i
-                                    class="fas fa-angle-right"></i>Wishlist</button>
+                            <button class="nav-link font-light" id="2-tab" data-bs-toggle="tab" data-bs-target="#wishlist" type="button"> <i class="fas fa-angle-right"></i>Wishlist</button>                              
                         </li>                        
 
                         <li class="nav-item mb-2">
@@ -128,7 +170,7 @@
                                         <h2>My Profile</h2>
                                     </div>
                                     <div class="welcome-msg">
-                                        <h6 class="font-light">Hello, <span>@Model.FullName!</span></h6>
+                                        <h6 class="font-light">Hello, <span>@Model.UserViewModel.FullName!</span></h6>
                                         <p class="font-light">From your My Account Dashboard you have the ability to
                                             view a snapshot of your recent account activity and update your account
                                             information. Select a link below to view or edit information.</p>
@@ -201,11 +243,11 @@
                                                         <a class="btn" style="padding:0;font-weight:400;color:#0163D2" onclick="editUser()">Edit</a>
                                                     </div>
                                                     <div class="box-content">
-                                                        <h6 class="font-light" style="text-transform:uppercase">@Model.FullName</h6>
-                                                        <h6 class="font-light">Email: @Model.Email</h6>
-                                                        <h6 class="font-light">Phone: @Model.PhoneNumber</h6>
-                                                        <h6 class="font-light">NIF: @Model.NIF</h6>
-                                                    @if(Model.HasPassword == true)
+                                                        <h6 class="font-light" style="text-transform:uppercase">@Model.UserViewModel.FullName</h6>
+                                                        <h6 class="font-light">Email: @Model.UserViewModel.Email</h6>
+                                                        <h6 class="font-light">Phone: @Model.UserViewModel.PhoneNumber</h6>
+                                                        <h6 class="font-light">NIF: @Model.UserViewModel.NIF</h6>
+                                                    @if(Model.UserViewModel.HasPassword == true)
                                                     {
                                                         <a class="btn" style="padding:0;font-weight:400;color:#0163D2" onclick="changePassword()">Change Password</a>
                                                     }                                                    
@@ -220,9 +262,9 @@
                                                         <div class="col-sm-6">
                                                             <h6 class="font-light">Default Billing Address</h6>
                                                             <h6 class="font-light">
-                                                                @if (!string.IsNullOrEmpty(Model.Address))
+                                                                @if (!string.IsNullOrEmpty(Model.UserViewModel.Address))
                                                                 {
-                                                                    @Model.Address
+                                                                    @Model.UserViewModel.Address
                                                                 }
                                                                 else
                                                                 {
@@ -255,173 +297,90 @@
                                 <h3>My Orders</h3>
                             </div>
                             <div class="table-responsive">
-                                <table class="table cart-table">
+                                 @if(Model.HasAppointmentToDo == true)
+                                    {
+                                        <div class="table-head row appointmentWarning" stlye="background-color:#FFCA2C"> 
+                                            <div class="col-md-12">You have unscheduled appointments!</div>
+                                        </div>
+                                    }
+                                <table class="table cart-table">                                                                        
                                     <thead>
                                         <tr class="table-head">
                                             <th scope="col">image</th>
                                             <th scope="col">Order Id</th>
-                                            <th scope="col">Product Details</th>
+                                            <th scope="col">Order Details</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Price</th>
                                             <th scope="col">View</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                    @foreach(var order in Model.CustomerOrders)
+                                    {
                                         <tr>
                                             <td>
-                                                <a href="product-left-sidebar.html">
-                                                    <img src="~/assets/images/fashion/product/front/1.jpg"
-                                                        class="blur-up lazyload" alt="">
+                                                <a href="#">
+                                                    @if(order.OrderDetails.FirstOrDefault().Product.Images.Count() > 0)
+                                                    {
+                                                        <img src="@order.OrderDetails.FirstOrDefault().Product.Images.ElementAt(0).ImageFullPath" class="blur-up lazyload" alt="">
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg" class="blur-up lazyload" alt="">                                                        
+                                                    }                                                    
+                                                       
                                                 </a>
                                             </td>
                                             <td>
-                                                <p class="mt-0">#125021</p>
+                                                <p class="mt-0">#@order.Order.InvoiceId</p>
                                             </td>
                                             <td>
-                                                <p class="fs-6 m-0">Outwear & Coats</p>
+                                                @foreach(var orderDetails in order.OrderDetails)
+                                                {
+                                                    <div style="white-space:nowrap;text-overflow:ellipsis;overflow:hidden; max-width:300px;margin:auto" class="fs-6">@orderDetails.Product.Name</div>
+                                                }                                                
                                             </td>
                                             <td>
-                                                <p class="success-button btn btn-sm">Shipped</p>
+                                                @if(order.Order.Status.Name == "Order Created")
+                                                {
+                                                    <p style="cursor:default" class="btn btn-sm btn-primary">Order Created</p>
+                                                }
+                                                @if(order.Order.Status.Name == "Appointment Created")
+                                                {
+                                                    <p style="cursor:default" class="btn btn-sm btn-success">Appointment Created</p>
+                                                }
+                                                @if(order.Order.Status.Name == "Pending Appointment")
+                                                {
+                                                    <a asp-action="MakeAppointment" asp-controller="Appointment" asp-route-orderId="@order.Order.Id">
+                                                        <p class="btn btn-sm btn-warning">Pending Appointment</p>
+                                                    </a>
+                                                }
+                                                @if(order.Order.Status.Name == "Order Shipped")
+                                                {
+                                                    <p style="cursor:default" class="btn btn-sm btn-success">Order Shipped</p>
+                                                }
+                                                @if(order.Order.Status.Name == "Order Closed")
+                                                {
+                                                    <p style="cursor:default" class="btn btn-sm btn-secondary">Order Closed</p>
+                                                }
+                                                @if(order.Order.Status.Name == "Appointment Done")
+                                                {
+                                                    <p style="cursor:default" class="btn btn-sm btn-secondary">Appointment Done</p>
+                                                }
+                                                
                                             </td>
                                             <td>
-                                                <p class="theme-color fs-6">$49.54</p>
+                                                <p class="theme-color fs-6">@order.Order.TotalPrice.ToString("C2")</p>
                                             </td>
                                             <td>
-                                                <a href="javascript:void(0)">
+                                                <a asp-action="OrderDetails" asp-controller="Account" asp-route-id="@order.Order.Id">
                                                     <i class="far fa-eye"></i>
                                                 </a>
                                             </td>
                                         </tr>
-
-                                        <tr>
-                                            <td>
-                                                <a href="product-left-sidebar.html">
-                                                    <img src="~/assets/images/fashion/product/front/2.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="mt-0">#125367</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Outwear & Coats</p>
-                                            </td>
-                                            <td>
-                                                <p class="danger-button btn btn-sm">Pending</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="javascript:void(0)">
-                                                    <i class="far fa-eye"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>
-                                                <a href="product-left-sidebar.html">
-                                                    <img src="~/assets/images/fashion/product/front/3.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#125948</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Men's Sweatshirt</p>
-                                            </td>
-                                            <td>
-                                                <p class="success-button btn btn-sm">Shipped</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="javascript:void(0)">
-                                                    <i class="far fa-eye"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>
-                                                <a href="product-left-sidebar.html">
-                                                    <img src="~/assets/images/fashion/product/front/4.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#127569</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Men's Hoodie t-shirt</p>
-                                            </td>
-                                            <td>
-                                                <p class="success-button btn btn-sm">Shipped</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="javascript:void(0)">
-                                                    <i class="far fa-eye"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>
-                                                <a href="product-left-sidebar.html">
-                                                    <img src="~/assets/images/fashion/product/front/5.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#125753</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Men's Hoodie t-shirt</p>
-                                            </td>
-                                            <td>
-                                                <p class="danger-button btn btn-sm">Canceled</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="javascript:void(0)">
-                                                    <i class="far fa-eye"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>
-                                                <a href="product-left-sidebar.html">
-                                                    <img src="~/assets/images/fashion/product/front/6.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#125021</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Men's Sweatshirt</p>
-                                            </td>
-                                            <td>
-                                                <p class="danger-button btn btn-sm">Canceled</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="javascript:void(0)">
-                                                    <i class="far fa-eye"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
+                                    }
+                                        
+                                        
                                     </tbody>
                                 </table>
                             </div>
@@ -734,9 +693,9 @@
     </section>
     <!-- user dashboard section end -->
 
-    <script type="text/javascript">
+<script type="text/javascript">
 
-  
+    
 
     function onThisOverlayClick() {
       debugger;
@@ -1006,22 +965,22 @@
                
                <div class="form-group pad">
                <span style="color:#0163D2">*If the email is changed you will be required to login again.</span>
-               <input asp-for="Email" class="form-control" style="padding:5px" id="email"/>
-               <label asp-for="Email"></label><br/>
-               <span asp-validation-for="Email" class="text-danger" id="spanEmail"></span>
+               <input asp-for="UserViewModel.Email" class="form-control" style="padding:5px" id="email"/>
+               <label asp-for="UserViewModel.Email"></label><br/>
+               <span asp-validation-for="UserViewModel.Email" class="text-danger" id="spanEmail"></span>
                </div>                              
 
                <div class="form-group pad">
-                   <input asp-for="PhoneNumber" class="form-control" style="padding:5px" id="phone"/>
-                   <label asp-for="PhoneNumber"></label><br/>
-                   <span asp-validation-for="PhoneNumber" class="text-danger" id="spanPhone"></span>
+                   <input asp-for="UserViewModel.PhoneNumber" class="form-control" style="padding:5px" id="phone"/>
+                   <label asp-for="UserViewModel.PhoneNumber"></label><br/>
+                   <span asp-validation-for="UserViewModel.PhoneNumber" class="text-danger" id="spanPhone"></span>
                </div>
                
                
                <div class="form-group pad">                       
-                   <input asp-for="NIF" class="form-control" style="padding:5px" id="nif"/>
-                   <label asp-for="NIF"></label><br/>
-                   <span asp-validation-for="NIF" class="text-danger" id="spanNif"></span>
+                   <input asp-for="UserViewModel.NIF" class="form-control" style="padding:5px" id="nif"/>
+                   <label asp-for="UserViewModel.NIF"></label><br/>
+                   <span asp-validation-for="UserViewModel.NIF" class="text-danger" id="spanNif"></span>
                </div>
                
                <div>                    
@@ -1101,9 +1060,9 @@
                
                                
                <div class="form-group pad">                    
-                   <input asp-for="Address" class="form-control" style="padding:5px" id="address"/>
-                   <label asp-for="Address"></label><br/>
-                   <span asp-validation-for="Address" class="text-danger" id="spanAddress"></span>
+                   <input asp-for="UserViewModel.Address" class="form-control" style="padding:5px" id="address"/>
+                   <label asp-for="UserViewModel.Address"></label><br/>
+                   <span asp-validation-for="UserViewModel.Address" class="text-danger" id="spanAddress"></span>
                </div>                           
               
                <div>                    
@@ -1126,9 +1085,35 @@
        @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     
     <script type="text/Javascript">
-        window.onload = getBackgroundProfilePicture();    
-    </script>
+        window.onload = function() {
+            getBackgroundProfilePicture();
+            
+            var tab = document.getElementById("tab");
+            var onetab = document.getElementById("1-tab");
+            var dashDiv = document.getElementById("dash");
+            var orderDiv = document.getElementById("order");
 
+            var tabClasssNames = tab.classList;
+            var onetabClasssNames = onetab.classList;
+
+            if(tabClasssNames.length > 2){
+                dashDiv.classList.add('active');
+                dashDiv.classList.add('show');
+                orderDiv.classList.remove('active');
+                 orderDiv.classList.remove('show');
+            }
+
+            if(onetabClasssNames.length > 2){
+                dashDiv.classList.remove('active');
+                dashDiv.classList.remove('show');
+                orderDiv.classList.add('active');
+                orderDiv.classList.add('show');
+            }
+            
+        }      
+    </script>
+   
+          
 
     <script>
         $(document).ready(function() {

@@ -34,9 +34,14 @@
 
     <!-- bootstrap css -->
     <link id="rtl-link" rel="stylesheet" type="text/css" href="~/assets/css/vendors/bootstrap.css">
+  
+     <!-- FullCalendar-->
+    <link  rel="stylesheet" href="~/css/main.css"> 
+    <script src='~/js/main.js'></script>
 
     <!-- font-awesome css -->
     <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@4cac1a6/css/all.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css">
 
     <!-- Syncfusion ASP.NET Core controls styles -->
     <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/20.3.47/fluent.css" /> 
@@ -53,6 +58,9 @@
     <!-- slick css -->
     <link rel="stylesheet" type="text/css" href="~/assets/css/vendors/slick/slick.css">
     <link rel="stylesheet" type="text/css" href="~/assets/css/vendors/slick/slick-theme.css">
+
+     <!--Plugin CSS file with desired skin-->
+    <link rel="stylesheet" href="~/assets/css/vendors/ion.rangeSlider.min.css" />
 
     <!-- Theme css -->
     <link id="color-link" rel="stylesheet" type="text/css" href="~/assets/css/demo1.css">
@@ -107,19 +115,19 @@
                                  
                                   <li>
                                       <div class="top-header-dropdown">
-                                          <a asp-action="ViewUser" asp-controller="Account" style="padding: 5px;"><i class="far fa-user-robot" style="font-size:20px;margin-right: 10px;"></i> @ViewBag.UserFullName</a>
+                                          <a asp-action="ViewUser" asp-controller="Account" style="padding: 5px;"><i class="far fa-user-robot" style="font-size:20px;margin-right: 10px;"></i>@ViewBag.UserFullName</a>
                                       </div>
                                       
                                   </li>
 
-                                    @if (!this.User.IsInRole("Customer") && ViewBag.IsActive == true)
-                                    {
-                                        <li>
-                                            <div class="top-header-dropdown">
-                                                <a asp-action="Index" asp-controller="AdminPanel" style="padding: 5px;"><i class="fas fa-tools" style="font-size:20px;margin-right: 10px;"></i> Admin Panel</a>
-                                            </div>
-                                        </li>
-                                    }
+                                  @if (!this.User.IsInRole("Customer") && ViewBag.IsActive == true)
+                                  {
+                                      <li>
+                                          <div class="top-header-dropdown">
+                                              <a asp-action="Index" asp-controller="AdminPanel" style="padding: 5px;"><i class="fas fa-tools" style="font-size:20px;margin-right: 10px;"></i> Admin Panel</a>
+                                          </div>
+                                      </li>
+                                  }
 
 
                                   <li>
@@ -146,135 +154,23 @@
                                     </a>
                                 </div>
                                 <div class="category-menu">
-                                    <a type="button" asp-action="Index" asp-controller="Products"
-                                        class="btn btn-solid-default toggle-category d-sm-block d-none">
-                                        All categories
-                                        <i class="fas fa-chevron-down d-xl-inline-block d-none"></i>
-                                    </a>
-                                    <div class="category-dropdown">
-                                        <div class="close-btn d-xl-none">
-                                            Category List
-                                            <span class="back-category"><i class="fa fa-angle-left"></i>
-                                            </span>
-                                        </div>
-                                        <ul>
-                                            @foreach(var item in ViewBag.Categories)
-                                            {
-                                                <li>
-                                                    @*<a href="javascript:void(0)">@item.Name</a>*@
-                                                    <a href="@Url.Action("Index","Products", new{categoryString = item.Name})">@item.Name</a>
-                                                </li>
-                                            }                                            
-                                        </ul>
-                                    </div>                                    
+                                    <a type="button" asp-action="Index" asp-controller="Products" asp-route-categoryString="AllCategories"
+                                        class="btn btn-solid-default toggle-category d-sm-block d-none" style="min-width:158px;height:51.4px;display:flex !important;align-items:center;justify-content:center">
+                                        <i style="font-size:13px;padding-right:15px" class="fal fa-shopping-bag"></i>
+                                        Shop                                       
+                                    </a>                                                              
                                 </div>
-                                @*<div>
-                                    <a class="btn btnPersonalizado" style="margin: auto;margin-left: 20px;width: 136.91px;height: 39.45px;padding: 9px 18px !important;" asp-action="Shop" asp-controller="Products">
-                                            Shop
-                                    </a>
-                                </div>*@
                             </div>
                         
-                            <div class="menu-right">
-                                <ul>
-                                    <li>
-                                        <div class="search-box theme-bg-color">
-                                            <i data-feather="search"></i>
-                                        </div>
-                                    </li>
-                                    <li class="onhover-dropdown wislist-dropdown">
-                                        <div class="cart-media">
-                                            <div class="cart-icon">
-                                                <i data-feather="heart"></i>
-                                                <span class="label label-theme rounded-pill">0</span>
-                                            </div>
-                                            <div class="cart-content">
-                                                <h6>Empty</h6>
-                                                <span>Wish List</span>
-                                            </div>
-                                        </div>
-                                        <div class="onhover-div">
-                                            <a href="wishlist.html">
-                                                <div class="wislist-empty">
-                                                    <i class="fab fa-gratipay"></i>
-                                                    <h6 class="mb-1">Your wislist empty !!</h6>
-                                                    <p class="font-light mb-0">explore more and shortlist items.</p>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    </li>
-                                    <li class="onhover-dropdown cart-dropdown">
-                                        <button type="button" class="btn btn-solid-default btn-spacing">
-                                            <i data-feather="shopping-cart" class="pe-2"></i>
-                                            <span>$5686.25</span>
-                                        </button>
-                                        <div class="onhover-div">
-                                            <div class="cart-menu">
-                                                <div class="cart-title">
-                                                    <h6>
-                                                        <i data-feather="shopping-bag"></i>
-                                                        <span class="label label-theme rounded-pill">5</span>
-                                                    </h6>
-                                                    <span class="d-md-none d-block">
-                                                        <i class="fas fa-arrow-right back-cart"></i>
-                                                    </span>
-                                                </div>
-                                                <ul class="custom-scroll">
-                                                    <li>
-                                                        <div class="media">
-                                                            <img src="~/assets/images/fashion/product/front/1.jpg"
-                                                                class="img-fluid blur-up lazyload" alt="">
-                                                            <div class="media-body">
-                                                                <h6>Slim Fit Plastic Coat</h6>
-                                                                <div class="qty-with-price">
-                                                                    <span>$78.00</span>
-                                                                    <span>
-                                                                        <input type="number" class="form-control"
-                                                                            value="1">
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                            <button type="button" class="btn-close d-block d-md-none"
-                                                                aria-label="Close">
-                                                                <i class="fas fa-times"></i>
-                                                            </button>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="media">
-                                                            <img src="~/assets/images/fashion/product/front/7.jpg"
-                                                                class="img-fluid blur-up lazyload" alt="">
-                                                            <div class="media-body">
-                                                                <h6>Womens Stylish Jacket</h6>
-                                                                <div class="qty-with-price">
-                                                                    <span>$24.00</span>
-                                                                    <span>
-                                                                        <input type="number" class="form-control"
-                                                                            value="1">
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                            <button type="button" class="btn-close d-block d-md-none"
-                                                                aria-label="Close">
-                                                                <i class="fas fa-times"></i>
-                                                            </button>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <div class="cart-btn">
-                                                <h6 class="cart-total"><span class="font-light">Total:</span> $
-                                                    542.00</h6>
-                                                <button onclick="location.href = 'cart.html';" type="button"
-                                                    class="btn btn-solid-default btn-block">
-                                                    Proceed to payment
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
+                           
+                            <!--Partial View do Carrinho-->
+                            <div id="cartPartialDiv">
+                                <partial id="cartPartial" name="_CartDropDownPartial" ></partial>
                             </div>
-                            <div class="search-full">
+                            
+
+                            
+                            @*<div class="search-full">
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i data-feather="search" class="font-light"></i>
@@ -346,7 +242,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                            </div>
+                            </div>*@
                         </div>
                     </div>
                 </div>
@@ -386,7 +282,7 @@
     </div>
     <!-- mobile fix menu end -->
 
-        <div class="container-fluid">
+        <div id="container" class="container-fluid">
             @RenderBody()
         </div>
 
@@ -898,7 +794,7 @@
 
     <!-- latest jquery-->
     <script src="~/assets/js/jquery-3.5.1.min.js"></script>
-
+    
     <!-- Bootstrap js-->
     <script src="~/assets/js/bootstrap/bootstrap.bundle.min.js"></script>
 
@@ -912,14 +808,13 @@
     <script src="~/assets/js/lazysizes.min.js"></script>
 
     <!-- Add To Home js -->
-    @*<script src="assets/js/pwa.js"></script>*@
+    @*<script src="~/assets/js/pwa.js"></script>*@
 
     <!-- Slick js-->
     <script src="~/assets/js/slick/slick.js"></script>
     <script src="~/assets/js/slick/slick-animation.min.js"></script>
     <script src="~/assets/js/slick/custom_slick.js"></script>
 
-    
 
     <!-- newsletter js -->
     <script src="~/assets/js/newsletter.js"></script>
@@ -928,13 +823,14 @@
     <script src="~/assets/js/bootstrap/bootstrap-notify.min.js"></script>
 
     <!-- script js -->
-    @*<script src="assets/js/theme-setting.js"></script>*@
+    @*<script src="~/assets/js/theme-setting.js"></script>*@
     <script src="~/assets/js/script.js"></script>
     <script src="~/assets/js/home-script.js"></script>
 
     <!-- Syncfusion ASP.NET Core Script Manager -->
-    <ejs-scripts></ejs-scripts>
+    
     @await RenderSectionAsync("Scripts", required: false)
+    <ejs-scripts></ejs-scripts>
     @await Component.InvokeAsync("Notyf")
 </body>
 

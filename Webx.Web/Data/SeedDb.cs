@@ -27,6 +27,7 @@ namespace Webx.Web.Data
         {
             await _context.Database.EnsureCreatedAsync();
 
+            await AddStatusesAsync();
             await CheckCreatedRoles();
             await AddAdminsAsync();
             await AddTechniciansAsync();
@@ -39,9 +40,46 @@ namespace Webx.Web.Data
             await AddStoresAsync();
             await AddStocksAsync();
             await AddAppointmentsAsync();
+            await AddStatusesAsync();
             await AddOrdersAsync();
             await AddOrdersDetailsAsync();
 
+        }
+
+        private async Task AddStatusesAsync()
+        {
+            if (!_context.Statuses.Any())
+            {
+                int nTimes = 6;
+                string[] OrderStatusName = new string[6] {
+                    "Order Created",
+                    "Appointment Created",
+                    "Pending Appointment",
+                    "Order Shipped",
+                    "Order Closed",
+                    "Appointment Done"
+                };
+
+                string[] OrderStatusDesc = new string[6] {
+                    "Pago",
+                    "Pago",
+                    "Pago C/marcação por efetuar",
+                    "",
+                    "",
+                    ""
+                };
+
+                for (int i = 0; i < nTimes; i++)
+                {
+                    var orderSatus = new Status
+                    {
+                        Name = OrderStatusName[i],
+                        Description = OrderStatusDesc[i],
+                    };
+                    _context.Statuses.Add(orderSatus);
+                }
+                await _context.SaveChangesAsync();
+            }
         }
 
         private async Task AddOrdersDetailsAsync()
@@ -116,6 +154,41 @@ namespace Webx.Web.Data
             }
         }
 
+        private async Task AddStatusesAsync()
+        {
+            if (!_context.Statuses.Any())
+            {
+                int nTimes = 6;
+                string[] OrderStatusName = new string[6] {
+                    "Order Created",
+                    "Appointment Created",
+                    "Pending Appointment",
+                    "Order Shipped",
+                    "Appointment Done",
+                    "Order Closed"
+                };
+
+                string[] OrderStatusDesc = new string[6] {
+                    "Pagamento Efetuado S/ marcação",
+                    "Pagamento Efetuado C/ marcação",
+                    "Pagamento Efetuado C/marcação por efetuar",
+                    "",
+                    "",
+                    ""
+                };
+
+                for (int i = 0; i < nTimes; i++)
+                {
+                    _context.Statuses.Add( new Status
+                    {
+                        Name = OrderStatusName[i],
+                        Description = OrderStatusDesc[i],
+                    });
+                }
+                await _context.SaveChangesAsync();
+            }
+        }
+
         private async Task AddOrdersAsync()
         {
             if (!_context.Orders.Any())
@@ -123,19 +196,22 @@ namespace Webx.Web.Data
                 var appointments = await _context.Appointments.ToListAsync();
                 var customers = await _userHelper.GetUsersInRoleAsync("Customer");
                 var stores = await _context.Stores.Where(s => s.IsOnlineStore == false).ToListAsync();
+                
                 Random r = new Random();
 
                 //Adiciona as Encomendas das marcações
                 foreach(var appointment in appointments)
-                {                
+                {
                     _context.Orders.Add(new Order
                     {
                          Customer = customers[r.Next(customers.Count)],
                          Store = stores[r.Next(stores.Count)],
                          Appointment = appointment,
                          OrderDate = appointment.AppointmentDate.AddDays(r.Next(-10,-1)),
-                         DeliveryDate = appointment.AppointmentDate,                            
+                         DeliveryDate = appointment.AppointmentDate,
+                         Status = await _context.Statuses.Where(os => os.Name== "Appointment Created").FirstOrDefaultAsync()
                     });
+
                 }
 
                 //Adiciona encomendas de / para produtos sem marcações
@@ -151,6 +227,8 @@ namespace Webx.Web.Data
                         Appointment = null,
                         OrderDate = orderDate,
                         DeliveryDate = orderDate.AddDays(r.Next(0, 4)),
+                        Status= _context.Statuses.Where(s => s.Name == "Order Created").FirstOrDefault()
+
                     });
                 }
 
@@ -182,7 +260,7 @@ namespace Webx.Web.Data
                         BegginingHour = bHour,
                         EndHour = eHour,
                         Comments = "No Comments",
-                        HasAttended = randomBool
+                        HasAttended = randomBool                        
                     });
                 }
                 await _context.SaveChangesAsync();

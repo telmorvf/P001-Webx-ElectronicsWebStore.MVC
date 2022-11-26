@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
 using System;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Webx.Web.Data.Entities;
 using Webx.Web.Data.Repositories;
@@ -11,16 +12,20 @@ namespace Webx.Web.Helpers
     {
         private readonly IUserHelper _userHelper;
         private readonly IProductRepository _productRepository;
+        private readonly IStoreRepository _storeRepository;
+        private readonly IStockRepository _stockRepository;
+        private readonly IStatusRepository _statusRepository;     
 
-        public ConverterHelper(
-            IUserHelper userHelper,
-            IProductRepository productRepository
-            )
+        public ConverterHelper(IUserHelper userHelper,IProductRepository productRepository,IStoreRepository storeRepository,IStockRepository stockRepository,IStatusRepository statusRepository)
         {
             _userHelper = userHelper;
             _productRepository = productRepository;
-        }
+            _storeRepository = storeRepository;
+            _stockRepository = stockRepository;
+            _statusRepository = statusRepository;
 
+        }
+     
         public async Task<EditEmployeeViewModel> ToEditEmployeeViewModelAsync(User user)
         {
             var userRole = await _userHelper.GetUserRoleAsync(user);
@@ -265,6 +270,44 @@ namespace Webx.Web.Helpers
                 Product = model.Product,
                 MinimumQuantity = model.MinimumQuantity,
                 Quantity = model.Quantity,
+            };
+        }
+        
+        public async Task<List<CartViewModel>> ToCartViewModelAsync(List<CookieItemModel> cookieItemList)
+        {
+            List<CartViewModel> cart = new List<CartViewModel>();
+
+
+            foreach (var item in cookieItemList)
+            {
+                var color = await _stockRepository.GetProductStockColorFromStoreIdAsync(item.ProductId, item.StoreId);
+                cart.Add(new CartViewModel
+                {
+                    Product = await _productRepository.GetFullProduct(item.ProductId),
+                    Quantity = item.Quantity,
+                    StoreId = item.StoreId,
+                    Color = color
+                });
+            }
+
+            return cart;
+          }
+
+        public OrderViewModel ToOrderViewModel(Order order)
+        {
+            return new OrderViewModel
+            {
+                Id = order.Id,
+                Customer = order.Customer,
+                Store = order.Store,
+                Appointment = order.Appointment,
+                OrderDate = order.OrderDate,
+                DeliveryDate = order.DeliveryDate,
+                InvoiceId = order.InvoiceId,
+                TotalQuantity = order.TotalQuantity,
+                TotalPrice = order.TotalPrice,
+                Status= order.Status,
+                Statuses= _statusRepository.GetStatusesCombo(),
             };
         }
 

@@ -16,6 +16,8 @@ using Webx.Web.Helpers;
 using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
 using Webx.Web.Data.Repositories;
+using System;
+using Webx.Web.Extensions;
 
 namespace Webx.Web
 {
@@ -45,6 +47,27 @@ namespace Webx.Web
                 cfg.Password.RequiredLength = 6;
             }).AddDefaultTokenProviders().AddEntityFrameworkStores<DataContext>();
 
+            
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                //    // define the list of cultures your app will support  
+                var supportedCultures = new List<CultureInfo>()
+                {
+                  new CultureInfo("en-US"),
+                  new CultureInfo("pt")
+                };
+
+                // set the default culture  
+                options.DefaultRequestCulture = new RequestCulture("pt");
+                options.DefaultRequestCulture.Culture.NumberFormat.CurrencySymbol = supportedCultures[1].NumberFormat.CurrencySymbol;
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+                options.RequestCultureProviders = new List<IRequestCultureProvider>() {
+                 new QueryStringRequestCultureProvider()
+                };
+            });
+
             services.AddAuthentication().AddCookie().AddJwtBearer(cfg =>
             {
                 cfg.TokenValidationParameters = new TokenValidationParameters
@@ -59,7 +82,6 @@ namespace Webx.Web
             {
                 cfg.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
-
 
             services.AddAuthentication().AddFacebook(opts =>
             {
@@ -87,6 +109,10 @@ namespace Webx.Web
             services.AddScoped<IBlobHelper, BlobHelper>();
             services.AddScoped<IConverterHelper, ConverterHelper>();
             services.AddScoped<IXMLHelper, XMLHelper>();
+            services.AddScoped<IAPIServiceHelper, APIServiceHelper>();
+            services.AddScoped<ITemplateHelper, TemplateHelper>();
+            services.AddScoped<IPdfHelper, PdfHelper>();
+
 
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
@@ -95,6 +121,9 @@ namespace Webx.Web
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IStockRepository, StockRepository>();
             services.AddScoped<IStoreRepository, StoreRepository>();
+            services.AddScoped<IStatusRepository, StatusRepository>();
+
+
 
             services.AddHttpContextAccessor();
            
@@ -114,7 +143,7 @@ namespace Webx.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
+            
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Mgo+DSMBPh8sVXJ0S0R+XE9HcFRDX3xKf0x/TGpQb19xflBPallYVBYiSV9jS3xTf0RgWH5dc3ZQRmNUUQ==;Mgo+DSMBMAY9C3t2VVhiQlFadVlJXGFWfVJpTGpQdk5xdV9DaVZUTWY/P1ZhSXxRdkxiWn5fc3dXQ2BZUEQ=");
             if (env.IsDevelopment())
             {
@@ -126,6 +155,9 @@ namespace Webx.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+
+           
 
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
@@ -140,10 +172,12 @@ namespace Webx.Web
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            app.PreparePuppeteerAsync(env).GetAwaiter().GetResult();            
 
             app.UseNotyf();
 

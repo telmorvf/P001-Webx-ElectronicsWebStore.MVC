@@ -1,3 +1,4 @@
+
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,15 +18,9 @@ namespace Webx.Web.Data.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Brand>> GetAllBrandsAsync()
+        public async Task<List<Brand>> GetAllBrandsAsync()
         {
-            IEnumerable<Brand> brandAll;
-
-            brandAll = await _context.Brands
-                .OrderBy(p => p.Id)
-                .ToListAsync();
-
-            return brandAll;
+            return await _context.Brands.ToListAsync();
         }
 
         public async Task<Brand> GetBrandByNameAsync(string name)

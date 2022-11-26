@@ -1,0 +1,82 @@
+﻿@model Webx.Web.Models.ShopViewModel
+
+@{
+    var yesButton = new ButtonModel() { content = "Delete", cssClass = "e-flat" };
+    var noButton = new ButtonModel() { content = "Cancel", cssClass = "e-flat" };
+    var clearButton = new ButtonModel() { content = "Clear", cssClass = "e-flat" };
+}
+
+
+<style>
+    .e-dialog .e-dlg-header-content {
+        padding: 10px 10px 0px !important;
+    }
+
+    .e-dialog .e-footer-content {
+        padding: 0 22px 15px !important;
+    }
+
+    .e-dialog .e-dlg-content {
+        padding: 24px 24px 0px 24px;
+        margin-bottom: 12px;
+    }
+
+    .e-footer-content .e-btn.e-flat:not([DISABLED]) {
+        background-color: #fff;
+        border-color: var(--theme-color);
+        color: #323130;
+        width: 110px;
+    }
+
+</style>
+
+<!-- Cart Section start -->
+
+<section class="cart-section section-b-space">
+        <div id="container" class="container">
+                        
+            <div id="cartDetailsPartial">
+                <partial name="_CartPartialView" id="cartDetails"></partial>
+            </div>
+            
+        </div>
+</section>
+
+
+<!-- Caixa de Dialogo do syncfusion / Surge ao clicar no delete do produto -->
+<ejs-dialog id='deleteDialog' visible="false" isModal="true" height="210px" width="364px" showCloseIcon="true" allowDragging="true" overlayClick="onDeleteOverlayClick" target="#container" >
+       <e-dialog-animationsettings effect="SlideBottom" duration="600" delay="200"></e-dialog-animationsettings>
+       <e-dialog-position X="750" Y="300"> </e-dialog-position>
+       <e-dialog-buttons>              
+           <e-dialog-dialogbutton buttonModel="@yesButton" click="ondlgDeleteClick"></e-dialog-dialogbutton>
+           <e-dialog-dialogbutton buttonModel="@noButton" click="ondlgCancelClick"></e-dialog-dialogbutton>
+       </e-dialog-buttons>
+</ejs-dialog>
+
+
+<ejs-dialog id='clearCartDialog' visible="false" isModal="true" height="140px" width="364px" showCloseIcon="true" allowDragging="true" overlayClick="onClearCartOverlayClick" target="#container" >
+       <e-dialog-animationsettings effect="SlideBottom" duration="600" delay="200"></e-dialog-animationsettings>
+        <e-dialog-position X="750" Y="300"> </e-dialog-position>
+       <e-dialog-buttons>              
+           <e-dialog-dialogbutton buttonModel="@clearButton" click="ondlgClearClick"></e-dialog-dialogbutton>
+           <e-dialog-dialogbutton buttonModel="@noButton" click="ondlgCancelCartClick"></e-dialog-dialogbutton>
+       </e-dialog-buttons>
+</ejs-dialog>
+
+
+<ejs-dialog id='noStockDialog' visible="false" isModal="true" height="140px" width="364px" showCloseIcon="true" allowDragging="true" overlayClick="onNoStockOverlayClick" target="#container" >
+       <e-dialog-animationsettings effect="SlideBottom" duration="600" delay="200"></e-dialog-animationsettings>
+        <e-dialog-position X="750" Y="300"> </e-dialog-position> 
+</ejs-dialog>
+
+<!-- Cart Section End -->
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="~/js/CartScript.js"></script>
+
+
+}

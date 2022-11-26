@@ -1,0 +1,216 @@
+﻿@model Webx.Web.Models.ShopViewModel
+
+@using X.PagedList;
+@using X.PagedList.Mvc.Core
+
+@{
+    int productNumber = 0;    
+}   
+
+<style>
+    .teste{
+        max-height: 239px;      
+    }
+</style>
+
+
+
+<div class="row g-4">
+     <!-- filter button -->
+     <div class="filter-button">
+         <button class="danger-button danger-center btn btn-sm filter-btn">
+             <i data-feather="align-left"></i> Filter
+         </button>
+     </div>
+     <!-- filter button -->
+     
+     <!-- label and featured section -->
+     <div class="col-md-12">
+         <h3 id="resultsFound" class="mb-3">@Model.NumberOfProductsFound Results Found</h3>      
+     </div>
+     <div class="col-md-12">
+         <ul class="short-name">
+               
+             <li>
+                 <div class="label-tag">
+                     <a href="#" onclick="ClearFilters()"><span>Clear Filters</span></a>
+                 </div>
+             </li>
+
+             <li>
+                <div class="label-tag">
+                    <span id="CurrentCategory">@Model.SelectedCategory</span>                                  
+                </div>
+             </li>  
+            @if(Model.BrandsTags != null)
+            {
+                foreach(var item in Model.BrandsTags)
+                {
+                    <li>
+                      <div class="label-tag">
+                          <span>@item.Replace("Identifier","")</span>                     
+                      </div>
+                    </li>
+                }
+            }
+            
+            
+         </ul>
+     </div>
+
+     <div class="col-12">
+         <div class="filter-options">
+             <div class="select-options">
+                 <div class="page-view-filter">
+                     <div class="dropdown select-featured">
+                         <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1"
+                             data-bs-toggle="dropdown" aria-expanded="false" style="padding:5px">
+                             Results Per Page<i style="margin-left:10px;font-size:14px" class="fas fa-chevron-down"></i>
+                         </button>
+                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                             <li>
+                                 <a class="dropdown-item" onclick="changeResultsPerPage(8)" href="#">8</a>                                                        
+                             </li>
+                             <li>
+                                 <a class="dropdown-item" onclick="changeResultsPerPage(12)" href="#">12</a>                                                        
+                             </li>
+                             <li>
+                                 <a class="dropdown-item" onclick="changeResultsPerPage(25)" href="#">25</a>                                                        
+                             </li>                                                
+                         </ul>
+                     </div>
+                 </div>                                    
+             </div>
+         </div>
+     </div>  
+</div>
+
+<div class="row g-sm-4 g-3 row-cols-lg-4 row-cols-md-3 row-cols-2 mt-1 custom-gy-5 product-style-2 ratio_asos product-list-section">
+
+ @foreach (var item in Model.PagedListProduct)
+ {
+        <!-- Product section -->
+        productNumber++;
+        var productId = "Product" + productNumber;
+
+    <div id="@productId">
+
+         <div class="product-box">
+             <div class="img-wrapper">
+
+                 <div class="front">
+                     @if (item.Images.Count() > 0)
+                     {
+                         <a href="product-left-sidebar.html" style="max-height: 240px;">                                                       
+                             <img src="@item.Images.ElementAt(0).ImageFullPath"
+                             class="bg-img blur-up lazyload teste" alt=""> 
+                         </a>
+                     }
+                     else
+                     {
+                         <a href="product-left-sidebar.html" style="max-height: 240px;">
+                             <img src="https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg"
+                                 class="bg-img blur-up lazyload teste" alt="">
+                         </a>
+                     }
+                 </div>
+                 @if(item.Images.Count() > 1)
+                 {
+                   <div class="back">
+                     <a href="product-left-sidebar.html" style="max-height: 240px;">
+                         
+                         <img src="@item.Images.ElementAt(1).ImageFullPath"
+                         class="bg-img blur-up lazyload teste" alt=""> 
+                                    
+                     </a>
+                   </div>  
+                 }                                    
+                
+                 <div class="cart-wrap">
+                     <ul>
+                         @*data-bs-toggle="modal" data-bs-target="#addtocart"*@
+                         <li>
+                             <a href="#" onclick="AddtoCart(@item.Id)" class="addtocart-btn">                                 
+                                 <i class="fas fa-shopping-bag"></i>                                 
+                             </a>
+                         </li>
+                         <li>
+                             @*data-bs-toggle="modal" data-bs-target="#quick-view"*@
+                             <a href="#"  onclick="showProductDetails(@item.Id)">                                                                                     
+                                 <i class="fas fa-eye"></i>
+                             </a>
+                         </li>                         
+                         <li>
+                             
+                             <a href="wishlist.html" class="wishlist">
+                                 <i class="fas fa-heart"></i>
+                             </a>
+                         </li>
+                     </ul>
+                 </div>
+             </div>
+
+             <div class="product-details">
+                 <div class="rating-details">
+                     <span class="font-light grid-content">@item.Category.Name</span>
+                     <ul class="rating mt-0">
+                         <li>
+                             <i class="fas fa-star theme-color"></i>
+                         </li>
+                         <li>
+                             <i class="fas fa-star theme-color"></i>
+                         </li>
+                         <li>
+                             <i class="fas fa-star"></i>
+                         </li>
+                         <li>
+                             <i class="fas fa-star"></i>
+                         </li>
+                         <li>
+                             <i class="fas fa-star"></i>
+                         </li>
+                     </ul>
+                 </div>
+                 <div class="main-price">
+                     <a href="product-left-sidebar.html" class="font-default" style="max-width:75%;min-width:65%">
+                         <h5 class="ms-0" style="font-size:inherit;">@item.Name</h5>
+                     </a>
+                     <div class="listing-content">
+                         <span class="font-light">Regular Fit</span>
+                         <p class="font-light">
+                             @item.Description
+                         </p>
+                     </div>
+                     <h3 class="theme-color" style="font-size:small;max-width: 35%;min-width:25%;text-align: center;">@item.Price €</h3>    
+                     <button onclick="location.href = 'cart.html';" class="btn listing-content">
+                         Add
+                         To Cart
+                     </button>
+                 </div>
+             </div>
+         </div>
+    </div>
+
+
+        <!-- Product section -->                                                     
+ }
+</div>        
+
+ <nav class="page-section" id="pagination">
+     @Html.PagedListPager(Model.PagedListProduct, page => Url.Action("ReturnDesiredProductPage", new{
+         category = @Model.SelectedCategory,
+         page,
+         resultsPerPage = @Model.ResultsPerPage,
+         brandsfilter = @Model.BrandsTags
+     }))
+     
+ </nav>
+     
+ 
+
+
+ @section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+ }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Webx.Web.Data.Entities;
 using Webx.Web.Models;
@@ -17,6 +18,13 @@ namespace Webx.Web.Data.Repositories
 
         Task<IEnumerable<Store>> GetAllStoresAsync();
 
-        //Task UpdateStoreAsync(StoreViewModel model);
+        //Task UpdateStoreAsync(StoreViewModel model);        
+
+        IEnumerable<SelectListItem> GetComboStores();
+
+        IEnumerable<SelectListItem> GetComboPhysicalStores();
+
+        Task<int> GetOnlineStoreIdAsync();
+
     }
 }

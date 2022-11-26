@@ -6,10 +6,21 @@ namespace Webx.Web.Data.Repositories
 {
     public interface IStockRepository : IGenericRepository<Stock>
     {
+
         Task<List<Stock>> GetStockAlerts();
         Task<int> GetStockAlertsCount();
         Task<IEnumerable<Stock>> GetStockAllAsync();
         Task<IEnumerable<Stock>> GetStockAsync();
         Task<Stock> GetStockByIdAsync(int id);
+
+        Task<IEnumerable<Stock>> GetAllStockAsync();
+
+        Task<List<Stock>> GetAllStockWithStoresAsync();
+
+        Task<string> GetProductStockColorFromStoreIdAsync(int productId, int storeId);
+
+        Task<Stock> GetProductStockInStoreAsync(int productId, int storeId);
+     
+
     }
 }

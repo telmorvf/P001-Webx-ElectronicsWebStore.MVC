@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using static System.Net.WebRequestMethods;
 
+
 namespace Webx.Web.Data.Entities
 {
     public class Product : IEntity
@@ -36,7 +37,10 @@ namespace Webx.Web.Data.Entities
         public ICollection<ProductImages> Images { get; set; }
         //public IEnumerable<ProductImages> Images { get; set; }
 
+        public IEnumerable<ProductImages> Images { get; set; }
 
+        public string Image => Images.Count() > 0 ? Images.ElementAt(0).ImageFullPath : "https://webx2022.blob.core.windows.net/images/NoPhoto.jpg";      
+        
         [Required]
         [Display(Name = "Promotion?")]
         public bool IsPromotion { get; set; }

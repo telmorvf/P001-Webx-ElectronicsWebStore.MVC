@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Migrations\" />
     <Folder Include="wwwroot\assets\images\inner-page\" />
     <Folder Include="wwwroot\assets\adminlte\" />
     <Folder Include="wwwroot\images\brands\" />
@@ -13,6 +14,8 @@
     <Folder Include="wwwroot\images\users\" />
     <Folder Include="wwwroot\images\products\" />
     <Folder Include="wwwroot\stockAlert\temp\" />
+    <Folder Include="wwwroot\Invoices\" />
+
   </ItemGroup>
 
   <ItemGroup>
@@ -29,9 +32,12 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+    <PackageReference Include="PayPalCheckoutSdk" Version="1.0.4" />
+    <PackageReference Include="PuppeteerSharp" Version="8.0.0" />
     <PackageReference Include="SixLabors.ImageSharp" Version="2.1.3" />
     <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="20.3.0.47" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
+    <PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.3" />
   </ItemGroup>
 
 </Project>
