@@ -105,11 +105,14 @@ namespace Webx.Web
 
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<IMailHelper, MailHelper>();
+            services.AddScoped<IImageHelper, ImageHelper>();
             services.AddScoped<IBlobHelper, BlobHelper>();
             services.AddScoped<IConverterHelper, ConverterHelper>();
+            services.AddScoped<IXMLHelper, XMLHelper>();
             services.AddScoped<IAPIServiceHelper, APIServiceHelper>();
             services.AddScoped<ITemplateHelper, TemplateHelper>();
             services.AddScoped<IPdfHelper, PdfHelper>();
+
 
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
@@ -123,6 +126,7 @@ namespace Webx.Web
 
 
             services.AddHttpContextAccessor();
+           
 
             services.ConfigureApplicationCookie(options =>
             {

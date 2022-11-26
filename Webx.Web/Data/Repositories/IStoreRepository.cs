@@ -8,7 +8,7 @@ namespace Webx.Web.Data.Repositories
 {
     public interface IStoreRepository : IGenericRepository<Store>
     {
-        Task AddStoreAsync(StoreViewModel model);
+        //Task AddStoreAsync(StoreViewModel model);
 
         Task<IEnumerable<Store>> GetAllActiveStoresAsync();
 
@@ -18,13 +18,13 @@ namespace Webx.Web.Data.Repositories
 
         Task<IEnumerable<Store>> GetAllStoresAsync();
 
-        Task UpdateStoreAsync(StoreViewModel model);
+        //Task UpdateStoreAsync(StoreViewModel model);        
 
         IEnumerable<SelectListItem> GetComboStores();
 
         IEnumerable<SelectListItem> GetComboPhysicalStores();
 
         Task<int> GetOnlineStoreIdAsync();
-        
+
     }
 }

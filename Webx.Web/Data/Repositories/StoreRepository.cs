@@ -56,6 +56,7 @@ namespace Webx.Web.Data.Repositories
             return storeAll;
         }
 
+
         public async Task AddStoreAsync(StoreViewModel model)
         {
             Store store = new Store
@@ -122,5 +123,6 @@ namespace Webx.Web.Data.Repositories
 
             return list;
         }
+
     }
 }

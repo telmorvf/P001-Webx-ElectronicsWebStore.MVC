@@ -14,6 +14,9 @@ namespace Webx.Web.Data
 
         public DbSet<ProductImages> ProductImages { get; set; }
 
+        //ToDo Teste telmo
+        //public DbSet<ProductImages> Product_Images { get; set; }
+
         public DbSet<Brand> Brands { get; set; }
 
         public DbSet<Category> Categories { get; set; }
@@ -62,6 +65,15 @@ namespace Webx.Web.Data
             .HasColumnType("decimal(18,2)");
 
             builder.Entity<User>().HasIndex(u => u.NIF).IsUnique();
+
+            builder.Entity<Store>().HasIndex(u => u.Name).IsUnique();
+
+            builder.Entity<Product>().HasIndex(u => u.Name).IsUnique();
+
+            builder.Entity<Category>().HasIndex(u => u.Name).IsUnique();
+
+            builder.Entity<Brand>().HasIndex(u => u.Name).IsUnique();
+
         }
 
 

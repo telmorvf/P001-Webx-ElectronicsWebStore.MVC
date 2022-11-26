@@ -87,6 +87,7 @@
                 }
             </ul>
 
+
             @*<!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
             <!-- Navbar Search -->
@@ -254,6 +255,7 @@
 
             </li>
             </ul>*@
+
         </nav>
         <!-- /.navbar -->
         <!-- Main Sidebar Container -->
@@ -350,7 +352,6 @@
                             </ul>
                         </li>
 
-
                         <li class="nav-item">
                             <a asp-area="" asp-action="" asp-controller="" class="nav-link">
                                 <i class="nav-icon fas fa-comment-dollar"></i>
@@ -405,16 +406,16 @@
                             <ul class="nav nav-treeview">
 
                                 <li class="nav-item">
-                                    <a asp-area="" asp-action="ViewAll" asp-controller="Products" class="nav-link">
-                                        <i class="far fa-eye nav-icon text-info"></i>
+                                    <a asp-area="" asp-action="ViewAll" asp-controller="Products" asp-route-isService="false" class="nav-link">
+                                        <i class="fas fa-shopping-bag nav-icon text-info"></i>
                                         <p>View All Products</p>
                                     </a>
                                 </li>
 
                                 <li class="nav-item">
-                                    <a asp-area="" asp-action="Add" asp-controller="Products" class="nav-link">
-                                        <i class="fas fa-plus-circle nav-icon text-info"></i>
-                                        <p>Add Product</p>
+                                    <a asp-area="" asp-action="ViewAll" asp-controller="Products" asp-route-isService="true" class="nav-link">
+                                        <i class="far fa-eye nav-icon text-info"></i>
+                                        <p>View All Services</p>
                                     </a>
                                 </li>
 
@@ -432,16 +433,36 @@
                                     </a>
                                 </li>
 
-                                <li class="nav-item">
-                                    <a asp-area="" asp-action="ViewAll" asp-controller="Stock" class="nav-link">
-                                        <i class="fas fa-cubes nav-icon text-info"></i>
-                                        <p>Stocks</p>
-                                    </a>
-                                </li>
                             </ul>
                         </li>
 
+                        <li class="nav-item">
+                        <!--           Stock Alerts            -->
+                            <a asp-area="" asp-action="" asp-controller="" class="nav-link">
+                                <i class="nav-icon fas fa-cubes nav-icon"></i>
+                                    <p>Manage Stock </p>
+                                        <i class="fas fa-angle-left right"> </i>
+                                <span class="badge badge-pill badge-danger" hidden="hidden" id="stockCountAll"> 0</span>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                
+                                <li class="nav-item">
+                                    <a asp-area="" asp-action="ViewAll" asp-controller="Stock" class="nav-link">
+                                        <i class="fas fa-cubes nav-icon text-info"> </i>
+                                        <p>Stocks</p>
+                                    </a>
+                                </li>
 
+                                <!--           Stock Alerts            -->
+                                <li class="nav-item">
+                                    <a asp-area="" asp-action="ViewAllAlert" asp-controller="Stock" class="nav-link">
+                                        <i class="fas fa-cubes nav-icon text-info"> </i> 
+                                         <p>Stock Alerts </p><span class="badge badge-pill badge-danger" hidden="hidden" id="stockCount"> 0 </span>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </li>
 
                         <li class="nav-item">
                             <a asp-area="" asp-action="ViewAll" asp-controller="Store" asp-route-isActive="true" class="nav-link">
@@ -476,7 +497,6 @@
                             </ul>
                         </li>
 
-
                     </ul>
                     <div class="user-panel"></div>
                     <ul class="nav nav-pills nav-sidebar flex-column">
@@ -502,12 +522,9 @@
             <!-- Main content -->
             <div class="container-fluid">
 
-
                 @RenderBody()
 
-
             </div>
-
 
             <!-- /.content -->
         </div>
@@ -540,5 +557,34 @@
 
     @await RenderSectionAsync("Scripts", required: false)
     @await Component.InvokeAsync("Notyf")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var url = $(location).attr('href');
+
+            $.ajax({
+                url: '@Url.Action("CountStockAlerts","Stock")',
+                type: 'GET',
+                success: function (count) {
+                    if (count == 0) {
+                        $("#stockCount").attr('hidden', 'hidden');
+                        $("#stockCountAll").attr('hidden', 'hidden');
+                    } else {
+                        $("#stockCount").html(count);
+                        $("#stockCountAll").html(count);
+                        $("#stockCount").removeAttr('hidden');
+                        $("#stockCountAll").removeAttr('hidden');
+                    }
+                },
+                error: function (count) {
+                    $("#stockCount").attr('hidden', 'hidden');
+                    $("#stockCountAll").attr('hidden', 'hidden');
+                }
+            });
+            return false;
+        });
+    </script>
+
+
 </body>
 </html>

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
+using System.Transactions;
 using Webx.Web.Data.Entities;
 using Webx.Web.Helpers;
 
@@ -215,8 +216,6 @@ namespace Webx.Web.Data
 
                 //Adiciona encomendas de / para produtos sem marcações
 
-                //TODO comentado por telmo há vezes que dá erro no formato da data, nem sempre - perceber o que se passa com o Filipe
-
                 for (int i = 0; i <= 2; i++)
                 {
                     var orderDate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, r.Next(DateTime.DaysInMonth(DateTime.UtcNow.Year, DateTime.UtcNow.Month)));
@@ -229,6 +228,7 @@ namespace Webx.Web.Data
                         OrderDate = orderDate,
                         DeliveryDate = orderDate.AddDays(r.Next(0, 4)),
                         Status= _context.Statuses.Where(s => s.Name == "Order Created").FirstOrDefault()
+
                     });
                 }
 
@@ -383,6 +383,7 @@ namespace Webx.Web.Data
                 string[] brandsNames = new string[5] { "Asus", "Corsair", "MSI", "Cooler Master", "Intel" };
                 string[] categories = new string[5] { "Motherboards", "Memory", "Cases", "CPU Coolers", "CPU Processors" };
                 decimal[] productsPrices = new decimal[5] {153.90m,297.20m,59.90m,71.90m,413.90m};
+                bool[] promotion = new bool[5] { true, false, true, false, true };
                 Guid[][] images = new Guid[5][] { 
                     new Guid[4] {Guid.Parse("00000000-0000-0000-0000-11000000000a"),Guid.Parse("00000000-0000-0000-0000-11000000000b"),Guid.Parse("00000000-0000-0000-0000-11000000000c"),Guid.Parse("00000000-0000-0000-0000-11000000000e")},
                     new Guid[4] {Guid.Parse("00000000-0000-0000-0000-12000000000a"),Guid.Parse("00000000-0000-0000-0000-12000000000b"),Guid.Parse("00000000-0000-0000-0000-12000000000c"),Guid.Parse("00000000-0000-0000-0000-12000000000d") },
@@ -411,10 +412,10 @@ namespace Webx.Web.Data
                         Name = productNames[p],
                         Price = productsPrices[p],
                         IsService = false,
+                        IsPromotion = promotion[p],
                         Images = productImages
-                    });
+                    });                  
                 }
-
                 await _context.SaveChangesAsync();
             }
         }
@@ -445,16 +446,31 @@ namespace Webx.Web.Data
         {
             if (!_context.Brands.Any())
             {
-                string[] brandsNames = new string[6] { "Asus","Corsair","MSI","Cooler Master","Intel","WebX"};
+                int nTimes = 14;
+                string[] brandsNames = new string[14] { 
+                    "Asus", "Corsair", "MSI", 
+                    "Cooler Master", "Intel", "WebX",
+                    "Samsung", "LG", "Apple",
+                    "Canon", "Sony", "Siemens",
+                    "Lenovo", "Microsoft"
+                };
+                Guid[] images = new Guid[14] { 
+                    Guid.Parse("00000000-0000-0000-0000-900000000001"), Guid.Parse("00000000-0000-0000-0000-900000000002"), Guid.Parse("00000000-0000-0000-0000-900000000003"),
+                    Guid.Parse("00000000-0000-0000-0000-900000000004"), Guid.Parse("00000000-0000-0000-0000-900000000005"), Guid.Parse("00000000-0000-0000-0000-900000000006"),
+                    Guid.Parse("00000000-0000-0000-0000-900000000007"), Guid.Parse("00000000-0000-0000-0000-900000000008"), Guid.Parse("00000000-0000-0000-0000-900000000009"),
+                    Guid.Parse("00000000-0000-0000-0000-900000000010"), Guid.Parse("00000000-0000-0000-0000-900000000011"), Guid.Parse("00000000-0000-0000-0000-900000000012"),
+                    Guid.Parse("00000000-0000-0000-0000-900000000013"), Guid.Parse("00000000-0000-0000-0000-900000000014")
+                };
 
-                foreach(string brandName in brandsNames)
+                for (int i = 0; i < nTimes; i++)
                 {
-                    _context.Brands.Add(new Brand
+                    var brands = new Brand
                     {
-                        Name = brandName
-                    });
+                        Name = brandsNames[i],
+                        ImageId = images[i]
+                    };
+                    _context.Brands.Add(brands);
                 }
-
                 await _context.SaveChangesAsync();
             }
         }
