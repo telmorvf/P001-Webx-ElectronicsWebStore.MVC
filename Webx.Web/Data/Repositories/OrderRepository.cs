@@ -119,10 +119,7 @@ namespace Webx.Web.Data.Repositories
         public async Task<List<OrderWithDetailsViewModel>> GetAllCustomerOrdersAsync(string customerId)
         {
             List<OrderWithDetailsViewModel> ordersWithDetails = new List<OrderWithDetailsViewModel>();
-            List<Order> orders = new List<Order>();
-              .Include(o => o.Status)
-                .Include(o => o.Appointment)
-                .Where(o => o.Customer.Id == customerId).ToListAsync();
+            List<Order> orders = new List<Order>();              
 
             foreach(var order in orders)
             {

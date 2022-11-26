@@ -39,48 +39,12 @@ namespace Webx.Web.Data
             await AddServicesAsync();
             await AddStoresAsync();
             await AddStocksAsync();
-            await AddAppointmentsAsync();
-            await AddStatusesAsync();
+            await AddAppointmentsAsync();      
             await AddOrdersAsync();
             await AddOrdersDetailsAsync();
 
         }
-
-        private async Task AddStatusesAsync()
-        {
-            if (!_context.Statuses.Any())
-            {
-                int nTimes = 6;
-                string[] OrderStatusName = new string[6] {
-                    "Order Created",
-                    "Appointment Created",
-                    "Pending Appointment",
-                    "Order Shipped",
-                    "Order Closed",
-                    "Appointment Done"
-                };
-
-                string[] OrderStatusDesc = new string[6] {
-                    "Pago",
-                    "Pago",
-                    "Pago C/marcação por efetuar",
-                    "",
-                    "",
-                    ""
-                };
-
-                for (int i = 0; i < nTimes; i++)
-                {
-                    var orderSatus = new Status
-                    {
-                        Name = OrderStatusName[i],
-                        Description = OrderStatusDesc[i],
-                    };
-                    _context.Statuses.Add(orderSatus);
-                }
-                await _context.SaveChangesAsync();
-            }
-        }
+       
 
         private async Task AddOrdersDetailsAsync()
         {

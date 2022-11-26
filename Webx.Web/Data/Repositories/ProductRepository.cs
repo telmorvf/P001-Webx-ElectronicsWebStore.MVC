@@ -261,10 +261,7 @@ namespace Webx.Web.Data.Repositories
             }
             return product;
         }
-        public async Task<Product> GetProductByNameAsync(string name)
-        {
-            return await _context.Products.SingleOrDefaultAsync(b => b.Name == name);
-        }
+ 
 
         public async Task<Product> GetProSerByIdAsync(int id)
         {
@@ -482,6 +479,11 @@ namespace Webx.Web.Data.Repositories
                 .Include(p => p.Images)
                 .Where(p => p.Name == productName)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<List<Product>> GetAllProducts(string category)
+        {
+            return await _context.Products.Include(p => p.Images).Include(p => p.Brand).Include(p => p.Category).Where(p => p.Category.Name == category).ToListAsync();
         }
     }
 }

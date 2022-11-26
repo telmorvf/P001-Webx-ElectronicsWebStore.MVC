@@ -22,10 +22,8 @@ namespace Webx.Web.Helpers
         Product ProductAddFromViewModel(ProductAddViewModel model, bool isNew);
         ProductAddViewModel ProductAddToViewModel(Product product);
         ServiceViewModel ServiceToViewModel(Product product);
-        Product ServiceFromViewModel(ServiceViewModel model, bool isNew);
-        EditCustomerViewModel ToEditCustomerViewModel(User user);        
+        Product ServiceFromViewModel(ServiceViewModel model, bool isNew);          
         Task<List<CartViewModel>> ToCartViewModelAsync(List<CookieItemModel> cookieItemList);
-
         OrderViewModel ToOrderViewModel(Order order);
 
     }

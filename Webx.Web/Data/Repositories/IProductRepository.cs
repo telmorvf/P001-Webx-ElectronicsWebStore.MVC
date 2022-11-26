@@ -21,8 +21,7 @@ namespace Webx.Web.Data.Repositories
         Task<IEnumerable<Product>> GetFullProducts(string? category);
 #nullable disable
         Task<IEnumerable<Product>> GetProductAllAsync();
-        Task<Product> GetProductByIdAsync(int id);
-        Task<Product> GetProductByNameAsync(string name);
+        Task<Product> GetProductByIdAsync(int id);      
         Task<Product> GetProSerByIdAsync(int id);
         Task<IEnumerable<Product>> GetServiceAllAsync();
         Task<Product> GetServiceByIdAsync(int id);

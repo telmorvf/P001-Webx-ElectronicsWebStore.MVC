@@ -49,9 +49,9 @@ namespace Webx.Web.Controllers
             IImageHelper imageHelper,
             INotyfService toastNotification,
             IBlobHelper blobHelper,
-            IConverterHelper converterHelper
+            IConverterHelper converterHelper,
             IBrandRepository brandRepository,      
-            IUserHelper userHelper,
+            IUserHelper userHelper
             )
         {
             _productRepository = productRepository;
@@ -99,7 +99,7 @@ namespace Webx.Web.Controllers
                 Categories = await _categoryRepository.GetAllCategoriesAsync(),
                 ResultsPerPage = 12,
                 NumberOfProductsFound = products.Count(),
-                Brands = await _brandRepository.GetAllBrandsAsync(),
+                Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync(),
                 MostExpensiveProductPrice = await _productRepository.MostExpensiveProductPriceAsync(),
                 Cart = cart,
             };
@@ -135,7 +135,7 @@ namespace Webx.Web.Controllers
                 SelectedCategory = "AllCategories",
                 Categories = await _categoryRepository.GetAllCategoriesAsync(),
                 NumberOfProductsFound = products.Count(),
-                Brands = await _brandRepository.GetAllBrandsAsync()
+                Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync()
             };               
                 
             return PartialView("_shopSectionPartial", model);
@@ -165,7 +165,7 @@ namespace Webx.Web.Controllers
                 BrandsTags = brandsList,
                 Categories = await _categoryRepository.GetAllCategoriesAsync(),
                 NumberOfProductsFound = products.Count(),
-                Brands = await _brandRepository.GetAllBrandsAsync()
+                Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync()
             };              
 
             return PartialView("_shopSectionPartial", model);
@@ -188,7 +188,7 @@ namespace Webx.Web.Controllers
                 SelectedCategory = category,
                 Categories = await _categoryRepository.GetAllCategoriesAsync(),
                 NumberOfProductsFound = products.Count(),
-                Brands = await _brandRepository.GetAllBrandsAsync()
+                Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync()
             };
 
             return PartialView("_shopSectionPartial", model);
@@ -223,7 +223,7 @@ namespace Webx.Web.Controllers
                 ResultsPerPage = resultsPerPage,
                 NumberOfProductsFound = products.Count(),
                 Categories = await _categoryRepository.GetAllCategoriesAsync(),
-                Brands = await _brandRepository.GetAllBrandsAsync()
+                Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync()
             };              
 
             return PartialView("_shopSectionPartial", model);
@@ -269,7 +269,7 @@ namespace Webx.Web.Controllers
                 ResultsPerPage = resultsPerPage,
                 Categories = await _categoryRepository.GetAllCategoriesAsync(),
                 NumberOfProductsFound = products.Count(),
-                Brands = await _brandRepository.GetAllBrandsAsync(),
+                Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync(),
                 MostExpensiveProductPrice = await _productRepository.MostExpensiveProductPriceAsync(),
             };
 
@@ -304,7 +304,7 @@ namespace Webx.Web.Controllers
                 ResultsPerPage = resultsPerPage,
                 NumberOfProductsFound = products.Count(),
                 Categories = await _categoryRepository.GetAllCategoriesAsync(),
-                Brands = await _brandRepository.GetAllBrandsAsync()
+                Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync()
             };
 
             return PartialView("_shopSectionPartial", model);
@@ -348,7 +348,7 @@ namespace Webx.Web.Controllers
                 ResultsPerPage = resultsPerPage,
                 NumberOfProductsFound = products.Count(),
                 Categories = await _categoryRepository.GetAllCategoriesAsync(),
-                Brands = await _brandRepository.GetAllBrandsAsync(),
+                Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync(),
                 Stocks = await _stockRepository.GetAllStockWithStoresAsync(),
             };
 

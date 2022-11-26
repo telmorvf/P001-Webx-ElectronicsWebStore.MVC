@@ -36,10 +36,9 @@ namespace Webx.Web.Data.Entities
         [ForeignKey("ProductId")]
         public ICollection<ProductImages> Images { get; set; }
         //public IEnumerable<ProductImages> Images { get; set; }
+      
 
-        public IEnumerable<ProductImages> Images { get; set; }
-
-        public string Image => Images.Count() > 0 ? Images.ElementAt(0).ImageFullPath : "https://webx2022.blob.core.windows.net/images/NoPhoto.jpg";      
+        //public string Image => Images.Count() > 0 ? Images.ElementAt(0).ImageFullPath : "https://webx2022.blob.core.windows.net/images/NoPhoto.jpg";      
         
         [Required]
         [Display(Name = "Promotion?")]

@@ -18,7 +18,7 @@ namespace Webx.Web.Data.Repositories
             _context = context;
         }
 
-        public async Task<List<Brand>> GetAllBrandsAsync()
+        public async Task<IEnumerable<Brand>> GetAllBrandsAsync()
         {
             return await _context.Brands.ToListAsync();
         }
