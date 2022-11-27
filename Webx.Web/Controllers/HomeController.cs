@@ -23,11 +23,17 @@ namespace Webx.Web.Controllers
         private readonly ICategoryRepository _categoryRepository;        
         private readonly INotyfService _toastNotification;
         private readonly IProductRepository _productRepository;
+        private readonly IBrandRepository _brandRepositoty;
+        private readonly IStockRepository _stockRepository;
 
         public HomeController(
             ILogger<HomeController> logger,
             IBlobHelper blobHelper, IUserHelper userHelper,
-            ICategoryRepository categoryRepository, INotyfService toastNotification,IProductRepository productRepository)
+            ICategoryRepository categoryRepository,
+            INotyfService toastNotification,
+            IProductRepository productRepository,
+            IBrandRepository brandRepositoty,
+            IStockRepository stockRepository)
         {
             _logger = logger;
             _blobHelper = blobHelper;
@@ -35,6 +41,8 @@ namespace Webx.Web.Controllers
             _categoryRepository = categoryRepository;            
             _toastNotification = toastNotification;
             _productRepository = productRepository;
+            _brandRepositoty = brandRepositoty;
+            _stockRepository = stockRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -55,7 +63,8 @@ namespace Webx.Web.Controllers
 
             model.SuggestedProducts = sugestedProducts;
             model.Product = await _productRepository.GetProductByNameAsync("Intel Core i9-11900K 8-Core 3.5GHz W/Turbo 5.3GHz 16MB Skt1200 Processor");
-
+            model.HighlightedProducts = await _productRepository.GetHighlightedProductsAsync();
+            model.Stocks = await _stockRepository.GetAllStockWithStoresAsync();
 
             if (User.Identity.IsAuthenticated)
             {
@@ -66,6 +75,7 @@ namespace Webx.Web.Controllers
 
             var cookiesConsent = _productRepository.CheckCookieConsentStatus();
             model.CookieConsent = cookiesConsent;
+            model.Brands = (List<Brand>)await _brandRepositoty.GetAllBrandsAsync();
 
             return View(model);
         }
@@ -89,6 +99,7 @@ namespace Webx.Web.Controllers
         public async Task<IActionResult> Error404()
         {
             var model = await _productRepository.GetInitialShopViewModelAsync();
+            model.Brands = (List<Brand>)await _brandRepositoty.GetAllBrandsAsync();
             return View(model);
         }
     }

@@ -1,0 +1,23 @@
+﻿@model Webx.Web.Models.ShopViewModel
+
+ <section class="section-b-space">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="brand-slider">
+                         @foreach(var brand in Model.Brands)
+                         {
+                            @if(brand.ImageFullPath != null && !string.IsNullOrEmpty(brand.ImageFullPath))
+                            {
+                                 <div>
+                                    <div class="brand-image" >
+                                        <img src="@brand.ImageFullPath" style="max-height:120px; filter:grayscale(100%);" class="img-fluid blur-up lazyload" alt="brand logo">
+                                    </div>
+                                </div>  
+                            }                                                 
+                         }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>

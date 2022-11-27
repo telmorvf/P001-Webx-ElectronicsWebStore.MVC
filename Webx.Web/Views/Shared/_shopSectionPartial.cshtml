@@ -101,23 +101,22 @@
                  <div class="front">
                      @if (item.Images.Count() > 0)
                      {
-                         <a href="product-left-sidebar.html" style="max-height: 240px;">                                                       
+                         <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@item.Id" style="max-height: 240px;">                                                       
                              <img src="@item.Images.ElementAt(0).ImageFullPath"
                              class="bg-img blur-up lazyload teste" alt=""> 
                          </a>
                      }
                      else
                      {
-                         <a href="product-left-sidebar.html" style="max-height: 240px;">
-                             <img src="https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg"
-                                 class="bg-img blur-up lazyload teste" alt="">
+                         <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@item.Id" style="max-height: 240px;">                             
+                              <img src="@item.ImageFirst"  class="bg-img blur-up lazyload teste" alt=""> 
                          </a>
                      }
                  </div>
                  @if(item.Images.Count() > 1)
                  {
                    <div class="back">
-                     <a href="product-left-sidebar.html" style="max-height: 240px;">
+                     <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@item.Id" style="max-height: 240px;">
                          
                          <img src="@item.Images.ElementAt(1).ImageFullPath"
                          class="bg-img blur-up lazyload teste" alt=""> 
@@ -172,7 +171,7 @@
                      </ul>
                  </div>
                  <div class="main-price">
-                     <a href="product-left-sidebar.html" class="font-default" style="max-width:75%;min-width:65%">
+                     <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@item.Id" class="font-default" style="max-width:75%;min-width:65%">
                          <h5 class="ms-0" style="font-size:inherit;">@item.Name</h5>
                      </a>
                      <div class="listing-content">
@@ -182,7 +181,7 @@
                          </p>
                      </div>
                      <h3 class="theme-color" style="font-size:small;max-width: 35%;min-width:25%;text-align: center;">@item.Price €</h3>    
-                     <button onclick="location.href = 'cart.html';" class="btn listing-content">
+                     <button onclick="AddtoCart(@item.Id)" class="btn listing-content">
                          Add
                          To Cart
                      </button>

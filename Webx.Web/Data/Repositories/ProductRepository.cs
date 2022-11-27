@@ -259,7 +259,10 @@ namespace Webx.Web.Data.Repositories
             {
                 return null;
             }
+            
             return product;
+            
+            
         }
  
 
@@ -384,7 +387,12 @@ namespace Webx.Web.Data.Repositories
                 var stock = await _context.Stocks.Where(s => s.Product.Id == productId && s.Store.Id == storeId).FirstOrDefaultAsync();
                 var productTotal = stock.Quantity;
 
-                if (productTotal < 10)
+                if(productTotal == 0)
+                {
+                    color = "#3F3F3F";
+                }
+
+                if (productTotal > 0 && productTotal < 10)
                 {
                     color = "Red";
                 }
@@ -483,7 +491,28 @@ namespace Webx.Web.Data.Repositories
 
         public async Task<List<Product>> GetAllProducts(string category)
         {
-            return await _context.Products.Include(p => p.Images).Include(p => p.Brand).Include(p => p.Category).Where(p => p.Category.Name == category).ToListAsync();
+            List<Product> list = new List<Product>();
+
+            if(category == "AllCategories")
+            {
+                list = await _context.Products.Include(p => p.Images).Include(p => p.Brand).Include(p => p.Category).ToListAsync();
+            }
+            else
+            {
+                list = await _context.Products.Include(p => p.Images).Include(p => p.Brand).Include(p => p.Category).Where(p => p.Category.Name == category).ToListAsync();
+            }
+
+            return list;
+        }
+
+        public async Task<List<Product>> GetAllProductsAsync()
+        {
+            return await _context.Products.Include(p => p.Images).Include(p => p.Brand).Include(p => p.Category).ToListAsync();
+        }
+
+        public async Task<List<Product>> GetHighlightedProductsAsync()
+        {
+            return await _context.Products.Include(p => p.Images).Include(p => p.Brand).Include(p => p.Category).Where(p => p.IsPromotion == true).ToListAsync();
         }
     }
 }

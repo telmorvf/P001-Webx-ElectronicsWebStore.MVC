@@ -14,11 +14,11 @@
      
 </style>
 
-<div class="modal fade quick-view-modal" id="quick-view">
+<div class="modal fade quick-view-modal" id="quickHome-view">
    <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
          
-        <button type="button" class="btn-close" onclick="(closeViewModel())"  aria-label="Close"></button>
+        <button type="button" class="btn-close" onclick="(closeHomeViewModel())"  aria-label="Close"></button>
             <div class="modal-body">
 
                  @if(Model.Product != null)
@@ -149,7 +149,6 @@
                                                               <h6 style="font-weight:500">@item.Store.Name :</h6>                                                              
                                                           </div>                                                          
                                                           <div class="col-md-2">
-                                                             
                                                              @if(item.Quantity == 0)
                                                              {
                                                                  <h6><i class="fas fa-circle" style="color:#3F3F3F"></i></h6> 
@@ -194,6 +193,3 @@
       </div>
    </div>
 </div>
-
-
-

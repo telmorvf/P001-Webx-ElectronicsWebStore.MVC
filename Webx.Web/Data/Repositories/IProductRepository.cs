@@ -34,6 +34,7 @@ namespace Webx.Web.Data.Repositories
         Response UpdateCartCookie(List<CartViewModel> cart);
         Response ClearCart();
         Task<Product> GetProductByNameAsync(string productName);
-
+        Task<List<Product>> GetAllProductsAsync();
+        Task<List<Product>> GetHighlightedProductsAsync();
     }
 }

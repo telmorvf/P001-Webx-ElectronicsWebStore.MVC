@@ -82,7 +82,7 @@ namespace Webx.Web.Controllers
                 ViewBag.IsActive = user.Active;
             }
 
-            var products = await _productRepository.GetAllProducts("AllCategories");
+            var products = await _productRepository.GetAllProductsAsync();
 
             if(products == null)
             {
@@ -373,7 +373,16 @@ namespace Webx.Web.Controllers
             var cartCookie = Request.Cookies["Cart"];
             var cookieItemList = JsonConvert.DeserializeObject<List<CookieItemModel>>(cartCookie);
             int isInCartIndex = CheckProductExists(id.Value, cookieItemList); // verifica se produto que cliente está a inserir no carrinho já existe no carrinho e devolve o index do mesmo no carrinho
-            int defaultStoreId = await _storeRepository.GetOnlineStoreIdAsync();
+            int defaultStoreId = 0;
+            if (product.IsService)
+            {
+                defaultStoreId = await _storeRepository.GetLisbonStoreIdAsync();
+            }
+            else
+            {
+                defaultStoreId = await _storeRepository.GetOnlineStoreIdAsync();
+            }
+                        
 
             //se resultado for -1 significa que produto ainda não existe no carrinho, se não for, incrementa-se a quantidade do produto na posição que está
             if (isInCartIndex != -1) //produto já existe no carrinho
@@ -886,5 +895,68 @@ namespace Webx.Web.Controllers
             return Json(result);
         }
 
+        public async Task<IActionResult> ProductInfo(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var product = await _productRepository.GetFullProduct(id.Value);
+
+            if(product == null)
+            {
+                return NotFound();
+            }
+
+            var model = await _productRepository.GetInitialShopViewModelAsync();
+
+            if(model == null)
+            {
+                return NotFound();
+            }
+
+            model.Product = product;
+            model.Stocks = await _stockRepository.GetAllStockWithStoresAsync();
+            model.Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync();
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+                ViewBag.UserFullName = user.FullName;
+                ViewBag.IsActive = user.Active;
+            }
+
+            return View(model);
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetHomeProductDetails(int? Id)
+        {
+            if (Id == 0)
+            {
+                return null;
+            }
+
+            var product = await _productRepository.GetFullProduct(Id.Value);
+
+            if (product == null)
+            {
+                return null;
+            }
+
+            var model = new ShopViewModel
+            {
+                Product = product,              
+                Categories = await _categoryRepository.GetAllCategoriesAsync(),
+                Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync(),
+                Stocks = await _stockRepository.GetAllStockWithStoresAsync(),
+            };
+
+            var view = PartialView("_ProductHomePartial", model);
+
+            return view;
+        }
     }
 }

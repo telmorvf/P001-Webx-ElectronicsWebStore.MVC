@@ -53,6 +53,50 @@ namespace Webx.Web.Models
         public bool HasAppointmentToDo { get; set; }
 
         public List<Product> SuggestedProducts { get; set; }
+
+        public List<Product> HighlightedProducts { get; set; }
+
+        public int CompletedOrders
+        {
+            get
+            {
+                int completedOrders = 0;
+
+                if (CustomerOrders.Count() > 0)
+                {
+                    foreach (var item in CustomerOrders)
+                    {
+                        if(item.Order.Status.Name == "Appointment Done" || item.Order.Status.Name == "Order Closed")
+                        {
+                            completedOrders++;
+                        }
+                    }                   
+                }
+
+                return completedOrders;
+            }
+        }
+
+        public int PendingOrders
+        {
+            get
+            {
+                int pendingOrders = 0;
+
+                if (CustomerOrders.Count() > 0)
+                {
+                    foreach (var item in CustomerOrders)
+                    {
+                        if (item.Order.Status.Name != "Appointment Done" && item.Order.Status.Name != "Order Closed")
+                        {
+                            pendingOrders++;
+                        }
+                    }
+                }
+
+                return pendingOrders;
+            }
+        }
         
 
     }
