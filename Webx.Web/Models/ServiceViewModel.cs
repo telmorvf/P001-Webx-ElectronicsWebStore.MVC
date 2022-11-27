@@ -25,12 +25,13 @@ namespace Webx.Web.Models
         [Range(typeof(bool), "true", "true", ErrorMessage = "Tou Must Select Service = True")]
         public bool IsService { get; set; }
 
-
-        [Required]
         [Display(Name = "Brand")]
-        [Range(6, 6, ErrorMessage = "You must select the brand: WebX")]
-        public string BrandId { get; set; }
-        public IEnumerable<SelectListItem> Brands { get; set; }
+        public string DefaultWebxBrandName => "WebX Service";
+        //[Required]
+        //[Display(Name = "Brand")]
+        //[Range(6, 6, ErrorMessage = "You must select the brand: WebX")]
+        //public string BrandId { get; set; }
+        //public IEnumerable<SelectListItem> Brands { get; set; }
 
 
         [Required]
@@ -43,6 +44,15 @@ namespace Webx.Web.Models
 
 
         public string ImageFirst { get; set; }
+
+        [Required]
+        [Display(Name = "Discount(%)")]
+        [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = false)]
+        public decimal Discount { get; set; }
+
+        [Display(Name = "Price with Discount")]
+        [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
+        public decimal PriceWithDiscount => Price * (1 - (Discount / 100));
 
     }
 }

@@ -347,6 +347,7 @@ namespace Webx.Web.Data
                 string[] brandsNames = new string[5] { "Asus", "Corsair", "MSI", "Cooler Master", "Intel" };
                 string[] categories = new string[5] { "Motherboards", "Memory", "Cases", "CPU Coolers", "CPU Processors" };
                 decimal[] productsPrices = new decimal[5] {153.90m,297.20m,59.90m,71.90m,413.90m};
+                decimal[] productsDiscount = new decimal[5] { 10.0m, 0m, 0m, 0m, 5.0m };
                 bool[] promotion = new bool[5] { true, false, true, false, true };
                 Guid[][] images = new Guid[5][] { 
                     new Guid[4] {Guid.Parse("00000000-0000-0000-0000-11000000000a"),Guid.Parse("00000000-0000-0000-0000-11000000000b"),Guid.Parse("00000000-0000-0000-0000-11000000000c"),Guid.Parse("00000000-0000-0000-0000-11000000000e")},
@@ -377,7 +378,8 @@ namespace Webx.Web.Data
                         Price = productsPrices[p],
                         IsService = false,
                         IsPromotion = promotion[p],
-                        Images = productImages
+                        Images = productImages,
+                        Discount = productsDiscount[p]
                     });                  
                 }
                 await _context.SaveChangesAsync();

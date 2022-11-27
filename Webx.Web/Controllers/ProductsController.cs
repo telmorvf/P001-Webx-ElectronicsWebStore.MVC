@@ -518,6 +518,7 @@ namespace Webx.Web.Controllers
                             Id = 0,
                             Name = model.Name,
                             Price = model.Price,
+                            Discount = model.Discount,
                             Description = model.Description,
                             IsService = model.IsService,
                             IsPromotion = model.IsPromotion,
@@ -572,7 +573,7 @@ namespace Webx.Web.Controllers
             var model = new ServiceViewModel();
 
             model.Categories = _productRepository.GetCategoriesCombo();
-            model.Brands = _productRepository.GetBrandsCombo();
+            //model.Brands = _productRepository.GetBrandsCombo();
             return View(model);
         }
 
@@ -584,7 +585,7 @@ namespace Webx.Web.Controllers
             if (!this.ModelState.IsValid)
             {
                 model.Categories = _productRepository.GetCategoriesCombo();
-                model.Brands = _productRepository.GetBrandsCombo();
+                //model.Brands = _productRepository.GetBrandsCombo();
                 return View(model);
             }
             else
@@ -594,7 +595,7 @@ namespace Webx.Web.Controllers
                 {
                     _toastNotification.Error("This Service Name Already Exists, Please try again...");
                     model.Categories = _productRepository.GetCategoriesCombo();
-                    model.Brands = _productRepository.GetBrandsCombo();
+                    //model.Brands = _productRepository.GetBrandsCombo();
                     return View(model);
                 }
 
@@ -602,7 +603,7 @@ namespace Webx.Web.Controllers
                 {
                     try
                     {
-                        Product newService = _converterHelper.ServiceFromViewModel(model, true);
+                        Product newService = await _converterHelper.ServiceFromViewModel(model, true);
 
                         await _productRepository.CreateAsync(newService);
 
@@ -617,7 +618,7 @@ namespace Webx.Web.Controllers
                         _toastNotification.Error("There was a problem, When try creating the product. Please try again");
 
                         model.Categories = _productRepository.GetCategoriesCombo();
-                        model.Brands = _productRepository.GetBrandsCombo();
+                        //model.Brands = _productRepository.GetBrandsCombo();
                         return View(model);
                     }
                 }
@@ -716,12 +717,15 @@ namespace Webx.Web.Controllers
                     product.Price = model.Price;
                     product.Description = model.Description;
                     product.IsService = model.IsService;
-                    product.IsPromotion = model.IsPromotion;
+                    product.IsPromotion = model.IsHighlighted;
                     product.CategoryId = Convert.ToInt32(model.CategoryId);
                     product.BrandId = Convert.ToInt32(model.BrandId);
+                    product.Discount = model.Discount;
                     
                     _dataContext.Products.Update(product);
                     await _dataContext.SaveChangesAsync();
+
+                    product.Brand = await _brandRepository.GetBrandByIdAsync(Convert.ToInt32(model.BrandId));
 
                     //converterHelper
                     model = _converterHelper.ProductToViewModel(product);
@@ -773,7 +777,7 @@ namespace Webx.Web.Controllers
             if (!this.ModelState.IsValid)
             {
                 model.Categories = _productRepository.GetCategoriesCombo();
-                model.Brands = _productRepository.GetBrandsCombo();
+                //model.Brands = _productRepository.GetBrandsCombo();
                 return View(model);
             }
             else
@@ -783,23 +787,28 @@ namespace Webx.Web.Controllers
                 {
                     _toastNotification.Error("Error, the service was not found");
                     model.Categories = _productRepository.GetCategoriesCombo();
-                    model.Brands = _productRepository.GetBrandsCombo();
+                    //model.Brands = _productRepository.GetBrandsCombo();
                     return View(model);
                 };
 
                 try
                 {
+
+                    var WebxServiceBrand = await _brandRepository.GetBrandByNameAsync("WebX");
                     product.Id = model.Id;
                     product.Name = model.Name;
                     product.Price = model.Price;
+                    product.Discount = model.Discount;
                     product.Description = model.Description;
                     product.IsService = model.IsService;
                     product.CategoryId = Convert.ToInt32(model.CategoryId);
-                    product.BrandId = Convert.ToInt32(model.BrandId);
+                    product.BrandId = WebxServiceBrand.Id;
 
 
                     _dataContext.Products.Update(product);
                     await _dataContext.SaveChangesAsync();
+
+                    product.Brand = WebxServiceBrand;
 
                     //converterHelper
                     model = _converterHelper.ServiceToViewModel(product);
@@ -818,7 +827,7 @@ namespace Webx.Web.Controllers
                     }
 
                     model.Categories = _productRepository.GetCategoriesCombo();
-                    model.Brands = _productRepository.GetBrandsCombo();
+                    //model.Brands = _productRepository.GetBrandsCombo();
                     return View(model);
                 }
             };
@@ -855,7 +864,7 @@ namespace Webx.Web.Controllers
             if (model == null)
             {
                 return null;
-            }
+            }                        
 
             var json = Json(model);
             return json;

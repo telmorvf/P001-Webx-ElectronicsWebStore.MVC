@@ -41,7 +41,7 @@ namespace Webx.Web.Data.Entities
         //public string Image => Images.Count() > 0 ? Images.ElementAt(0).ImageFullPath : "https://webx2022.blob.core.windows.net/images/NoPhoto.jpg";      
         
         [Required]
-        [Display(Name = "Promotion?")]
+        [Display(Name = "Higlighted?")]
         public bool IsPromotion { get; set; }
 
 
@@ -72,5 +72,13 @@ namespace Webx.Web.Data.Entities
         //   ? $"https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg"
         //   : ImageFirst;
 
+        [Required]
+        [Display(Name = "Discount(%)")]
+        [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = false)]
+        public decimal Discount { get; set; }
+
+        [Display(Name = "Price with Discount")]
+        [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
+        public decimal PriceWithDiscount => Price * (1 - (Discount / 100));
     }
 }

@@ -75,16 +75,18 @@
         <e-grid-selectionsettings type="Single" mode="Row"></e-grid-selectionsettings>
         <e-grid-pagesettings pageSize="7"></e-grid-pagesettings>
         <e-grid-columns>
-            <e-grid-column headerText="Product Picture" template="#template" width="160" textAlign="Center" allowEditing="false"></e-grid-column>
+            <e-grid-column headerText="Product Picture" template="#template" width="100" textAlign="Center" allowEditing="false"></e-grid-column>
             <e-grid-column field="Id" isPrimaryKey="true" width="0px"></e-grid-column>
             <e-grid-column field="IsService" headerText="IsServ.?" template="#templateCheckbox" textAlign="Center" width="65px"></e-grid-column>
-            <e-grid-column field="IsPromotion" headerText="Promo?" template="#templateCheckbox1" textAlign="Center" width="65px"></e-grid-column>
-            <e-grid-column field="Name" textAlign="Left" allowEditing="false" width="320px"></e-grid-column>        
+            <e-grid-column field="IsPromotion" headerText="Highlighted?" template="#templateCheckbox1" textAlign="Center" width="100px"></e-grid-column>
+            <e-grid-column field="Name" textAlign="Left" allowEditing="false" width="300px"></e-grid-column>        
             <e-grid-column field="Price" format="# ###.00 '€'" textAlign="Right" width="60px"></e-grid-column>
+            <e-grid-column field="Discount" format="# ###.00 '%'" textAlign="Right" width="60px"></e-grid-column>
+            <e-grid-column field="PriceWithDiscount" format="# ###.00 '€'" textAlign="Right" width="100px"></e-grid-column>
             <e-grid-column field="" isPrimaryKey="true" width="20px"></e-grid-column>
             <e-grid-column field="Category.Name" headerText="Category" textAlign="Left" width="80"></e-grid-column>
             <e-grid-column field="Brand.Name" headerText="Brand" textAlign="Left" width="80px"></e-grid-column>
-            <e-grid-column field="Description" textAlign="Left" allowEditing="false" width="220px"></e-grid-column>
+            @*<e-grid-column field="Description" textAlign="Left" allowEditing="false" width="220px"></e-grid-column>*@
         </e-grid-columns>
     </ejs-grid>
 
@@ -300,11 +302,16 @@
                         isPromotionStatus = "No";
                     }
 
-                    dialog.content = "<b>Price: </b>" + productData.price + " €uros <br/>" + //Define a mensagem/conteudo do dialog
+                    let price = parseFloat(productData.price).toFixed(2);
+                    let priceWithDiscount = parseFloat(productData.priceWithDiscount).toFixed(2);
+
+                    dialog.content = "<b>Price: </b>" + price + " €uros <br/>" + //Define a mensagem/conteudo do dialog
+                        "<b>Discount: </b>" + productData.discount + " % <br/>" +
+                        "<b>Price w/Discount: </b>" + priceWithDiscount + " €uros <br/>" +
                         "<b>Brand: </b>" + productData.brandName + "<br/>" +
                         "<b>Category: </b>" + productData.categoryName + "<br/>" +
                         "<b>Is Service?: </b>" + isServiceStatus + "<br/>" +
-                        "<b>Promotion?: </b>" + isPromotionStatus + "<br/><br/>" +
+                        "<b>Highlighted?: </b>" + isPromotionStatus + "<br/><br/>" +
                         "<b>Description: </b>" + productData.description + "<br/>";
 
                     dialog.show(); // faz popup do dialog
