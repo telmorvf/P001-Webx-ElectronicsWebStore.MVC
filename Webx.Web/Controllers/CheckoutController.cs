@@ -318,7 +318,7 @@ namespace Webx.Web.Controllers
                                 await _stockRepository.UpdateAsync(stock);
                             }
 
-                            orderTotal += (item.Product.Price * item.Quantity);
+                            orderTotal += (item.Product.PriceWithDiscount * item.Quantity);
                             orderTotalQuantity += item.Quantity;
                         }
                     }
@@ -373,7 +373,7 @@ namespace Webx.Web.Controllers
                             orderDetails.Add(new OrderDetail
                             {
                                 Order = order,
-                                Price = (item.Product.Price * item.Quantity),
+                                Price = (item.Product.PriceWithDiscount * item.Quantity),
                                 Product = item.Product,
                                 Quantity = item.Quantity
                             });

@@ -115,7 +115,12 @@
                                   <li class="font-light">(In stock)</li>
                               </ul>
                               <div class="price mt-3">
-                                  <h3>@Model.Product.Price €</h3>
+                                   <h3>@Model.Product.PriceWithDiscount.ToString("C2")</h3>
+                                    @if(Model.Product.Discount > 0)
+                                    {
+                                      <span class="font-light ml-1" style="text-decoration:line-through;">@Model.Product.Price.ToString("C2")</span>
+                                      <span style="margin-left: 10px;">@Decimal.Truncate(Model.Product.Discount)% Discount</span>
+                                    }
                               </div>
                               
                               

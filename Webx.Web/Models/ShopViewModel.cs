@@ -30,7 +30,9 @@ namespace Webx.Web.Models
 
         public int TotalProductsInCart => Cart.Sum(p => p.Quantity);
 
-        public string CartGrandTotal => Cart.Sum(p => p.Product.Price * p.Quantity).ToString("C2");       
+        public string CartGrandTotal => Cart.Sum(p => p.Product.PriceWithDiscount * p.Quantity).ToString("C2");  
+        
+        public string CartGrandTotalWithNoDiscount => Cart.Sum(p => p.Product.Price * p.Quantity).ToString("C2");
 
         public bool CookieConsent { get; set; }
 
@@ -61,17 +63,19 @@ namespace Webx.Web.Models
             get
             {
                 int completedOrders = 0;
-
-                if (CustomerOrders.Count() > 0)
+                if(CustomerOrders != null)
                 {
-                    foreach (var item in CustomerOrders)
+                    if (CustomerOrders.Count() > 0)
                     {
-                        if(item.Order.Status.Name == "Appointment Done" || item.Order.Status.Name == "Order Closed")
+                        foreach (var item in CustomerOrders)
                         {
-                            completedOrders++;
+                            if (item.Order.Status.Name == "Appointment Done" || item.Order.Status.Name == "Order Closed")
+                            {
+                                completedOrders++;
+                            }
                         }
-                    }                   
-                }
+                    }
+                }               
 
                 return completedOrders;
             }
@@ -82,17 +86,19 @@ namespace Webx.Web.Models
             get
             {
                 int pendingOrders = 0;
-
-                if (CustomerOrders.Count() > 0)
+                if(CustomerOrders != null)
                 {
-                    foreach (var item in CustomerOrders)
+                    if (CustomerOrders.Count() > 0)
                     {
-                        if (item.Order.Status.Name != "Appointment Done" && item.Order.Status.Name != "Order Closed")
+                        foreach (var item in CustomerOrders)
                         {
-                            pendingOrders++;
+                            if (item.Order.Status.Name != "Appointment Done" && item.Order.Status.Name != "Order Closed")
+                            {
+                                pendingOrders++;
+                            }
                         }
                     }
-                }
+                }                
 
                 return pendingOrders;
             }

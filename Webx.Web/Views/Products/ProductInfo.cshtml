@@ -108,7 +108,12 @@
                                         <h2>@Model.Product.Name</h2>
                                     </div>                                    
 
-                                    <h3 class="price-detail" style="margin-top:25px;font-size: 30px;color: var(--theme-color);font-weight: 400;">@Model.Product.Price.ToString("C2") @*<del>$459.00</del><span>55% off</span>*@</h3>
+                                    <h3 class="price-detail" style="margin-top:25px;font-size: 30px;color: var(--theme-color);font-weight: 400;">
+                                       @Model.Product.PriceWithDiscount.ToString("C2")
+                                       @if(Model.Product.Discount > 0){
+                                            <del style="font-size:20px;" class="font-light">@Model.Product.Price.ToString("C2")</del><span style="font-size:20px;margin-left:10px" class="font-light">@Decimal.Truncate(Model.Product.Discount)% Discount</span>
+                                       }                                      
+                                    </h3>
                                    
                                     <ul class="product-count shipping-order" style="margin-top:25px;background-color: #EFF2F7;margin-bottom: 10px;">
                                         <li>                                                                                                                                  

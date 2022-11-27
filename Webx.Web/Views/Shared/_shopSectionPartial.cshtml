@@ -124,7 +124,13 @@
                      </a>
                    </div>  
                  }                                    
-                
+                @if(item.Discount > 0)
+                 {
+                     <div class="label-block">
+                         <span class="label label-black">Promo</span>
+                         <span class="label label-theme">@Decimal.Truncate(@item.Discount)% Off</span>
+                     </div>
+                 }
                  <div class="cart-wrap">
                      <ul>
                          @*data-bs-toggle="modal" data-bs-target="#addtocart"*@
