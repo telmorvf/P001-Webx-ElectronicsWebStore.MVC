@@ -204,10 +204,14 @@
                                                    <img src="@product.ImageFirst" class="bg-img blur-up lazyload" alt="">   
                                                 }                                                                                      
                                             </a>
-                                            @*<div class="label-block">
-                                                <span class="label label-black">New</span>
-                                                <span class="label label-theme">50% Off</span>
-                                            </div>*@
+                                            @if(product.Discount > 0)
+                                            {
+                                                <div class="label-block">
+                                                    <span class="label label-black">Promo</span>
+                                                    <span class="label label-theme">@Decimal.Truncate(product.Discount)% Off</span>
+                                                </div>
+                                            }
+                                    
                                             <div class="cart-wrap">
                                                 <ul>
                                                     <li>
@@ -231,8 +235,11 @@
                                         </div>
                                         <div class="product-details text-center">
                                             <h3 class="theme-color">
-                                                @product.Price.ToString("C2")
-                                                @*<span class="font-light ml-1">$52.00</span>*@
+                                                @product.PriceWithDiscount.ToString("C2")
+                                                @if(product.Discount > 0)
+                                                {
+                                                    <span class="font-light ml-1">@product.Price.ToString("C2")</span>
+                                                }                                        
                                             </h3>
                                             @*;white-space:nowrap*@
                                             <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@product.Id" class="font-default">

@@ -58,7 +58,7 @@
                                         <div class="media-body">
                                             <h6>@item.Product.Name</h6>
                                             <div class="qty-with-price">
-                                                <span>@((item.Product.Price * item.Quantity).ToString("C2"))</span>
+                                                <span>@((item.Product.PriceWithDiscount * item.Quantity).ToString("C2"))</span>
                                                 <span>
                                                     <span>Qty. x @item.Quantity</span>                                             
                                                 </span>

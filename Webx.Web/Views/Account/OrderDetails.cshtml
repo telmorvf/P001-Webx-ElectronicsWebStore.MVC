@@ -48,7 +48,11 @@
                                         <p style="max-width:310px;overflow:hidden;text-overflow:ellipsis;" class="mt-0">@item.Product.Name</p>
                                     </td>
                                     <td>
-                                        <p class="theme-color fs-6">@item.Product.Price.ToString("C2")</p>
+                                        @if(item.Product.Discount > 0){
+                                            <p><del style="font-size:14px;" class="font-light">@item.Product.Price.ToString("C2")</del></p>
+                                        } 
+                                        <p  style="font-size:16px;" class="theme-color fs-6">@item.Product.PriceWithDiscount.ToString("C2")</p>      
+                                        @*<p class="theme-color fs-6">@item.Product.Price.ToString("C2")</p>*@
                                     </td>
                                     <td>
                                         <p class="mt-0">@item.Quantity</p>
