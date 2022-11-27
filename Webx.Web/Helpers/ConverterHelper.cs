@@ -14,16 +14,17 @@ namespace Webx.Web.Helpers
         private readonly IProductRepository _productRepository;
         private readonly IStoreRepository _storeRepository;
         private readonly IStockRepository _stockRepository;
-        private readonly IStatusRepository _statusRepository;     
+        private readonly IStatusRepository _statusRepository;
+        private readonly IBrandRepository _brandRepository;
 
-        public ConverterHelper(IUserHelper userHelper,IProductRepository productRepository,IStoreRepository storeRepository,IStockRepository stockRepository,IStatusRepository statusRepository)
+        public ConverterHelper(IUserHelper userHelper,IProductRepository productRepository,IStoreRepository storeRepository,IStockRepository stockRepository,IStatusRepository statusRepository,IBrandRepository brandRepository)
         {
             _userHelper = userHelper;
             _productRepository = productRepository;
             _storeRepository = storeRepository;
             _stockRepository = stockRepository;
             _statusRepository = statusRepository;
-
+            _brandRepository = brandRepository;
         }
      
         public async Task<EditEmployeeViewModel> ToEditEmployeeViewModelAsync(User user)
@@ -163,7 +164,7 @@ namespace Webx.Web.Helpers
                 Description = product.Description,
                 Price = product.Price,
                 IsService = product.IsService,
-                IsPromotion = product.IsPromotion,
+                IsHighlighted = product.IsPromotion,
                 ImageFirst = product.ImageFirst,
                 BrandId = product.BrandId.ToString(),
                 BrandName = product.Brand.Name,
@@ -171,7 +172,7 @@ namespace Webx.Web.Helpers
                 CategoryId = product.CategoryId.ToString(),
                 CategoryName = product.Category.Name,
                 Categories = _productRepository.GetCategoriesCombo(product.CategoryId),
-
+                Discount = product.Discount,                 
             };
         }
         public Product ProductFromViewModel(ProductViewModel model, bool isNew)
@@ -183,9 +184,10 @@ namespace Webx.Web.Helpers
                 Price = model.Price,
                 Description = model.Description,
                 IsService = model.IsService,
-                IsPromotion = model.IsPromotion,
+                IsPromotion = model.IsHighlighted,
                 CategoryId = Convert.ToInt32(model.CategoryId),
                 BrandId = Convert.ToInt32(model.BrandId),
+                Discount = model.Discount
             };
         }
         public ProductAddViewModel ProductAddToViewModel(Product product)
@@ -228,14 +230,17 @@ namespace Webx.Web.Helpers
                 Price = product.Price,
                 IsService = product.IsService,
                 ImageFirst = product.ImageFirst,
-                BrandId = product.BrandId.ToString(),
-                Brands = _productRepository.GetBrandsCombo(product.BrandId),
+                //BrandId = product.BrandId.ToString(),
+                //Brands = _productRepository.GetBrandsCombo(product.BrandId),
                 CategoryId = product.CategoryId.ToString(),
                 Categories = _productRepository.GetCategoriesCombo(product.CategoryId),
+                Discount = product.Discount,
             };
         }
-        public Product ServiceFromViewModel(ServiceViewModel model, bool isNew)
+        public async Task<Product> ServiceFromViewModel(ServiceViewModel model, bool isNew)
         {
+            var WebxServiceBrand = await _brandRepository.GetBrandByNameAsync("WebX");
+
             return new Product
             {
                 Id = isNew ? 0 : model.Id,
@@ -243,9 +248,9 @@ namespace Webx.Web.Helpers
                 Price = model.Price,
                 Description = model.Description,
                 IsService = model.IsService,
-
+                Discount = model.Discount,
                 CategoryId = Convert.ToInt32(model.CategoryId),
-                BrandId = Convert.ToInt32(model.BrandId),
+                BrandId = WebxServiceBrand.Id,
             };
         }
 

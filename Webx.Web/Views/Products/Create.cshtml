@@ -123,6 +123,17 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
+                            <label asp-for="Discount" class="control-label"></label>
+                            <input asp-for="Discount" style="text-align:right" class="form-control" />
+                            <span asp-validation-for="Discount" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">                     
+                    </div>
+                </div>
+                <div class="row">                  
+                    <div class="col-md-4">
+                        <div class="form-group">
                             <label asp-for="MinimumQuantity" class="control-label"></label>
                             <input asp-for="MinimumQuantity" style="text-align:right" class="form-control" />
                             <span asp-validation-for="MinimumQuantity" class="text-danger"></span>
@@ -135,8 +146,8 @@
                             <span asp-validation-for="ReceivedQuantity" class="text-danger"></span>
                         </div>
                     </div>
+                     <div class="col-md-4"></div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
