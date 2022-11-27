@@ -34,18 +34,18 @@
                                 {
                                   <tr>
                                     <td>
-                                        <a href="#">
+                                        <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@item.Product.Id">
                                             @if(item.Product.Images.Count() > 0)
                                             {
                                                 <img src="@item.Product.Images.ElementAt(0).ImageFullPath" class="blur-up lazyload" alt="">
                                             }
                                             else{
-                                                <img src="https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg" class="blur-up lazyload" alt="">  
+                                                <img src="@item.Product.ImageFirst" class="blur-up lazyload" alt="">  
                                             }
                                         </a>
                                     </td> 
-                                    <td style="max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                        <p class="mt-0">@item.Product.Name</p>
+                                    <td style="max-width:300px;">
+                                        <p style="max-width:310px;overflow:hidden;text-overflow:ellipsis;" class="mt-0">@item.Product.Name</p>
                                     </td>
                                     <td>
                                         <p class="theme-color fs-6">@item.Product.Price.ToString("C2")</p>

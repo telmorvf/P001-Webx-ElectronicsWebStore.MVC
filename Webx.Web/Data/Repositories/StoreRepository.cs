@@ -124,5 +124,11 @@ namespace Webx.Web.Data.Repositories
             return list;
         }
 
+        public async Task<int> GetLisbonStoreIdAsync()
+        {
+            var store = await _context.Stores.Where(s => s.Name == "WebX Lisbon Store").FirstOrDefaultAsync();
+
+            return store.Id;
+        }
     }
 }

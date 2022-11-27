@@ -8,110 +8,6 @@
     var changeButton = new ButtonModel() { content = "Update", cssClass = "e-flat" };
 }
 
-<style>
-    /*.e-footer-content .e-btn.e-flat:not([DISABLED])
-    {
-         background-color: #0163D2 !important;
-         border-color: #fff !important;
-         color: #fff !important;
-         font-weight:400 !important;
-         transition:ease-in-out 0.5s;
-    }
-
-    .e-footer-content .e-btn.e-flat:not([DISABLED]):hover{
-        background-color: #fff !important;
-        border-color: #0163D2 !important;
-        color: #0163D2 !important;
-        border-radius:0px !important;
-    }
-
-    .fontawesome{
-        font-size:18px;
-        color:grey;
-        cursor:pointer;
-    }
-
-    .fontawesome:hover .fa-eye-slash:before{
-        content:"\f06e";
-        color:#0163D2;
-        opacity:0.4;
-    }
-
-    .my_file{    
-    bottom:0px;
-    outline:none;
-    color: transparent;
-    width: 100%;      
-    height:350px;
-    padding: 15px 100px;
-    cursor: pointer;
-    transition: 1s;
-    background: rgba(0,0,0,0.5);
-    opacity:0;
-    border-radius:50%;
-    margin:auto;
-    }
-    .my_file::-webkit-file-upload-button{
-        visibility: hidden;
-    }
-    .my_file::before {
-        content: 'Update';    
-        font-size: 14px;
-        font-family:Arial;
-        font-weight:bold;
-        color: rgba(85, 150, 223,0.8);
-        display:block; 
-        text-align: center;
-    }
-    .my_file:hover{
-        opacity:1;
-    }
-
-    .imageStyle {
-         height: 350px;
-         width: auto;
-         position: relative;       
-         overflow: hidden;  
-         box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
-    }
-
-    .pad{
-        padding: 15px;
-    }
-
-    .appointmentWarning{
-        width: 100%;
-        margin: 0;
-        display: flex;
-        position: relative;        
-        margin-bottom: 20px;
-    }
-
-    .appointmentWarning > div{
-        width: 100%;
-        height: 50px;        
-        /*background-color: #FFCA2C;*/
-   /*     justify-content: center;
-        text-align: center;
-        line-height: 50px;
-        font-weight: 500;
-        border: solid 1px;
-        animation-name: backgroundColorWarning;
-        animation-duration:4s;
-        animation-iteration-count:infinite;
-        animation-direction:alternate;
-    }
-
-    @@keyframes backgroundColorWarning{
-        0%{
-            background: #FFCA2C;
-        }
-        50%{
-            background: #FFF;
-        }
-    }*/
-
-</style>
 
 
 <!-- user dashboard section start -->
@@ -181,15 +77,13 @@
                                             <div class="col-lg-4 col-sm-6">
                                                 <div class="order-box">
                                                     <div class="order-box-image">
-                                                        <img src="~/assets/images/svg/box.png"
-                                                            class="img-fluid blur-up lazyload" alt="">
+                                                        <img src="~/assets/images/svg/box.png" class="img-fluid blur-up lazyload" alt="">                                                            
                                                     </div>
                                                     <div class="order-box-contain">
-                                                        <img src="~/assets/images/svg/box1.png"
-                                                            class="img-fluid blur-up lazyload" alt="">
+                                                        <img src="~/assets/images/svg/box1.png" class="img-fluid blur-up lazyload" alt="">                                                            
                                                         <div>
                                                             <h5 class="font-light">total orders</h5>
-                                                            <h3>3648</h3>
+                                                            <h3>@Model.CompletedOrders</h3>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -198,15 +92,13 @@
                                             <div class="col-lg-4 col-sm-6">
                                                 <div class="order-box">
                                                     <div class="order-box-image">
-                                                        <img src="~/assets/images/svg/sent.png"
-                                                            class="img-fluid blur-up lazyload" alt="">
+                                                        <img src="~/assets/images/svg/sent.png" class="img-fluid blur-up lazyload" alt="">                                                            
                                                     </div>
                                                     <div class="order-box-contain">
-                                                        <img src="~/assets/images/svg/sent1.png"
-                                                            class="img-fluid blur-up lazyload" alt="">
+                                                        <img src="~/assets/images/svg/sent1.png" class="img-fluid blur-up lazyload" alt="">                                                            
                                                         <div>
                                                             <h5 class="font-light">pending orders</h5>
-                                                            <h3>215</h3>
+                                                            <h3>@Model.PendingOrders</h3>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -298,91 +190,106 @@
                             </div>
                             <div class="table-responsive">
                                  @if(Model.HasAppointmentToDo == true)
-                                    {
-                                        <div class="table-head row appointmentWarning" stlye="background-color:#FFCA2C"> 
-                                            <div class="col-md-12">You have unscheduled appointments!</div>
-                                        </div>
-                                    }
-                                <table class="table cart-table">                                                                        
-                                    <thead>
-                                        <tr class="table-head">
-                                            <th scope="col">image</th>
-                                            <th scope="col">Order Id</th>
-                                            <th scope="col">Order Details</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Price</th>
-                                            <th scope="col">View</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach(var order in Model.CustomerOrders)
-                                    {
-                                        <tr>
-                                            <td>
-                                                <a href="#">
-                                                    @if(order.OrderDetails.FirstOrDefault().Product.Images.Count() > 0)
-                                                    {
-                                                        <img src="@order.OrderDetails.FirstOrDefault().Product.Images.ElementAt(0).ImageFullPath" class="blur-up lazyload" alt="">
-                                                    }
-                                                    else
-                                                    {
-                                                        <img src="https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg" class="blur-up lazyload" alt="">                                                        
-                                                    }                                                    
-                                                       
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="mt-0">#@order.Order.InvoiceId</p>
-                                            </td>
-                                            <td>
-                                                @foreach(var orderDetails in order.OrderDetails)
-                                                {
-                                                    <div style="white-space:nowrap;text-overflow:ellipsis;overflow:hidden; max-width:300px;margin:auto" class="fs-6">@orderDetails.Product.Name</div>
-                                                }                                                
-                                            </td>
-                                            <td>
-                                                @if(order.Order.Status.Name == "Order Created")
-                                                {
-                                                    <p style="cursor:default" class="btn btn-sm btn-primary">Order Created</p>
-                                                }
-                                                @if(order.Order.Status.Name == "Appointment Created")
-                                                {
-                                                    <p style="cursor:default" class="btn btn-sm btn-success">Appointment Created</p>
-                                                }
-                                                @if(order.Order.Status.Name == "Pending Appointment")
-                                                {
-                                                    <a asp-action="MakeAppointment" asp-controller="Appointment" asp-route-orderId="@order.Order.Id">
-                                                        <p class="btn btn-sm btn-warning">Pending Appointment</p>
-                                                    </a>
-                                                }
-                                                @if(order.Order.Status.Name == "Order Shipped")
-                                                {
-                                                    <p style="cursor:default" class="btn btn-sm btn-success">Order Shipped</p>
-                                                }
-                                                @if(order.Order.Status.Name == "Order Closed")
-                                                {
-                                                    <p style="cursor:default" class="btn btn-sm btn-secondary">Order Closed</p>
-                                                }
-                                                @if(order.Order.Status.Name == "Appointment Done")
-                                                {
-                                                    <p style="cursor:default" class="btn btn-sm btn-secondary">Appointment Done</p>
-                                                }
-                                                
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">@order.Order.TotalPrice.ToString("C2")</p>
-                                            </td>
-                                            <td>
-                                                <a asp-action="OrderDetails" asp-controller="Account" asp-route-id="@order.Order.Id">
-                                                    <i class="far fa-eye"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    }
-                                        
-                                        
-                                    </tbody>
-                                </table>
+                                 {
+                                     <div class="table-head row appointmentWarning" stlye="background-color:#FFCA2C"> 
+                                         <div class="col-md-12">You have unscheduled appointments!</div>
+                                     </div>
+                                 }
+                                 @if(Model.CustomerOrders.Count() > 0)
+                                 {
+                                    <table class="table cart-table">                                                                        
+                                         <thead>
+                                             <tr class="table-head">
+                                                 <th scope="col">image</th>
+                                                 <th scope="col">Order Id</th>
+                                                 <th scope="col">Order Details</th>
+                                                 <th scope="col">Status</th>
+                                                 <th scope="col">Price</th>
+                                                 <th scope="col">View</th>
+                                             </tr>
+                                         </thead>
+                                         <tbody>
+                                         @foreach(var order in Model.CustomerOrders)
+                                         {
+                                             <tr>
+                                                 <td>
+                                                     <a asp-action="OrderDetails" asp-controller="Account" asp-route-id="@order.Order.Id">
+                                                         @if(order.OrderDetails.FirstOrDefault().Product.Images.Count() > 0)
+                                                         {
+                                                             <img src="@order.OrderDetails.FirstOrDefault().Product.Images.ElementAt(0).ImageFullPath" class="blur-up lazyload" alt="">
+                                                         }
+                                                         else
+                                                         {
+                                                             <img src="@order.OrderDetails.FirstOrDefault().Product.ImageFirst" class="blur-up lazyload" alt="">                                                        
+                                                         }                                                    
+                                                            
+                                                     </a>
+                                                 </td>
+                                                 <td>
+                                                     <p class="mt-0">#@order.Order.InvoiceId</p>
+                                                 </td>
+                                                 <td>
+                                                     @foreach(var orderDetails in order.OrderDetails)
+                                                     {
+                                                         <div style="white-space:nowrap;text-overflow:ellipsis;overflow:hidden; max-width:300px;margin:auto" class="fs-6">@orderDetails.Product.Name</div>
+                                                     }                                                
+                                                 </td>
+                                                 <td>
+                                                     @if(order.Order.Status.Name == "Order Created")
+                                                     {
+                                                         <p style="cursor:default" class="btn btn-sm btn-primary">Order Created</p>
+                                                     }
+                                                     @if(order.Order.Status.Name == "Appointment Created")
+                                                     {
+                                                         <p style="cursor:default" class="btn btn-sm btn-success">Appointment Created</p>
+                                                     }
+                                                     @if(order.Order.Status.Name == "Pending Appointment")
+                                                     {
+                                                         <a asp-action="MakeAppointment" asp-controller="Appointment" asp-route-orderId="@order.Order.Id">
+                                                             <p class="btn btn-sm btn-warning">Pending Appointment</p>
+                                                         </a>
+                                                     }
+                                                     @if(order.Order.Status.Name == "Order Shipped")
+                                                     {
+                                                         <p style="cursor:default" class="btn btn-sm btn-success">Order Shipped</p>
+                                                     }
+                                                     @if(order.Order.Status.Name == "Order Closed")
+                                                     {
+                                                         <p style="cursor:default" class="btn btn-sm btn-secondary">Order Closed</p>
+                                                     }
+                                                     @if(order.Order.Status.Name == "Appointment Done")
+                                                     {
+                                                         <p style="cursor:default" class="btn btn-sm btn-secondary">Appointment Done</p>
+                                                     }
+                                                     
+                                                 </td>
+                                                 <td>
+                                                     <p class="theme-color fs-6">@order.Order.TotalPrice.ToString("C2")</p>
+                                                 </td>
+                                                 <td>
+                                                     <a asp-action="OrderDetails" asp-controller="Account" asp-route-id="@order.Order.Id">
+                                                         <i class="far fa-eye"></i>
+                                                     </a>
+                                                 </td>
+                                             </tr>
+                                         }
+                                             
+                                             
+                                         </tbody>
+                                    </table>
+                                 }
+                                 else
+                                 {
+                                     <table class="table cart-table">                                                                        
+                                         <thead>
+                                             <tr class="table-head">
+                                                 <th scope="col">You haven't bought anything in our stores yet!</th>                                                 
+                                             </tr>
+                                         </thead>
+                                     </table>
+                                 }
+ 
+                                
                             </div>
                         </div>
 

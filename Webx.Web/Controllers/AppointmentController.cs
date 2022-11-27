@@ -17,18 +17,21 @@ namespace Webx.Web.Controllers
         private readonly IUserHelper _userHelper;
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly INotyfService _toastNotification;
+        private readonly IBrandRepository _brandRepository;
 
         public AppointmentController(IOrderRepository orderRepository,
             IProductRepository productRepository,
             IUserHelper userHelper,
             IAppointmentRepository appointmentRepository,
-            INotyfService toastNotification)
+            INotyfService toastNotification,
+            IBrandRepository brandRepository)
         {
             _orderRepository = orderRepository;
             _productRepository = productRepository;
             _userHelper = userHelper;
             _appointmentRepository = appointmentRepository;
             _toastNotification = toastNotification;
+            _brandRepository = brandRepository;
         }
 
 
@@ -58,7 +61,8 @@ namespace Webx.Web.Controllers
                 return RedirectToAction("NotAuthorized", "Account");
             }
 
-            model.OrderToSchedule = order;         
+            model.OrderToSchedule = order;
+            model.Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync();
 
             var events = await _appointmentRepository.GetAllEventsCustomerCanSeeAsync(order.Store.Id);
             ViewData["Events"] = events;

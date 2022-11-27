@@ -29,9 +29,10 @@ namespace Webx.Web.Controllers
         private readonly INotyfService _toastNotification;
         private readonly IProductRepository _productRepository;
         private readonly IOrderRepository _orderRepository;
+        private readonly IBrandRepository _brandRepository;
 
         public AccountController(IUserHelper userHelper,IMailHelper mailHelper, ICategoryRepository categoryRepository,IBlobHelper blobHelper
-            , INotyfService toastNotification, IProductRepository productRepository,IOrderRepository orderRepository)
+            , INotyfService toastNotification, IProductRepository productRepository,IOrderRepository orderRepository,IBrandRepository brandRepository)
         {
             _userHelper = userHelper;
             _mailHelper = mailHelper;
@@ -40,6 +41,7 @@ namespace Webx.Web.Controllers
             _toastNotification = toastNotification;
             _productRepository = productRepository;
             _orderRepository = orderRepository;
+            _brandRepository = brandRepository;
         }
 
         public IActionResult Login(string returnUrl = null)
@@ -509,7 +511,8 @@ namespace Webx.Web.Controllers
                 UserViewModel = changeUserViewModel,
                 Cart = await _productRepository.GetCurrentCartAsync(),
                 CustomerOrders = custOrders,
-                HasAppointmentToDo = hasAppointmentToDo
+                HasAppointmentToDo = hasAppointmentToDo,
+                Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync()
             };
 
             ViewBag.JsonModel = JsonConvert.SerializeObject(model);
@@ -730,7 +733,8 @@ namespace Webx.Web.Controllers
 
             var model = await _productRepository.GetInitialShopViewModelAsync();
             model.CustomerOrders = customerOrders;
-            
+            model.Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync();
+
             ViewBag.UserFullName = user.FullName;
             ViewBag.IsActive = user.Active;
 
@@ -741,6 +745,7 @@ namespace Webx.Web.Controllers
         {
             var model = await _productRepository.GetInitialShopViewModelAsync();
             model.Categories = await _categoryRepository.GetAllCategoriesAsync();
+            model.Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync();
 
             return View(model);
         }

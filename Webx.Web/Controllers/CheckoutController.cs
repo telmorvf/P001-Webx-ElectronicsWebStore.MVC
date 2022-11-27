@@ -37,6 +37,7 @@ namespace Webx.Web.Controllers
         private readonly IPdfHelper _pdfHelper;
         private readonly IMailHelper _mailHelper;
         private readonly ITemplateHelper _templateHelper;
+        private readonly IBrandRepository _brandRepository;
 
         private string _paypalEnvironment = "sandbox";//live
         private string _clientId = "AQwGKp_-N9JykoPO628Q-eEhyTOiWANtO-tSKu56sAcq-gM_0gHJ6ciqY3g0e58HyMgC-f3MvdUJjuYN";
@@ -50,7 +51,8 @@ namespace Webx.Web.Controllers
             IOrderRepository orderRepository,
             IPdfHelper pdfHelper,
             IMailHelper mailHelper,
-            ITemplateHelper templateHelper 
+            ITemplateHelper templateHelper,
+            IBrandRepository brandRepository
             )
         {
             _userHelper = userHelper;
@@ -62,12 +64,12 @@ namespace Webx.Web.Controllers
             _pdfHelper = pdfHelper;
             _mailHelper = mailHelper;
             _templateHelper = templateHelper;
+            _brandRepository = brandRepository;
         }
 
         
         public async Task<IActionResult> Index(List<string> results = null)
-        {
-  
+        {  
            
             var model = await _productRepository.GetInitialShopViewModelAsync();
 
@@ -79,7 +81,7 @@ namespace Webx.Web.Controllers
                     var stock = await _stockRepository.GetProductStockInStoreAsync(item.Product.Id, item.StoreId);
                     if (stock.Quantity < item.Quantity)
                     {
-                        _toastNotification.Warning("There are products with inssuficient stock in the selected store. Please try to either order from another store or come back later to check stock out.");
+                        _toastNotification.Warning("There are products with insuficient stock in the selected store. Please try to either order from another store or come back later to check stock out.");
                         return RedirectToAction("Index", "Cart");
                     }
                 }                
@@ -104,6 +106,8 @@ namespace Webx.Web.Controllers
                         _toastNotification.Warning(item);
                     }
                 }
+
+                model.Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync();
 
                 return View(model);
             }
@@ -264,6 +268,7 @@ namespace Webx.Web.Controllers
                 checkoutModel.ShippingAddress = user.Address;
                 model.CheckoutViewModel = checkoutModel;
                 model.Invoices = new List<InvoiceViewModel>();
+                model.Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync();
 
                 //Verificar se encomendas são procedidas a lojas distintas
                 List<int> storesIdsInOrder = new List<int>();
@@ -441,6 +446,8 @@ namespace Webx.Web.Controllers
                 {
                     System.IO.File.Delete(file);
                 }
+
+                model.Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync();
 
                 return View(model);
             }

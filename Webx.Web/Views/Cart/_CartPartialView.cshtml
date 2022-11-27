@@ -37,7 +37,7 @@
                                                   }
                                                   else
                                                   {
-                                                      <img src="https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg" class=" blur-up lazyload" alt="">
+                                                      <img src="@item.Product.ImageFirst" class=" blur-up lazyload" alt="">
                                                   }
                                             </a>
                                         </td>
@@ -76,7 +76,7 @@
                                                             <i style="padding:10px;"class="fas fa-minus"></i>
                                                         </span>
                                                     </a>
-                                                    <input style="display:inline-flex" type="number" name="quantity" class="form-control input-number" value="@item.Quantity" readonly>                                               
+                                                    <input id="quantityValue" style="display:inline-flex" type="number" name="quantity" class="form-control input-number" value="@item.Quantity" readonly>                                               
                                                     <a style="cursor:pointer" onclick="updateCart(@item.Product.Id,'1',@item.Quantity)"><span style="padding:10px;"><i class="fas fa-plus"></i></span></a>
                                                 </div>
                                             </div>
