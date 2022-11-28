@@ -18,13 +18,34 @@
                     <ul class="nav nav-tabs custome-nav-tabs flex-column category-option" id="myTab">
                         @if(Model.HasAppointmentToDo == false)
                         {
-                                <li class="nav-item mb-2">
-                                    <button class="nav-link font-light active" id="tab" data-bs-toggle="tab" data-bs-target="#dash" type="button"><i class="fas fa-angle-right"></i>Profile</button>
-                                </li>
+                                @if(Model.GoToWishList == false)
+                                {
+                                    <li class="nav-item mb-2">
+                                        <button class="nav-link font-light active" id="tab" data-bs-toggle="tab" data-bs-target="#dash" type="button"><i class="fas fa-angle-right"></i>Profile</button>
+                                    </li>
 
-                                <li class="nav-item mb-2">
-                                    <button class="nav-link font-light" id="1-tab" data-bs-toggle="tab" data-bs-target="#order" type="button"><i class="fas fa-angle-right"></i>Orders</button>
-                                </li>
+                                    <li class="nav-item mb-2">
+                                        <button class="nav-link font-light" id="1-tab" data-bs-toggle="tab" data-bs-target="#order" type="button"><i class="fas fa-angle-right"></i>Orders</button>
+                                    </li>
+
+                                    <li class="nav-item mb-2">
+                                       <button class="nav-link font-light" id="2-tab" data-bs-toggle="tab" data-bs-target="#wishlist" type="button"> <i class="fas fa-angle-right"></i>Wishlist</button>                              
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="nav-item mb-2">
+                                        <button class="nav-link font-light" id="tab" data-bs-toggle="tab" data-bs-target="#dash" type="button"><i class="fas fa-angle-right"></i>Profile</button>
+                                    </li>
+
+                                    <li class="nav-item mb-2">
+                                        <button class="nav-link font-light" id="1-tab" data-bs-toggle="tab" data-bs-target="#order" type="button"><i class="fas fa-angle-right"></i>Orders</button>
+                                    </li>
+
+                                    <li class="nav-item mb-2">
+                                       <button class="nav-link font-light active" id="2-tab" data-bs-toggle="tab" data-bs-target="#wishlist" type="button"> <i class="fas fa-angle-right"></i>Wishlist</button>                              
+                                    </li>
+                                }
                         }
                         else
                         {
@@ -35,19 +56,13 @@
                                 <li class="nav-item mb-2">
                                     <button class="nav-link font-light active" id="1-tab" data-bs-toggle="tab" data-bs-target="#order" type="button"><i class="fas fa-angle-right"></i>Orders</button>
                                 </li>
+
+                                 <li class="nav-item mb-2">
+                                    <button class="nav-link font-light" id="2-tab" data-bs-toggle="tab" data-bs-target="#wishlist" type="button"> <i class="fas fa-angle-right"></i>Wishlist</button>                              
+                                </li>                      
                         }
 
-                        
-
-                        <li class="nav-item mb-2">
-                            <button class="nav-link font-light" id="2-tab" data-bs-toggle="tab" data-bs-target="#wishlist" type="button"> <i class="fas fa-angle-right"></i>Wishlist</button>                              
-                        </li>                        
-
-                        <li class="nav-item mb-2">
-                            <button class="nav-link font-light" id="4-tab" data-bs-toggle="tab" data-bs-target="#pay"
-                                type="button"><i class="fas fa-angle-right"></i>Payment</button>
-                        </li>                           
-                       
+                                             
                         
                     </ul>
 
@@ -115,7 +130,7 @@
                                                             class="img-fluid blur-up lazyload" alt="">
                                                         <div>
                                                             <h5 class="font-light">wishlist</h5>
-                                                            <h3>63874</h3>
+                                                            <h3 id="wishCount">@Model.WishList.Count()</h3>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -292,307 +307,89 @@
                                 
                             </div>
                         </div>
-
                         <div class="tab-pane fade table-dashboard dashboard wish-list-section" id="wishlist">
-                            <div class="box-head mb-3">
+                            <div id="wishPartialDiv">
+                                 <partial id="wishListPartial" name="_WishlistPartial"></partial>
+                            </div>
+                        </div> 
+
+                       
+                            @* <div class="box-head mb-3">
                                 <h3>My Wishlist</h3>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table cart-table">
-                                    <thead>
-                                        <tr class="table-head">
-                                            <th scope="col">image</th>
-                                            <th scope="col">Order Id</th>
-                                            <th scope="col">Product Details</th>
-                                            <th scope="col">Price</th>
-                                            <th scope="col">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <a href="product-left-sidebar.html">
-                                                    <img src="~/assets/images/fashion/product/front/1.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#125021</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Outwear & Coats</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="cart.html" class="btn btn-solid-default btn-sm fw-bold">Move to
-                                                    Cart</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <a href="product-left-sidebar.html">
-                                                    <img src="~/assets/images/fashion/product/front/2.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#125367</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Outwear & Coats</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="cart.html" class="btn btn-solid-default btn-sm fw-bold">Move to
-                                                    Cart</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <a href="product-left-sidebar.html">
-                                                    <img src="~/assets/images/fashion/product/front/3.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#125948</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Men's Sweatshirt</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="cart.html" class="btn btn-solid-default btn-sm fw-bold">Move to
-                                                    Cart</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <a href="product-left-sidebar.html">
-                                                    <img src="~/assets/images/fashion/product/front/4.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#127569</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Men's Hoodie t-shirt</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="cart.html" class="btn btn-solid-default btn-sm fw-bold">Move to
-                                                    Cart</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <a href="product-left-sidebar.html">
-                                                    <img src="~/assets/images/fashion/product/front/5.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#127569</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Men's Hoodie t-shirt</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="cart.html" class="btn btn-solid-default btn-sm fw-bold">Move to
-                                                    Cart</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <a href="product-left-sidebar.html">
-                                                    <img src="~/assets/images/fashion/product/front/6.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#125021</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Men's Sweatshirt</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="cart.html" class="btn btn-solid-default btn-sm fw-bold">Move to
-                                                    Cart</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>                        
+                             <div class="table-responsive">
+                                @if(Model.WishList != null && Model.WishList.Count() > 0)
+                                {
+                                    
+                                   <table class="table cart-table">
+                                       <thead>
+                                           <tr class="table-head">
+                                               <th scope="col">image</th>                                              
+                                               <th scope="col">Product</th>
+                                               <th scope="col">Price</th>
+                                               <th scope="col">Action</th>
+                                               <th scope="col"></th>
+                                           </tr>
+                                       </thead>
+                                       <tbody>
 
-                        <div class="tab-pane fade dashboard" id="pay">
-                            <div class="box-head">
-                                <h3>Card & Payment</h3>
-                                <button class="btn btn-solid-default btn-sm fw-bold ms-auto" data-bs-toggle="modal"
-                                    data-bs-target="#addPayment"><i class="fas fa-plus"></i>
-                                    Add New Card</button>
-                            </div>
+                                           @foreach(var item in Model.WishList)
+                                           {
+                                               <tr>
+                                                   <td>
+                                                       <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@item.Id">
+                                                           @if(item.Images.Count() > 0)
+                                                           {
+                                                               <img src="@item.Images.ElementAt(0).ImageFullPath" class="blur-up lazyload" alt="">
+                                                           }
+                                                           else
+                                                           {
+                                                               <img src="@item.ImageFirst" class="blur-up lazyload" alt="">                                                        
+                                                           }                                                  
+                                                       </a>
+                                                   </td>                                                  
+                                                   <td>
+                                                       <p style="white-space:nowrap;text-overflow:ellipsis;overflow:hidden; max-width:500px;margin:auto" class="fs-6 m-0">@item.Name</p>
+                                                   </td>
+                                                   <td>
+                                                       @if(item.Discount > 0){
+                                                            <p><del style="font-size:16px;" class="font-light">@item.Price.ToString("C2")</del></p>
+                                                       } 
+                                                       <h2>@item.PriceWithDiscount.ToString("C2")</h2>     
+                                                   </td>
+                                                   <td>
+                                                       <a style="cursor:pointer" onclick="RemoveFromWishList(@item.Id)">
+                                                            <i class="fas fa-times"></i>
+                                                       </a>
+                                                   </td>
+                                                   <td>
+                                                       <a href="cart.html" class="btn btn-solid-default btn-sm fw-bold">Move to
+                                                           Cart</a>
+                                                   </td>
+                                               </tr>    
+                                           }
 
-                            <div class="card-details-section">
-                                <div class="row g-4">
-                                    <div class="col-lg-4 col-sm-6">
-                                        <div class="payment-card-detail">
-                                            <div class="card-details">
-                                                <div class="card-number">
-                                                    <h4>XXXX - XXXX - XXXX - 2548</h4>
-                                                </div>
+                                                                               
+                                       </tbody>
+                                   </table>
+                                }
+                                else
+                                {
+                                    <table class="table cart-table">                                                                        
+                                         <thead>
+                                             <tr class="table-head">
+                                                 <th scope="col">Your Wishlist is still empty!</th>                                                 
+                                             </tr>
+                                         </thead>
+                                     </table>
+                                }
 
-                                                <div class="valid-detail">
-                                                    <div class="title">
-                                                        <span>valid</span>
-                                                        <span>thru</span>
-                                                    </div>
-                                                    <div class="date">
-                                                        <h3>12/23</h3>
-                                                    </div>
-                                                    <div class="primary">
-                                                        <span class="badge bg-pill badge-light">primary</span>
-                                                    </div>
-                                                </div>
 
-                                                <div class="name-detail">
-                                                    <div class="name">
-                                                        <h5>mark jecno</h5>
-                                                    </div>
-                                                    <div class="card-img">
-                                                        <img src="~/assets/images/payment-icon/1.jpg"
-                                                            class="img-fluid blur-up lazyloaded" alt="">
-                                                    </div>
-                                                </div>
-                                            </div>
+                             </div>*@ 
 
-                                            <div class="edit-card">
-                                                <a data-bs-toggle="modal" data-bs-target="#addPayment"
-                                                    href="javascript:void(0)"><i class="far fa-edit"></i> edit</a>
-                                                <a href="javascript:void(0)"><i class="far fa-minus-square"></i>
-                                                    delete</a>
-                                            </div>
-                                        </div>
+                           
+                                             
 
-                                        <div class="edit-card-mobile">
-                                            <a data-bs-toggle="modal" data-bs-target="#addPayment"
-                                                href="javascript:void(0)"><i class="far fa-edit"></i> edit</a>
-                                            <a href="javascript:void(0)"><i class="far fa-minus-square"></i>
-                                                delete</a>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-4 col-sm-6">
-                                        <div class="payment-card-detail">
-                                            <div class="card-details card-visa">
-                                                <div class="card-number">
-                                                    <h4>XXXX - XXXX - XXXX - 2548</h4>
-                                                </div>
-
-                                                <div class="valid-detail">
-                                                    <div class="title">
-                                                        <span>valid</span>
-                                                        <span>thru</span>
-                                                    </div>
-                                                    <div class="date">
-                                                        <h3>12/23</h3>
-                                                    </div>
-                                                    <div class="primary">
-                                                        <span class="badge bg-pill badge-light">primary</span>
-                                                    </div>
-                                                </div>
-
-                                                <div class="name-detail">
-                                                    <div class="name">
-                                                        <h5>mark jecno</h5>
-                                                    </div>
-                                                    <div class="card-img">
-                                                        <img src="~/assets/images/payment-icon/2.jpg"
-                                                            class="img-fluid blur-up lazyloaded" alt="">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="edit-card">
-                                                <a data-bs-toggle="modal" data-bs-target="#addPayment"
-                                                    href="javascript:void(0)"><i class="far fa-edit"></i> edit</a>
-                                                <a href="javascript:void(0)"><i class="far fa-minus-square"></i>
-                                                    delete</a>
-                                            </div>
-                                        </div>
-
-                                        <div class="edit-card-mobile">
-                                            <a data-bs-toggle="modal" data-bs-target="#addPayment"
-                                                href="javascript:void(0)"><i class="far fa-edit"></i> edit</a>
-                                            <a href="javascript:void(0)"><i class="far fa-minus-square"></i>
-                                                delete</a>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-4 col-sm-6">
-                                        <div class="payment-card-detail">
-                                            <div class="card-details dabit-card">
-                                                <div class="card-number">
-                                                    <h4>XXXX - XXXX - XXXX - 2548</h4>
-                                                </div>
-
-                                                <div class="valid-detail">
-                                                    <div class="title">
-                                                        <span>valid</span>
-                                                        <span>thru</span>
-                                                    </div>
-                                                    <div class="date">
-                                                        <h3>12/23</h3>
-                                                    </div>
-                                                    <div class="primary">
-                                                        <span class="badge bg-pill badge-light">primary</span>
-                                                    </div>
-                                                </div>
-
-                                                <div class="name-detail">
-                                                    <div class="name">
-                                                        <h5>mark jecno</h5>
-                                                    </div>
-                                                    <div class="card-img">
-                                                        <img src="~/assets/images/payment-icon/3.jpg"
-                                                            class="img-fluid blur-up lazyloaded" alt="">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="edit-card">
-                                                <a data-bs-toggle="modal" data-bs-target="#addPayment"
-                                                    href="javascript:void(0)"><i class="far fa-edit"></i> edit</a>
-                                                <a href="javascript:void(0)"><i class="far fa-minus-square"></i>
-                                                    delete</a>
-                                            </div>
-                                        </div>
-
-                                        <div class="edit-card-mobile">
-                                            <a data-bs-toggle="modal" data-bs-target="#addPayment"
-                                                href="javascript:void(0)"><i class="far fa-edit"></i> edit</a>
-                                            <a href="javascript:void(0)"><i class="far fa-minus-square"></i>
-                                                delete</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>                                               
                     </div>
                 </div>
             </div>
@@ -991,35 +788,111 @@
    @section Scripts{
        @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     
+    <script src="~/js/ShopScript.js"></script>
+
     <script type="text/Javascript">
         window.onload = function() {
             getBackgroundProfilePicture();
             
             var tab = document.getElementById("tab");
             var onetab = document.getElementById("1-tab");
+            var twotab = document.getElementById("2-tab");
+
             var dashDiv = document.getElementById("dash");
             var orderDiv = document.getElementById("order");
-
+            var wishDiv = document.getElementById("wishlist");
+            debugger;
             var tabClasssNames = tab.classList;
             var onetabClasssNames = onetab.classList;
+            var twotabClasssNames = twotab.classList;
 
             if(tabClasssNames.length > 2){
                 dashDiv.classList.add('active');
                 dashDiv.classList.add('show');
                 orderDiv.classList.remove('active');
-                 orderDiv.classList.remove('show');
+                orderDiv.classList.remove('show');
+                wishDiv.classList.remove('active');
+                wishDiv.classList.remove('show');
             }
 
             if(onetabClasssNames.length > 2){
                 dashDiv.classList.remove('active');
                 dashDiv.classList.remove('show');
+                wishDiv.classList.remove('active');
+                wishDiv.classList.remove('show');
                 orderDiv.classList.add('active');
                 orderDiv.classList.add('show');
             }
             
+
+            if (twotabClasssNames.length > 2) {
+                dashDiv.classList.remove('active');
+                dashDiv.classList.remove('show');
+                orderDiv.classList.remove('active');
+                orderDiv.classList.remove('show');
+                wishDiv.classList.add('active');
+                wishDiv.classList.add('show');
+            }
+
         }      
     </script>
    
+    <script>
+
+        function RemoveFromWishList(id) {
+            debugger;  
+            
+            let wishCounth3 = document.getElementById("wishCount");
+            let countString = wishCounth3.innerHTML;
+            let count = parseInt(countString);
+
+            $.ajax({
+                url: '/Account/RemoveFromWishlist/',
+                type: 'GET',
+                contentType: 'application/html',
+                dataType: "html",
+                data: {id:id},
+                success: function (value) {
+                    debugger;
+                    let content = $("#wishPartialDiv").html(value);
+                    eval(content);
+                    count = count - 1;
+                    wishCounth3.innerHTML = count;
+                    updateCartPartial();
+                },
+                error: function (ex) {
+                    debugger;
+
+                    console.log("error");
+                }
+            })
+        }
+
+        function updateCartPartial() {
+            $.ajax({
+                url: '/Account/UpdateCartPartial/',
+                type: 'GET',
+                contentType: 'application/html',
+                dataType: "html",                
+                success: function (value) {
+                    debugger;
+                    let content = $("#cartPartialDiv").html(value);
+                    eval(content);
+                    
+                },
+                error: function (ex) {
+                    debugger;
+
+                    console.log("error");
+                }
+            })
+        }
+
+        function addWishToCart(id) {
+            AddtoCart(id);             
+        }
+
+    </script>
           
 
     <script>

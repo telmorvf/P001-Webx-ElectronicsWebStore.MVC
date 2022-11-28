@@ -36,5 +36,8 @@ namespace Webx.Web.Data.Repositories
         Task<Product> GetProductByNameAsync(string productName);
         Task<List<Product>> GetAllProductsAsync();
         Task<List<Product>> GetHighlightedProductsAsync();
+        Task<List<Product>> GetOrStartWishListAsync();
+        Response AddProductToWishList(Product product);
+        Response UpdateWishlistCookie(List<Product> currentWishlist);
     }
 }

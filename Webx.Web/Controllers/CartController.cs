@@ -56,6 +56,7 @@ namespace Webx.Web.Controllers
             model.Stores = _storeRepository.GetComboStores();
             model.PhysicalStores = _storeRepository.GetComboPhysicalStores();
             model.Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync();
+            model.WishList = await _productRepository.GetOrStartWishListAsync();
 
             return View(model);
         }
@@ -91,8 +92,9 @@ namespace Webx.Web.Controllers
                 var model = new ShopViewModel { 
                     Cart = cart,
                     Stores = _storeRepository.GetComboStores(),
-                    PhysicalStores = _storeRepository.GetComboPhysicalStores()
-            };
+                    PhysicalStores = _storeRepository.GetComboPhysicalStores(),
+                    WishList = await _productRepository.GetOrStartWishListAsync()
+                };
 
                 return PartialView("_CartPartialView", model);
             }
@@ -154,7 +156,8 @@ namespace Webx.Web.Controllers
                 {
                     Cart = cart,
                     Stores = _storeRepository.GetComboStores(),
-                    PhysicalStores = _storeRepository.GetComboPhysicalStores()
+                    PhysicalStores = _storeRepository.GetComboPhysicalStores(),
+                    WishList = await _productRepository.GetOrStartWishListAsync()
                 };
                 
                 return PartialView("_CartPartialView", model);
@@ -167,7 +170,7 @@ namespace Webx.Web.Controllers
         }
 
 
-            [HttpGet]
+        [HttpGet]
         public async Task<IActionResult> UpdateCart(int? id, string quantity)
         {
             var product = await _productRepository.GetFullProduct(id.Value);
@@ -239,7 +242,8 @@ namespace Webx.Web.Controllers
                     var model = new ShopViewModel {
                         Cart = cart,
                         Stores = _storeRepository.GetComboStores(),
-                        PhysicalStores = _storeRepository.GetComboPhysicalStores()
+                        PhysicalStores = _storeRepository.GetComboPhysicalStores(),
+                        WishList = await _productRepository.GetOrStartWishListAsync(),
                     };
 
                     return PartialView("_CartPartialView", model);
@@ -305,7 +309,11 @@ namespace Webx.Web.Controllers
             var response = _productRepository.UpdateCartCookie(cart);
             if (response.IsSuccess == true)
             {
-                var model = new ShopViewModel { Cart = cart };
+                var model = new ShopViewModel
+                { 
+                    Cart = cart,
+                    WishList = await _productRepository.GetOrStartWishListAsync(),
+                };
 
                 return PartialView("_CartDropDownPartial", model);
             }
@@ -327,7 +335,7 @@ namespace Webx.Web.Controllers
                 var model = new ShopViewModel {
                     Cart = new List<CartViewModel>(),
                     Stores = _storeRepository.GetComboStores(),
-                    PhysicalStores = _storeRepository.GetComboPhysicalStores()
+                    PhysicalStores = _storeRepository.GetComboPhysicalStores(),                    
                 };                
                 return PartialView("_CartPartialView", model);
             }
@@ -338,9 +346,12 @@ namespace Webx.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult UpdateToClearDrowpDown() 
+        public async Task<IActionResult> UpdateToClearDrowpDown() 
         {
-            var model = new ShopViewModel { Cart = new List<CartViewModel>()};
+            var model = new ShopViewModel { 
+                Cart = new List<CartViewModel>(),
+                WishList = await _productRepository.GetOrStartWishListAsync()
+            };
             return PartialView("_CartDropDownPartial", model);
         }
 
@@ -348,6 +359,7 @@ namespace Webx.Web.Controllers
         public async Task<IActionResult> UpdateDropDown()
         {
             var model = await _productRepository.GetInitialShopViewModelAsync();
+            model.WishList = await _productRepository.GetOrStartWishListAsync();
             return PartialView("_CartDropDownPartial", model);
         }
 
