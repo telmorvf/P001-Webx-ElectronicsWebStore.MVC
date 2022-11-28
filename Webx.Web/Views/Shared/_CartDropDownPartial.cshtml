@@ -7,21 +7,104 @@
             <div class="cart-media">
                 <div class="cart-icon">
                     <i class="fal fa-heart" style="font-size: 22px"></i>
-                    <span class="label label-theme rounded-pill">0</span>
+                    @if(Model.WishList != null)
+                    {
+                        @if(Model.WishList.Count() > 0)
+                        {
+                            <span class="label label-theme rounded-pill">@Model.WishList.Count()</span>
+                        }
+                        else
+                        {
+                            <span class="label label-theme rounded-pill">0</span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="label label-theme rounded-pill">0</span>
+                    }
                 </div>
-                <div class="cart-content">
-                    <h6>Empty</h6>
-                    <span>Wish List</span>
-                </div>
+
+                @if(Model.WishList == null || Model.WishList.Count() == 0)
+                {
+                    <div class="cart-content">
+                        <h6>Empty</h6>
+                        <span>Wish List</span>
+                    </div>
+                }
+                
             </div>
             <div class="onhover-div">
-                <a href="wishlist.html">
-                    <div class="wislist-empty">
-                        <i class="fab fa-gratipay"></i>
-                        <h6 class="mb-1">Your wislist empty !!</h6>
-                        <p class="font-light mb-0">explore more and shortlist items.</p>
-                    </div>
-                </a>
+               
+                    @if(Model.WishList == null || Model.WishList.Count() == 0 )
+                    { 
+                      @*<a href="wishlist.html">*@
+                        <div class="wislist-empty">
+                            <i class="fab fa-gratipay"></i>
+                            <h6 class="mb-1">Your wislist empty !!</h6>
+                            <p class="font-light mb-0">explore more and shortlist items.</p>
+                        </div>
+                      @*</a>*@
+                    }
+                    
+                    @if(Model.WishList != null)
+                    {
+                        @if(Model.WishList.Count() > 0 && Model.WishList != null)
+                        {
+                            <div class="cart-menu">
+                                <div class="cart-title">
+                                    <span>Yours most wanted products!</span>
+                                </div>
+                                <ul class="custom-scroll" style="max-height:500px;overflow:auto">
+                                @foreach(var product in Model.WishList)
+                                {
+                                    
+                                        <li>
+                                            <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@product.Id">
+                                            <div class="media">
+                                                @if(product.Images.Count() > 0)
+                                                {
+                                                    <img src="@product.Images.ElementAt(0).ImageFullPath" class="img-fluid blur-up lazyload" alt="">
+                                                }
+                                                else
+                                                {
+                                                    <img src="@product.ImageFirst" class="img-fluid blur-up lazyload" alt="">
+                                                }
+                                                <div class="media-body">
+                                                    <h6>@product.Name</h6>
+                                                    <div class="qty-with-price">
+                                                        @if(product.Discount > 0)
+                                                        {
+                                                            <span><del class="font-light">@product.Price.ToString("C2")</del></span>
+                                                            <span>
+                                                                <span>@product.PriceWithDiscount.ToString("C2")</span>
+                                                            </span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span></span>
+                                                            <span>
+                                                                <span>@product.PriceWithDiscount.ToString("C2")</span>
+                                                            </span>
+                                                        }                                              
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            </a>
+                                        </li>
+                                    
+                                }      
+                            </ul>
+                            </div>
+                            
+                            
+                            <div class="cart-btn">
+                                <h6 class="cart-total"><span class="font-light"></span></h6>                                    
+                                <a asp-action="GoToWishList" asp-controller="Account" class="btn btn-solid-default btn-block">                            
+                                    Wishlist details
+                                </a>
+                            </div>
+                        }
+                    }                 
             </div>
         </li>
         <li class="onhover-dropdown cart-dropdown">
@@ -57,7 +140,7 @@
                                         }
                                         <div class="media-body">
                                             <h6>@item.Product.Name</h6>
-                                            <div class="qty-with-price">
+                                            <div class="qty-with-price">                                               
                                                 <span>@((item.Product.PriceWithDiscount * item.Quantity).ToString("C2"))</span>
                                                 <span>
                                                     <span>Qty. x @item.Quantity</span>                                             

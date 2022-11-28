@@ -102,7 +102,9 @@ namespace Webx.Web.Controllers
                 Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync(),
                 MostExpensiveProductPrice = await _productRepository.MostExpensiveProductPriceAsync(),
                 Cart = cart,
+                WishList = await _productRepository.GetOrStartWishListAsync()
             };
+           
 
             return View(model);
         }
@@ -271,6 +273,7 @@ namespace Webx.Web.Controllers
                 NumberOfProductsFound = products.Count(),
                 Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync(),
                 MostExpensiveProductPrice = await _productRepository.MostExpensiveProductPriceAsync(),
+                WishList = await _productRepository.GetOrStartWishListAsync()
             };
 
             return View("Index", model);
@@ -403,7 +406,8 @@ namespace Webx.Web.Controllers
             
             var model = new ShopViewModel
             {
-                Cart = cart,                 
+                Cart = cart,
+                WishList = await _productRepository.GetOrStartWishListAsync()
             };
 
             return PartialView("_CartDropDownPartial", model);
@@ -928,6 +932,7 @@ namespace Webx.Web.Controllers
             model.Product = product;
             model.Stocks = await _stockRepository.GetAllStockWithStoresAsync();
             model.Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync();
+            model.WishList = await _productRepository.GetOrStartWishListAsync();
 
             if (User.Identity.IsAuthenticated)
             {
@@ -966,6 +971,64 @@ namespace Webx.Web.Controllers
             var view = PartialView("_ProductHomePartial", model);
 
             return view;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult>AddToWishlist(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+
+            int idvalue = int.Parse(id);
+
+            var product = await _productRepository.GetFullProduct(idvalue);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            var currentWishlist = await _productRepository.GetOrStartWishListAsync();
+            bool inList = false;
+
+            if (currentWishlist != null)
+            {
+                if (currentWishlist.Count() > 0)
+                {
+                    foreach (var item in currentWishlist)
+                    {
+                        if (item.Id == product.Id)
+                        {
+                            inList = true;
+                        }
+                    }
+                }
+            }
+
+            if (!inList)
+            {
+                var response = _productRepository.AddProductToWishList(product);
+
+                if (response.IsSuccess == true)
+                {
+                    currentWishlist.Add(product);
+                    _toastNotification.Success($"{product.Name} was added to your wishlist!");
+                }
+                else
+                {
+                    _toastNotification.Warning($"There was a problem adding {product.Name} to your wishlist, please try again.");
+                }
+            }
+            else
+            {
+                _toastNotification.Information($"{product.Name} is already in your wishlist!");
+            }
+
+            var model = await _productRepository.GetInitialShopViewModelAsync();
+            model.WishList = currentWishlist;
+            return PartialView("_CartDropDownPartial", model);            
         }
     }
 }

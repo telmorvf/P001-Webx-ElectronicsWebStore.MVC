@@ -50,7 +50,9 @@ namespace Webx.Web.Controllers
 
             //ViewBag.Categories = await _categoryRepository.GetAllCategoriesAsync();
 
-            var model = await _productRepository.GetInitialShopViewModelAsync();            
+            var model = await _productRepository.GetInitialShopViewModelAsync();
+            model.WishList = await _productRepository.GetOrStartWishListAsync();
+
 
             if (model == null)
             {

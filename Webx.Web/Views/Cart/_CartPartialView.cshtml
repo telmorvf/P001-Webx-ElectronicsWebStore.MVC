@@ -30,7 +30,7 @@
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <a href="product-left-sidebar.html">
+                                            <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@item.Product.Id">
                                                   @if(item.Product.Images.Count() > 0)
                                                   {
                                                       <img src="@item.Product.Images.ElementAt(0).ImageFullPath" class=" blur-up lazyload" alt="">

@@ -44,6 +44,7 @@ namespace Webx.Web.Controllers
         public async Task<IActionResult> MakeAppointment(int orderId)
         {
             var model = await _productRepository.GetInitialShopViewModelAsync();
+            model.WishList = await _productRepository.GetOrStartWishListAsync();
             var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
             ViewBag.UserFullName = user.FullName;
             ViewBag.IsActive = user.Active;

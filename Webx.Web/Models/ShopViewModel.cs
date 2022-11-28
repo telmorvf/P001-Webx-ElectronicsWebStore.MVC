@@ -104,6 +104,9 @@ namespace Webx.Web.Models
             }
         }
         
+        public List<Product> WishList { get; set; }
+
+        public bool GoToWishList { get; set; } = false;
 
     }
 }

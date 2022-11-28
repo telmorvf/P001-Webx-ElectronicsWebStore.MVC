@@ -22,6 +22,32 @@ function onloadFunction() {
 }
 
 
+function AddtoWishlist(id) {
+    debugger;
+    
+
+    
+    $.ajax({
+        url: '/Products/AddToWishlist/',
+        type: 'GET',
+        contentType: 'application/html',
+        dataType: "html",
+        data: {id:id},
+        success: function (value) {
+            debugger;
+
+            let content = $("#cartPartialDiv").html(value);
+            eval(content);
+        },
+        error: function (ex) {
+            debugger;
+
+            console.log("error");
+        }
+    })
+}
+
+
 function AddtoCart(id) {
     debugger;
 

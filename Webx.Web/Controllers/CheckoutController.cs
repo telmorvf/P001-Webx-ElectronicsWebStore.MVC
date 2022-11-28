@@ -72,8 +72,9 @@ namespace Webx.Web.Controllers
         {  
            
             var model = await _productRepository.GetInitialShopViewModelAsync();
+            model.WishList = await _productRepository.GetOrStartWishListAsync();
 
-            foreach(var item in model.Cart)
+            foreach (var item in model.Cart)
             {
                 //verifica se tem stock de todos os produtos que cliente deseja adquirir nas lojas selecionadas por cliente.
                 if (!item.Product.IsService)
@@ -148,6 +149,7 @@ namespace Webx.Web.Controllers
         {
          
             var model = await _productRepository.GetInitialShopViewModelAsync();
+            model.WishList = await _productRepository.GetOrStartWishListAsync();
 
             //var url = Url.Action("Paypalvtwo", "Checkout", new { shopViewModel = shopViewModel});
 
@@ -256,6 +258,7 @@ namespace Webx.Web.Controllers
         {
 
             var model = await _productRepository.GetInitialShopViewModelAsync();
+            model.WishList = await _productRepository.GetOrStartWishListAsync();
             var user = await _userHelper.GetUserByEmailWithCheckoutTempsAsync(User.Identity.Name);
             ViewBag.UserFullName = user.FullName;
             ViewBag.IsActive = user.Active;
