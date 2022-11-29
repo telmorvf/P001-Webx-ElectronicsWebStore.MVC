@@ -17,5 +17,13 @@ namespace Webx.Web.Models
         public bool hasAttended { get; set; }
 
         public int eventOrderId { get; set; }
+
+        public string color { get; set; }
+
+        public string eventStatus { get; set; }
+
+        public User Custumer { get; set; }
+
+        public string storeName { get; set; }
     }
 }

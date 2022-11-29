@@ -36,16 +36,22 @@ namespace Webx.Web.Helpers
             decimal total = 0;
             foreach(var item in model.Cart)
             {
+                
+                decimal unitPrice = Math.Round(item.Product.PriceWithDiscount,2);
+
+                //item.Product.PriceWithDiscount.ToString("D2").Replace(",", ".")
                 cartItems.Add(new Item
                 {
                      Quantity = item.Quantity.ToString(),
                      Name = item.Product.Name,
-                     UnitAmount = new PayPalCheckoutSdk.Orders.Money() { CurrencyCode = "EUR", Value = item.Product.Price.ToString().Replace(",",".")},                                    
+                     UnitAmount = new PayPalCheckoutSdk.Orders.Money() { CurrencyCode = "EUR", Value = unitPrice.ToString().Replace(",",".")},                                    
                                           
                 });
 
-                total += (item.Product.Price * (decimal)item.Quantity);
+                total += (unitPrice * (decimal)item.Quantity);
             }
+
+            //total = Math.Round(total, 2);
 
             try
             {

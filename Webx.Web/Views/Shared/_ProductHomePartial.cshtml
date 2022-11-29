@@ -14,11 +14,11 @@
      
 </style>
 
-<div class="modal fade quick-view-modal" id="quick-view">
+<div class="modal fade quick-view-modal" id="quickHome-view">
    <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
          
-        <button type="button" class="btn-close" onclick="(closeViewModel())"  aria-label="Close"></button>
+        <button type="button" class="btn-close" onclick="(closeHomeViewModel())"  aria-label="Close"></button>
             <div class="modal-body">
 
                  @if(Model.Product != null)
@@ -115,12 +115,13 @@
                                   <li class="font-light">(In stock)</li>
                               </ul>
                               <div class="price mt-3">
-                                   <h3>@Model.Product.PriceWithDiscount.ToString("C2")</h3>
+                                    <h3>@Model.Product.PriceWithDiscount.ToString("C2")</h3>
                                     @if(Model.Product.Discount > 0)
                                     {
                                       <span class="font-light ml-1" style="text-decoration:line-through;">@Model.Product.Price.ToString("C2")</span>
                                       <span style="margin-left: 10px;">@Decimal.Truncate(Model.Product.Discount)% Discount</span>
                                     }
+                                    
                               </div>
                               
                               
@@ -154,7 +155,6 @@
                                                               <h6 style="font-weight:500">@item.Store.Name :</h6>                                                              
                                                           </div>                                                          
                                                           <div class="col-md-2">
-                                                             
                                                              @if(item.Quantity == 0)
                                                              {
                                                                  <h6><i class="fas fa-circle" style="color:#3F3F3F"></i></h6> 
@@ -199,6 +199,3 @@
       </div>
    </div>
 </div>
-
-
-

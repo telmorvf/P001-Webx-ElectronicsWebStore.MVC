@@ -30,14 +30,14 @@
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <a href="product-left-sidebar.html">
+                                            <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@item.Product.Id">
                                                   @if(item.Product.Images.Count() > 0)
                                                   {
                                                       <img src="@item.Product.Images.ElementAt(0).ImageFullPath" class=" blur-up lazyload" alt="">
                                                   }
                                                   else
                                                   {
-                                                      <img src="https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg" class=" blur-up lazyload" alt="">
+                                                      <img src="@item.Product.ImageFirst" class=" blur-up lazyload" alt="">
                                                   }
                                             </a>
                                         </td>
@@ -66,7 +66,10 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <h2>@item.Product.Price.ToString("C2")</h2>
+                                            @if(item.Product.Discount > 0){
+                                            <p><del style="font-size:16px;" class="font-light">@item.Product.Price.ToString("C2")</del></p>
+                                            } 
+                                            <h2>@item.Product.PriceWithDiscount.ToString("C2")</h2>                                             
                                         </td>
                                         <td>
                                             <div class="qty-box" style="display:flex;justify-content:center;align-items:center">
@@ -76,7 +79,7 @@
                                                             <i style="padding:10px;"class="fas fa-minus"></i>
                                                         </span>
                                                     </a>
-                                                    <input style="display:inline-flex" type="number" name="quantity" class="form-control input-number" value="@item.Quantity" readonly>                                               
+                                                    <input id="quantityValue" style="display:inline-flex" type="number" name="quantity" class="form-control input-number" value="@item.Quantity" readonly>                                               
                                                     <a style="cursor:pointer" onclick="updateCart(@item.Product.Id,'1',@item.Quantity)"><span style="padding:10px;"><i class="fas fa-plus"></i></span></a>
                                                 </div>
                                             </div>
@@ -102,7 +105,7 @@
                                             </a>
                                         </td>
                                         <td>
-                                            <h2 class="td-color">@((item.Product.Price * item.Quantity).ToString("C2"))</h2>
+                                            <h2 class="td-color">@((item.Product.PriceWithDiscount * item.Quantity).ToString("C2"))</h2>
                                         </td>
                                       
                                     </tr>
@@ -170,9 +173,16 @@
                                                     <div class="total-details">
                                                         <div class="top-details">
                                                             <h3>Cart Totals</h3>
-                                                            <h6>Total <span>@Model.CartGrandTotal</span></h6>
-                                                            <h6>Coupon Discount <span>To do?</span></h6>
-                                                            <h6>Total With Discount <span><del>To do?</del></span></h6>
+                                                            @if(Model.CartGrandTotal != Model.CartGrandTotalWithNoDiscount)
+                                                            {
+                                                                <h6>Total <span><del>@Model.CartGrandTotalWithNoDiscount</del></span></h6>
+                                                                <h6>Total With Discount <span>@Model.CartGrandTotal</span></h6>
+                                                            }
+                                                            else
+                                                            {
+                                                                <h6>Total <span>@Model.CartGrandTotal</span></h6>
+                                                            }
+                                                           
                                                         </div>
                                                         <div class="bottom-details">
                                                             <a asp-action="Index" asp-controller="Checkout">Process Checkout</a>

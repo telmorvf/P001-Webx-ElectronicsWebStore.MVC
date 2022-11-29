@@ -23,18 +23,22 @@ namespace Webx.Web.Controllers
         private readonly IUserHelper _userHelper;
         private readonly IStockRepository _stockRepository;
         private readonly IStoreRepository _storeRepository;
+        private readonly IBrandRepository _brandRepository;
 
         public CartController(IProductRepository productRepository,
             INotyfService toastNotification,
             IUserHelper userHelper,
             IStockRepository stockRepository,
-            IStoreRepository storeRepository)
+            IStoreRepository storeRepository,
+            IBrandRepository brandRepository
+            )
         {
             _productRepository = productRepository;        
             _toastNotification = toastNotification;
             _userHelper = userHelper;
             _stockRepository = stockRepository;
             _storeRepository = storeRepository;
+            _brandRepository = brandRepository;
         }
 
       
@@ -51,6 +55,8 @@ namespace Webx.Web.Controllers
             model.Stocks = await _stockRepository.GetAllStockWithStoresAsync();
             model.Stores = _storeRepository.GetComboStores();
             model.PhysicalStores = _storeRepository.GetComboPhysicalStores();
+            model.Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync();
+            model.WishList = await _productRepository.GetOrStartWishListAsync();
 
             return View(model);
         }
@@ -86,8 +92,9 @@ namespace Webx.Web.Controllers
                 var model = new ShopViewModel { 
                     Cart = cart,
                     Stores = _storeRepository.GetComboStores(),
-                    PhysicalStores = _storeRepository.GetComboPhysicalStores()
-            };
+                    PhysicalStores = _storeRepository.GetComboPhysicalStores(),
+                    WishList = await _productRepository.GetOrStartWishListAsync()
+                };
 
                 return PartialView("_CartPartialView", model);
             }
@@ -101,8 +108,9 @@ namespace Webx.Web.Controllers
 
         [HttpGet]
         public async Task<IActionResult> ChangeStore(int id, int storeId)
-        {
+        {   
             var product = await _productRepository.GetFullProduct(id);
+
             if (product == null)
             {
                 return NotFound();
@@ -128,6 +136,7 @@ namespace Webx.Web.Controllers
                 if (item.Product.Id == product.Id)
                 {
                     item.StoreId = storeId;
+                    item.Quantity = 1;
                     if (product.IsService)
                     {
                         item.Color = "Green";
@@ -147,7 +156,8 @@ namespace Webx.Web.Controllers
                 {
                     Cart = cart,
                     Stores = _storeRepository.GetComboStores(),
-                    PhysicalStores = _storeRepository.GetComboPhysicalStores()
+                    PhysicalStores = _storeRepository.GetComboPhysicalStores(),
+                    WishList = await _productRepository.GetOrStartWishListAsync()
                 };
                 
                 return PartialView("_CartPartialView", model);
@@ -160,7 +170,7 @@ namespace Webx.Web.Controllers
         }
 
 
-            [HttpGet]
+        [HttpGet]
         public async Task<IActionResult> UpdateCart(int? id, string quantity)
         {
             var product = await _productRepository.GetFullProduct(id.Value);
@@ -206,10 +216,22 @@ namespace Webx.Web.Controllers
 
                 if (!productInCart && value == 1)
                 {
+
+                    var storeId = 0;
+
+                    if (product.IsService)
+                    {
+                        storeId = await _storeRepository.GetLisbonStoreIdAsync();
+                    }
+                    else
+                    {
+                        storeId = await _storeRepository.GetOnlineStoreIdAsync();
+                    }
+
                     cart.Add(new CartViewModel {
                         Product = product,
                         Quantity = 1,
-                        StoreId = await _storeRepository.GetOnlineStoreIdAsync(),
+                        StoreId = storeId,
                         //Color = await _stockRepository.GetProductStockColorFromStoreIdAsync(product.Id,StoreId)
                     });
                 }
@@ -220,7 +242,8 @@ namespace Webx.Web.Controllers
                     var model = new ShopViewModel {
                         Cart = cart,
                         Stores = _storeRepository.GetComboStores(),
-                        PhysicalStores = _storeRepository.GetComboPhysicalStores()
+                        PhysicalStores = _storeRepository.GetComboPhysicalStores(),
+                        WishList = await _productRepository.GetOrStartWishListAsync(),
                     };
 
                     return PartialView("_CartPartialView", model);
@@ -286,7 +309,11 @@ namespace Webx.Web.Controllers
             var response = _productRepository.UpdateCartCookie(cart);
             if (response.IsSuccess == true)
             {
-                var model = new ShopViewModel { Cart = cart };
+                var model = new ShopViewModel
+                { 
+                    Cart = cart,
+                    WishList = await _productRepository.GetOrStartWishListAsync(),
+                };
 
                 return PartialView("_CartDropDownPartial", model);
             }
@@ -308,7 +335,7 @@ namespace Webx.Web.Controllers
                 var model = new ShopViewModel {
                     Cart = new List<CartViewModel>(),
                     Stores = _storeRepository.GetComboStores(),
-                    PhysicalStores = _storeRepository.GetComboPhysicalStores()
+                    PhysicalStores = _storeRepository.GetComboPhysicalStores(),                    
                 };                
                 return PartialView("_CartPartialView", model);
             }
@@ -319,9 +346,20 @@ namespace Webx.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult UpdateDrowpDown() 
+        public async Task<IActionResult> UpdateToClearDrowpDown() 
         {
-            var model = new ShopViewModel { Cart = new List<CartViewModel>()};
+            var model = new ShopViewModel { 
+                Cart = new List<CartViewModel>(),
+                WishList = await _productRepository.GetOrStartWishListAsync()
+            };
+            return PartialView("_CartDropDownPartial", model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateDropDown()
+        {
+            var model = await _productRepository.GetInitialShopViewModelAsync();
+            model.WishList = await _productRepository.GetOrStartWishListAsync();
             return PartialView("_CartDropDownPartial", model);
         }
 
@@ -356,7 +394,7 @@ namespace Webx.Web.Controllers
                             var stock = await _stockRepository.GetProductStockInStoreAsync(product.Id, item.StoreId);
                             var store = await _storeRepository.GetAllStoreByIdAsync(item.StoreId);
                             storeName = store.Name;
-                            if ((stock.Quantity - (desiredQuantity + 1)) > 0)
+                            if ((stock.Quantity - (desiredQuantity + 1)) >= 0)
                             {
                                 isInStock = true;
                             }

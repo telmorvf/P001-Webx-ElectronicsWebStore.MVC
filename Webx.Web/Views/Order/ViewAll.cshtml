@@ -31,7 +31,7 @@
     <!-- Tabela/Grid do syncfusion  -->
     <ejs-grid id="grid" TValue="@ViewBag.Type" dataSource="Model" rowSelected="rowSelected" allowSelection="true" allowPaging="true" allowSorting="true" allowFiltering="false" toolbarClick="toolbarClick" toolbar="toolbarItems" >
         <e-grid-selectionsettings type="Single" mode="Row"></e-grid-selectionsettings>
-        <e-grid-pagesettings pageSize="7"></e-grid-pagesettings>        
+        <e-grid-pagesettings pageSize="13"></e-grid-pagesettings>        
         <e-grid-columns>            
             <e-grid-column field="Id" headertext="Order #" textAlign="Center" isPrimaryKey="true" width="100px"></e-grid-column>
             <e-grid-column field="Customer.FullName" headertext="Customer" textAlign="Left" width="150px"></e-grid-column>
@@ -81,6 +81,11 @@
     ${/if}
     ${if(Status.Name==="Order Closed")}
         <div class="badge rounded-pill bg-danger increase-size">
+            ${Status.Name}
+        </div>
+    ${/if}
+    ${if(Status.Name==="Ongoing")}
+        <div class="badge rounded-pill bg-primary increase-size">
             ${Status.Name}
         </div>
     ${/if}

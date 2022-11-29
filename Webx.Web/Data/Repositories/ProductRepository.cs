@@ -10,6 +10,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Webx.Web.Data.Entities;
 using Webx.Web.Helpers;
@@ -259,7 +260,10 @@ namespace Webx.Web.Data.Repositories
             {
                 return null;
             }
+            
             return product;
+            
+            
         }
  
 
@@ -384,7 +388,12 @@ namespace Webx.Web.Data.Repositories
                 var stock = await _context.Stocks.Where(s => s.Product.Id == productId && s.Store.Id == storeId).FirstOrDefaultAsync();
                 var productTotal = stock.Quantity;
 
-                if (productTotal < 10)
+                if(productTotal == 0)
+                {
+                    color = "#3F3F3F";
+                }
+
+                if (productTotal > 0 && productTotal < 10)
                 {
                     color = "Red";
                 }
@@ -483,7 +492,113 @@ namespace Webx.Web.Data.Repositories
 
         public async Task<List<Product>> GetAllProducts(string category)
         {
-            return await _context.Products.Include(p => p.Images).Include(p => p.Brand).Include(p => p.Category).Where(p => p.Category.Name == category).ToListAsync();
+            List<Product> list = new List<Product>();
+
+            if(category == "AllCategories")
+            {
+                list = await _context.Products.Include(p => p.Images).Include(p => p.Brand).Include(p => p.Category).ToListAsync();
+            }
+            else
+            {
+                list = await _context.Products.Include(p => p.Images).Include(p => p.Brand).Include(p => p.Category).Where(p => p.Category.Name == category).ToListAsync();
+            }
+
+            return list;
+        }
+
+        public async Task<List<Product>> GetAllProductsAsync()
+        {
+            return await _context.Products.Include(p => p.Images).Include(p => p.Brand).Include(p => p.Category).ToListAsync();
+        }
+
+        public async Task<List<Product>> GetHighlightedProductsAsync()
+        {
+            return await _context.Products.Include(p => p.Images).Include(p => p.Brand).Include(p => p.Category).Where(p => p.IsPromotion == true).ToListAsync();
+        }
+
+        public async Task<List<Product>> GetOrStartWishListAsync()
+        {
+            var wishlistCookie = _httpContext.HttpContext.Request.Cookies["Wishlist"];
+            List<int> wishlist = new List<int>();
+            List<Product> Products = new List<Product>();
+
+            if (string.IsNullOrEmpty(wishlistCookie))
+            {
+                var serializedList = JsonConvert.SerializeObject(wishlist);
+                CookieOptions options = new CookieOptions();
+                options.Expires = DateTime.UtcNow.AddDays(365);
+                options.Secure = true;
+                _httpContext.HttpContext.Response.Cookies.Append("Wishlist", serializedList, options);
+            }
+            else
+            {
+                wishlist = JsonConvert.DeserializeObject<List<int>>(wishlistCookie);
+                foreach(int number in wishlist)
+                {
+                    Products.Add(await GetFullProduct(number));
+                }
+            }
+
+            return Products;
+        }
+
+        public Response AddProductToWishList(Product product)
+        {
+            try
+            {
+                var wishlistCookie = _httpContext.HttpContext.Request.Cookies["Wishlist"];
+                //List<int> wishlist = new List<int>();
+                var wishlist = JsonConvert.DeserializeObject<List<int>>(wishlistCookie);
+                wishlist.Add(product.Id);
+
+                var serializedList = JsonConvert.SerializeObject(wishlist);
+                CookieOptions options = new CookieOptions();
+                options.Expires = DateTime.UtcNow.AddDays(365);
+                options.Secure = true;
+                _httpContext.HttpContext.Response.Cookies.Append("Wishlist", serializedList, options);
+
+                return new Response
+                {
+                    IsSuccess = true,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };                
+            }            
+        }
+
+        public Response UpdateWishlistCookie(List<Product> currentWishlist)
+        {
+            try
+            {
+                var cookie = _httpContext.HttpContext.Request.Cookies["Wishlist"];
+                List<int> productsIds = new List<int>();
+                foreach(var item in currentWishlist)
+                {
+                    productsIds.Add(item.Id);
+                }
+
+                var serializedList = JsonConvert.SerializeObject(productsIds);
+                CookieOptions options = new CookieOptions();
+                options.Expires = DateTime.UtcNow.AddDays(365);
+                options.Secure = true;
+                _httpContext.HttpContext.Response.Cookies.Append("Wishlist", serializedList, options);
+                
+                return new Response { IsSuccess = true };
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
         }
     }
 }

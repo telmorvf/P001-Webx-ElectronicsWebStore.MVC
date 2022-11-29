@@ -27,7 +27,7 @@ namespace Webx.Web.Models
 
         public bool IsService { get; set; }
 
-        public bool IsPromotion { get; set; }
+        public bool IsHighlighted { get; set; }
 
         [Required]
         [Display(Name = "Brand")]
@@ -69,6 +69,14 @@ namespace Webx.Web.Models
 
         public string ImageFirst { get; set; }
 
+        [Required]
+        [Display(Name = "Discount(%)")]
+        [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = false)]
+        public decimal Discount { get; set; }
+
+        [Display(Name = "Price with Discount")]
+        [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
+        public decimal PriceWithDiscount => Price * (1 - (Discount / 100));
 
     }
 }

@@ -119,7 +119,13 @@ namespace Webx.Web.Data.Repositories
         public async Task<List<OrderWithDetailsViewModel>> GetAllCustomerOrdersAsync(string customerId)
         {
             List<OrderWithDetailsViewModel> ordersWithDetails = new List<OrderWithDetailsViewModel>();
-            List<Order> orders = new List<Order>();              
+            List<Order> orders = await _context.Orders.Include(o => o.Customer)
+                .Include(o => o.Store)
+                .Include(o => o.Appointment)
+                .Include(o => o.Status)
+                .Where(o => o.Customer.Id == customerId)
+                .ToListAsync();
+            
 
             foreach(var order in orders)
             {
@@ -163,6 +169,61 @@ namespace Webx.Web.Data.Repositories
         public async Task<Status> GetOrderStatusByNameAsync(string orderStatusName)
         {
             return await _context.Statuses.Where(os => os.Name == orderStatusName).FirstOrDefaultAsync();
+        }
+
+        public async Task CheckAndConvertOrdersStatusAsync()
+        {
+            var statusCheckers = await _context.StatusCheckers.ToListAsync();
+
+            if(statusCheckers == null || statusCheckers.Count() == 0)
+            {
+                var statusChecker = new StatusChecker
+                {
+                    Date = DateTime.UtcNow.AddDays(-1),
+                };               
+
+                await _context.StatusCheckers.AddAsync(statusChecker);
+                await _context.SaveChangesAsync();
+
+                statusCheckers.Add(statusChecker);
+            }
+
+            var checker = statusCheckers.First();
+
+            if (checker.Date.AddMinutes(5) < DateTime.UtcNow)
+            {
+
+                var ordersCreated = await _context.Orders.Include(o => o.Status).Where(o => o.Status.Name == "Order Created").ToListAsync();
+                var orderShipped = await _context.Orders.Include(o => o.Status).Where(o => o.Status.Name == "Order Shipped").ToListAsync();
+
+
+                foreach(var order in ordersCreated)
+                {
+                    if(DateTime.UtcNow > order.OrderDate.AddMinutes(5))
+                    {
+                        order.Status = await GetOrderStatusByNameAsync("Order Shipped");
+                        _context.Orders.Update(order);
+                    }
+                }
+
+                foreach (var order in orderShipped)
+                {
+                    if (DateTime.UtcNow > order.OrderDate.AddMinutes(10))
+                    {
+                        order.Status = await GetOrderStatusByNameAsync("Order Closed");
+                        _context.Orders.Update(order);
+                    }
+                }
+
+                checker.Date = DateTime.UtcNow;
+                _context.StatusCheckers.Update(checker);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<List<Order>> GetAllOrdersWithAppointmentsAsync()
+        {
+            return await _context.Orders.Include(o => o.Appointment).Include(o => o.Status).Include(o => o.Store).Where(o => o.Appointment != null).ToListAsync();
         }
     }
 }

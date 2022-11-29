@@ -82,7 +82,7 @@ namespace Webx.Web.Controllers
                 ViewBag.IsActive = user.Active;
             }
 
-            var products = await _productRepository.GetAllProducts("AllCategories");
+            var products = await _productRepository.GetAllProductsAsync();
 
             if(products == null)
             {
@@ -102,7 +102,9 @@ namespace Webx.Web.Controllers
                 Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync(),
                 MostExpensiveProductPrice = await _productRepository.MostExpensiveProductPriceAsync(),
                 Cart = cart,
+                WishList = await _productRepository.GetOrStartWishListAsync()
             };
+           
 
             return View(model);
         }
@@ -271,6 +273,7 @@ namespace Webx.Web.Controllers
                 NumberOfProductsFound = products.Count(),
                 Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync(),
                 MostExpensiveProductPrice = await _productRepository.MostExpensiveProductPriceAsync(),
+                WishList = await _productRepository.GetOrStartWishListAsync()
             };
 
             return View("Index", model);
@@ -373,7 +376,16 @@ namespace Webx.Web.Controllers
             var cartCookie = Request.Cookies["Cart"];
             var cookieItemList = JsonConvert.DeserializeObject<List<CookieItemModel>>(cartCookie);
             int isInCartIndex = CheckProductExists(id.Value, cookieItemList); // verifica se produto que cliente está a inserir no carrinho já existe no carrinho e devolve o index do mesmo no carrinho
-            int defaultStoreId = await _storeRepository.GetOnlineStoreIdAsync();
+            int defaultStoreId = 0;
+            if (product.IsService)
+            {
+                defaultStoreId = await _storeRepository.GetLisbonStoreIdAsync();
+            }
+            else
+            {
+                defaultStoreId = await _storeRepository.GetOnlineStoreIdAsync();
+            }
+                        
 
             //se resultado for -1 significa que produto ainda não existe no carrinho, se não for, incrementa-se a quantidade do produto na posição que está
             if (isInCartIndex != -1) //produto já existe no carrinho
@@ -394,7 +406,8 @@ namespace Webx.Web.Controllers
             
             var model = new ShopViewModel
             {
-                Cart = cart,                 
+                Cart = cart,
+                WishList = await _productRepository.GetOrStartWishListAsync()
             };
 
             return PartialView("_CartDropDownPartial", model);
@@ -509,6 +522,7 @@ namespace Webx.Web.Controllers
                             Id = 0,
                             Name = model.Name,
                             Price = model.Price,
+                            Discount = model.Discount,
                             Description = model.Description,
                             IsService = model.IsService,
                             IsPromotion = model.IsPromotion,
@@ -563,7 +577,7 @@ namespace Webx.Web.Controllers
             var model = new ServiceViewModel();
 
             model.Categories = _productRepository.GetCategoriesCombo();
-            model.Brands = _productRepository.GetBrandsCombo();
+            //model.Brands = _productRepository.GetBrandsCombo();
             return View(model);
         }
 
@@ -575,7 +589,7 @@ namespace Webx.Web.Controllers
             if (!this.ModelState.IsValid)
             {
                 model.Categories = _productRepository.GetCategoriesCombo();
-                model.Brands = _productRepository.GetBrandsCombo();
+                //model.Brands = _productRepository.GetBrandsCombo();
                 return View(model);
             }
             else
@@ -585,7 +599,7 @@ namespace Webx.Web.Controllers
                 {
                     _toastNotification.Error("This Service Name Already Exists, Please try again...");
                     model.Categories = _productRepository.GetCategoriesCombo();
-                    model.Brands = _productRepository.GetBrandsCombo();
+                    //model.Brands = _productRepository.GetBrandsCombo();
                     return View(model);
                 }
 
@@ -593,7 +607,7 @@ namespace Webx.Web.Controllers
                 {
                     try
                     {
-                        Product newService = _converterHelper.ServiceFromViewModel(model, true);
+                        Product newService = await _converterHelper.ServiceFromViewModel(model, true);
 
                         await _productRepository.CreateAsync(newService);
 
@@ -608,7 +622,7 @@ namespace Webx.Web.Controllers
                         _toastNotification.Error("There was a problem, When try creating the product. Please try again");
 
                         model.Categories = _productRepository.GetCategoriesCombo();
-                        model.Brands = _productRepository.GetBrandsCombo();
+                        //model.Brands = _productRepository.GetBrandsCombo();
                         return View(model);
                     }
                 }
@@ -707,12 +721,15 @@ namespace Webx.Web.Controllers
                     product.Price = model.Price;
                     product.Description = model.Description;
                     product.IsService = model.IsService;
-                    product.IsPromotion = model.IsPromotion;
+                    product.IsPromotion = model.IsHighlighted;
                     product.CategoryId = Convert.ToInt32(model.CategoryId);
                     product.BrandId = Convert.ToInt32(model.BrandId);
+                    product.Discount = model.Discount;
                     
                     _dataContext.Products.Update(product);
                     await _dataContext.SaveChangesAsync();
+
+                    product.Brand = await _brandRepository.GetBrandByIdAsync(Convert.ToInt32(model.BrandId));
 
                     //converterHelper
                     model = _converterHelper.ProductToViewModel(product);
@@ -764,7 +781,7 @@ namespace Webx.Web.Controllers
             if (!this.ModelState.IsValid)
             {
                 model.Categories = _productRepository.GetCategoriesCombo();
-                model.Brands = _productRepository.GetBrandsCombo();
+                //model.Brands = _productRepository.GetBrandsCombo();
                 return View(model);
             }
             else
@@ -774,23 +791,28 @@ namespace Webx.Web.Controllers
                 {
                     _toastNotification.Error("Error, the service was not found");
                     model.Categories = _productRepository.GetCategoriesCombo();
-                    model.Brands = _productRepository.GetBrandsCombo();
+                    //model.Brands = _productRepository.GetBrandsCombo();
                     return View(model);
                 };
 
                 try
                 {
+
+                    var WebxServiceBrand = await _brandRepository.GetBrandByNameAsync("WebX");
                     product.Id = model.Id;
                     product.Name = model.Name;
                     product.Price = model.Price;
+                    product.Discount = model.Discount;
                     product.Description = model.Description;
                     product.IsService = model.IsService;
                     product.CategoryId = Convert.ToInt32(model.CategoryId);
-                    product.BrandId = Convert.ToInt32(model.BrandId);
+                    product.BrandId = WebxServiceBrand.Id;
 
 
                     _dataContext.Products.Update(product);
                     await _dataContext.SaveChangesAsync();
+
+                    product.Brand = WebxServiceBrand;
 
                     //converterHelper
                     model = _converterHelper.ServiceToViewModel(product);
@@ -809,7 +831,7 @@ namespace Webx.Web.Controllers
                     }
 
                     model.Categories = _productRepository.GetCategoriesCombo();
-                    model.Brands = _productRepository.GetBrandsCombo();
+                    //model.Brands = _productRepository.GetBrandsCombo();
                     return View(model);
                 }
             };
@@ -846,7 +868,7 @@ namespace Webx.Web.Controllers
             if (model == null)
             {
                 return null;
-            }
+            }                        
 
             var json = Json(model);
             return json;
@@ -886,5 +908,127 @@ namespace Webx.Web.Controllers
             return Json(result);
         }
 
+        public async Task<IActionResult> ProductInfo(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var product = await _productRepository.GetFullProduct(id.Value);
+
+            if(product == null)
+            {
+                return NotFound();
+            }
+
+            var model = await _productRepository.GetInitialShopViewModelAsync();
+
+            if(model == null)
+            {
+                return NotFound();
+            }
+
+            model.Product = product;
+            model.Stocks = await _stockRepository.GetAllStockWithStoresAsync();
+            model.Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync();
+            model.WishList = await _productRepository.GetOrStartWishListAsync();
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+                ViewBag.UserFullName = user.FullName;
+                ViewBag.IsActive = user.Active;
+            }
+
+            return View(model);
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetHomeProductDetails(int? Id)
+        {
+            if (Id == 0)
+            {
+                return null;
+            }
+
+            var product = await _productRepository.GetFullProduct(Id.Value);
+
+            if (product == null)
+            {
+                return null;
+            }
+
+            var model = new ShopViewModel
+            {
+                Product = product,              
+                Categories = await _categoryRepository.GetAllCategoriesAsync(),
+                Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync(),
+                Stocks = await _stockRepository.GetAllStockWithStoresAsync(),
+            };
+
+            var view = PartialView("_ProductHomePartial", model);
+
+            return view;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult>AddToWishlist(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+
+            int idvalue = int.Parse(id);
+
+            var product = await _productRepository.GetFullProduct(idvalue);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            var currentWishlist = await _productRepository.GetOrStartWishListAsync();
+            bool inList = false;
+
+            if (currentWishlist != null)
+            {
+                if (currentWishlist.Count() > 0)
+                {
+                    foreach (var item in currentWishlist)
+                    {
+                        if (item.Id == product.Id)
+                        {
+                            inList = true;
+                        }
+                    }
+                }
+            }
+
+            if (!inList)
+            {
+                var response = _productRepository.AddProductToWishList(product);
+
+                if (response.IsSuccess == true)
+                {
+                    currentWishlist.Add(product);
+                    _toastNotification.Success($"{product.Name} was added to your wishlist!");
+                }
+                else
+                {
+                    _toastNotification.Warning($"There was a problem adding {product.Name} to your wishlist, please try again.");
+                }
+            }
+            else
+            {
+                _toastNotification.Information($"{product.Name} is already in your wishlist!");
+            }
+
+            var model = await _productRepository.GetInitialShopViewModelAsync();
+            model.WishList = currentWishlist;
+            return PartialView("_CartDropDownPartial", model);            
+        }
     }
 }

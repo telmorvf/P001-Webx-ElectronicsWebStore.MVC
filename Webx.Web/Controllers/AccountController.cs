@@ -17,6 +17,7 @@ using SixLabors.ImageSharp.Processing;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using Webx.Web.Data.Repositories;
 using System.Collections.Generic;
+using X.PagedList;
 
 namespace Webx.Web.Controllers
 {
@@ -29,9 +30,10 @@ namespace Webx.Web.Controllers
         private readonly INotyfService _toastNotification;
         private readonly IProductRepository _productRepository;
         private readonly IOrderRepository _orderRepository;
+        private readonly IBrandRepository _brandRepository;
 
         public AccountController(IUserHelper userHelper,IMailHelper mailHelper, ICategoryRepository categoryRepository,IBlobHelper blobHelper
-            , INotyfService toastNotification, IProductRepository productRepository,IOrderRepository orderRepository)
+            , INotyfService toastNotification, IProductRepository productRepository,IOrderRepository orderRepository,IBrandRepository brandRepository)
         {
             _userHelper = userHelper;
             _mailHelper = mailHelper;
@@ -40,6 +42,7 @@ namespace Webx.Web.Controllers
             _toastNotification = toastNotification;
             _productRepository = productRepository;
             _orderRepository = orderRepository;
+            _brandRepository = brandRepository;
         }
 
         public IActionResult Login(string returnUrl = null)
@@ -469,7 +472,7 @@ namespace Webx.Web.Controllers
 #nullable disable
 
         [Authorize]
-        public async Task<IActionResult> ViewUser()
+        public async Task<IActionResult> ViewUser(bool redirect = false)
         {
             var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
 
@@ -504,18 +507,24 @@ namespace Webx.Web.Controllers
                 }
             }
 
-            var model = new ShopViewModel
-            {
-                UserViewModel = changeUserViewModel,
-                Cart = await _productRepository.GetCurrentCartAsync(),
-                CustomerOrders = custOrders,
-                HasAppointmentToDo = hasAppointmentToDo
-            };
+            var model = new ShopViewModel();
+
+           
+           model = new ShopViewModel
+           {
+               UserViewModel = changeUserViewModel,
+               Cart = await _productRepository.GetCurrentCartAsync(),
+               CustomerOrders = custOrders,
+               HasAppointmentToDo = hasAppointmentToDo,
+               Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync(),
+               WishList = await _productRepository.GetOrStartWishListAsync(),
+               GoToWishList = redirect
+           };
+           
 
             ViewBag.JsonModel = JsonConvert.SerializeObject(model);
             ViewBag.UserFullName = user.FullName;
-            ViewBag.IsActive = user.Active;
-            //ViewBag.Categories = await _categoryRepository.GetAllCategoriesAsync();
+            ViewBag.IsActive = user.Active;         
 
             return View(model);
         }
@@ -730,17 +739,86 @@ namespace Webx.Web.Controllers
 
             var model = await _productRepository.GetInitialShopViewModelAsync();
             model.CustomerOrders = customerOrders;
-            
+            model.Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync();
+            model.WishList = await _productRepository.GetOrStartWishListAsync();
+
             ViewBag.UserFullName = user.FullName;
             ViewBag.IsActive = user.Active;
 
             return View(model);
         }
 
+        [HttpGet]
+        public async Task<ActionResult> RemoveFromWishlist(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var product = await _productRepository.GetFullProduct(id.Value);
+
+            if(product == null)
+            {
+                return NotFound();
+            }
+
+            var currentWishlist = await _productRepository.GetOrStartWishListAsync();
+            var index = 0;
+            
+            for(int i = 0; i <= currentWishlist.Count(); i++)
+            {
+                if (currentWishlist[i].Id == product.Id)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            currentWishlist.RemoveAt(index);         
+
+            var result = _productRepository.UpdateWishlistCookie(currentWishlist);
+
+            if(result.IsSuccess == false)
+            {            
+                currentWishlist.Add(product);
+            }
+
+            var model = await _productRepository.GetInitialShopViewModelAsync();
+            model.WishList = currentWishlist;
+
+            return PartialView("_WishlistPartial", model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> UpdateCartPartial()
+        {
+            var model = await _productRepository.GetInitialShopViewModelAsync();
+            model.WishList = await _productRepository.GetOrStartWishListAsync();
+
+            return PartialView("_CartDropDownPartial",model);
+        }
+
+        public async Task<IActionResult> GoToWishList()
+        {
+            if (this.User.Identity.IsAuthenticated)
+            {                
+                return RedirectToAction("ViewUser",new {redirect = true});
+            }
+            else
+            {
+                var returnUrl = Url.Action("GoToWishList", "Account");
+                _toastNotification.Information("You must login or Register first to continue.");
+                return RedirectToAction("Login",new {returnUrl = returnUrl});
+            }
+        }
+
         public async Task<IActionResult> NotAuthorized()
         {
             var model = await _productRepository.GetInitialShopViewModelAsync();
             model.Categories = await _categoryRepository.GetAllCategoriesAsync();
+            model.Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync();
+            model.WishList = await _productRepository.GetOrStartWishListAsync();
 
             return View(model);
         }

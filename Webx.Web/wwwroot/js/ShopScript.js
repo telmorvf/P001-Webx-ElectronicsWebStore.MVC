@@ -22,6 +22,32 @@ function onloadFunction() {
 }
 
 
+function AddtoWishlist(id) {
+    debugger;
+    
+
+    
+    $.ajax({
+        url: '/Products/AddToWishlist/',
+        type: 'GET',
+        contentType: 'application/html',
+        dataType: "html",
+        data: {id:id},
+        success: function (value) {
+            debugger;
+
+            let content = $("#cartPartialDiv").html(value);
+            eval(content);
+        },
+        error: function (ex) {
+            debugger;
+
+            console.log("error");
+        }
+    })
+}
+
+
 function AddtoCart(id) {
     debugger;
 
@@ -77,6 +103,32 @@ function showProductDetails(productId) {
     })
 }
 
+
+function showHomeProductDetails(productId) {
+    debugger;   
+
+    $.ajax({
+        url: '/Products/GetHomeProductDetails/',
+        type: 'GET',
+        contentType: 'application/html',
+        dataType: "html",
+        data: { Id: productId },
+        success: function (partialViewResult) {
+            debugger;
+
+            var content = $("#modalHomePartial").html(partialViewResult);
+            eval(content);
+
+            $('#quickHome-view').modal('toggle');
+        },
+        error: function (ex) {
+            console.log("error");
+        }
+    })
+}
+
+
+
 function testFunction() {
     console.log("entrou");
 }
@@ -87,6 +139,9 @@ function closeViewModel() {
     $('#quick-view').modal('hide');
 }
 
+function closeHomeViewModel() {
+    $('#quickHome-view').modal('hide');
+}
 
 function ClearFilters() {
 

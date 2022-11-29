@@ -30,7 +30,9 @@ namespace Webx.Web.Models
 
         public int TotalProductsInCart => Cart.Sum(p => p.Quantity);
 
-        public string CartGrandTotal => Cart.Sum(p => p.Product.Price * p.Quantity).ToString("C2");       
+        public string CartGrandTotal => Cart.Sum(p => p.Product.PriceWithDiscount * p.Quantity).ToString("C2");  
+        
+        public string CartGrandTotalWithNoDiscount => Cart.Sum(p => p.Product.Price * p.Quantity).ToString("C2");
 
         public bool CookieConsent { get; set; }
 
@@ -53,7 +55,58 @@ namespace Webx.Web.Models
         public bool HasAppointmentToDo { get; set; }
 
         public List<Product> SuggestedProducts { get; set; }
+
+        public List<Product> HighlightedProducts { get; set; }
+
+        public int CompletedOrders
+        {
+            get
+            {
+                int completedOrders = 0;
+                if(CustomerOrders != null)
+                {
+                    if (CustomerOrders.Count() > 0)
+                    {
+                        foreach (var item in CustomerOrders)
+                        {
+                            if (item.Order.Status.Name == "Appointment Done" || item.Order.Status.Name == "Order Closed")
+                            {
+                                completedOrders++;
+                            }
+                        }
+                    }
+                }               
+
+                return completedOrders;
+            }
+        }
+
+        public int PendingOrders
+        {
+            get
+            {
+                int pendingOrders = 0;
+                if(CustomerOrders != null)
+                {
+                    if (CustomerOrders.Count() > 0)
+                    {
+                        foreach (var item in CustomerOrders)
+                        {
+                            if (item.Order.Status.Name != "Appointment Done" && item.Order.Status.Name != "Order Closed")
+                            {
+                                pendingOrders++;
+                            }
+                        }
+                    }
+                }                
+
+                return pendingOrders;
+            }
+        }
         
+        public List<Product> WishList { get; set; }
+
+        public bool GoToWishList { get; set; } = false;
 
     }
 }

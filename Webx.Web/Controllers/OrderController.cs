@@ -37,12 +37,15 @@ namespace Webx.Web.Controllers
 
         public async Task<IActionResult> ViewAll()
         {
+
+            //Verifica o estado das encomendas uma única vez ao dia e convert o estado das encomendas que se encontram em order Created para order shipped e posteriormente
+            //para order closed.
+            await _orderRepository.CheckAndConvertOrdersStatusAsync();
+
+
             IEnumerable<Order> orders;
-
             orders = await _orderRepository.GetAllOrdersAsync();
-
             ViewBag.Type = typeof(Order);
-
             return View(orders);
         }
 

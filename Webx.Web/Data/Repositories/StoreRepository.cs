@@ -124,5 +124,29 @@ namespace Webx.Web.Data.Repositories
             return list;
         }
 
+        public async Task<int> GetLisbonStoreIdAsync()
+        {
+            var store = await _context.Stores.Where(s => s.Name == "WebX Lisbon Store").FirstOrDefaultAsync();
+
+            return store.Id;
+        }
+
+        public IEnumerable<SelectListItem> GetComboAppointmentsStores()
+        {
+            var list = _context.Stores.Where(s => s.IsOnlineStore == false).Select(s => new SelectListItem
+            {
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }).OrderBy(s => s.Text).ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "All Stores",
+                Value = "0"
+            });
+
+            return list;
+        }
+     
     }
 }
