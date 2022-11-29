@@ -80,7 +80,8 @@ namespace Webx.Web
 
             services.AddDbContext<DataContext>(cfg =>
             {
-                cfg.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                cfg.UseSqlServer(Configuration.GetConnectionString("SomeeConnection"));
+                //cfg.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
             services.AddAuthentication().AddFacebook(opts =>
@@ -143,7 +144,9 @@ namespace Webx.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            
+            //TODO: Atention Telmo Debuging
+            //app.UseDeveloperExceptionPage();
+
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Mgo+DSMBPh8sVXJ0S0R+XE9HcFRDX3xKf0x/TGpQb19xflBPallYVBYiSV9jS3xTf0RgWH5dc3ZQRmNUUQ==;Mgo+DSMBMAY9C3t2VVhiQlFadVlJXGFWfVJpTGpQdk5xdV9DaVZUTWY/P1ZhSXxRdkxiWn5fc3dXQ2BZUEQ=");
             if (env.IsDevelopment())
             {
@@ -155,9 +158,6 @@ namespace Webx.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
-
-           
 
             app.UseRequestLocalization(new RequestLocalizationOptions
             {

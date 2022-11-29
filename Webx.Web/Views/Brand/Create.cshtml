@@ -137,11 +137,19 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-8">
                         <div class="form-group">
-                            <label asp-for="ImageId" class="control-label"></label>
+@*                            <label asp-for="ImageId" class="control-label"></label>
                             <input asp-for="PictureFile" />
-                            <span asp-validation-for="PictureFile" class="text-danger"></span>
+                            <span asp-validation-for="PictureFile" class="text-danger"></span>*@
+
+                            <label asp-for="ImageId" class="control-label font-weight-bold"></label>
+                            <span id="drop"> File maximum size 5MB <br /> File type allowed: .jpeg, .jpg, .png </span>
+                            <ejs-uploader id="PictureFile" allowedExtensions=" .jpeg, .jpg, .png" autoUpload="false" maxFileSize="5120000"></ejs-uploader>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
                         </div>
                     </div>
                 </div>

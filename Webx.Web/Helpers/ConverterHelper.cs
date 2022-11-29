@@ -171,6 +171,7 @@ namespace Webx.Web.Helpers
                 CategoryId = product.CategoryId.ToString(),
                 CategoryName = product.Category.Name,
                 Categories = _productRepository.GetCategoriesCombo(product.CategoryId),
+                Images = product.Images,
 
             };
         }
