@@ -122,20 +122,22 @@ namespace Webx.Web.Data
         {
             if (!_context.Statuses.Any())
             {
-                int nTimes = 6;
-                string[] OrderStatusName = new string[6] {
+                int nTimes = 7;
+                string[] OrderStatusName = new string[7] {
                     "Order Created",
                     "Appointment Created",
                     "Pending Appointment",
                     "Order Shipped",
                     "Appointment Done",
-                    "Order Closed"
+                    "Order Closed",
+                    "Ongoing"
                 };
 
-                string[] OrderStatusDesc = new string[6] {
+                string[] OrderStatusDesc = new string[7] {
                     "Pagamento Efetuado S/ marcação",
                     "Pagamento Efetuado C/ marcação",
                     "Pagamento Efetuado C/marcação por efetuar",
+                    "",
                     "",
                     "",
                     ""

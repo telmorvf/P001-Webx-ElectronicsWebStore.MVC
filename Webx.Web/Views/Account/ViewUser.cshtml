@@ -276,6 +276,10 @@
                                                      {
                                                          <p style="cursor:default" class="btn btn-sm btn-secondary">Appointment Done</p>
                                                      }
+                                                     @if(order.Order.Status.Name == "Ongoing")
+                                                     {
+                                                         <p style="cursor:default" class="btn btn-sm btn-info">Booking in progress</p>
+                                                     }
                                                      
                                                  </td>
                                                  <td>

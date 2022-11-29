@@ -26,5 +26,7 @@ namespace Webx.Web.Data.Repositories
 
         Task<int> GetOnlineStoreIdAsync();
         Task<int> GetLisbonStoreIdAsync();
+        IEnumerable<SelectListItem> GetComboAppointmentsStores();
+
     }
 }

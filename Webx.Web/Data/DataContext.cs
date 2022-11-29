@@ -33,7 +33,9 @@ namespace Webx.Web.Data
 
         public DbSet<CheckoutTempData> CheckoutTemps { get; set; }
 
-        public DbSet<Status> Statuses { get; set; }      
+        public DbSet<Status> Statuses { get; set; }
+        
+        public DbSet<StatusChecker> StatusCheckers { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
