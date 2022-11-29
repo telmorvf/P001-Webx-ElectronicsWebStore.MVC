@@ -80,8 +80,8 @@ namespace Webx.Web
 
             services.AddDbContext<DataContext>(cfg =>
             {
-                cfg.UseSqlServer(Configuration.GetConnectionString("SomeeConnection"));
-                //cfg.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                //cfg.UseSqlServer(Configuration.GetConnectionString("SomeeConnection"));
+                cfg.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
             services.AddAuthentication().AddFacebook(opts =>
