@@ -67,6 +67,14 @@
         display: flex;
         box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
     }
+
+    .borderDashed{
+        padding: 20px 0;        
+        border-bottom: 1px dashed #ced4da;
+    }
+    .carousel-indicators {
+        margin-bottom: -2rem;
+    }
 </style>
 
 <!--Div que permite dar espaçamento entre ejs grid e topo-->
@@ -83,7 +91,7 @@
     </div>
 
 
-    <div class="row" style="padding:25px;min-height: 715px;">
+    <div class="row" style="padding:25px;min-height: 700px;">
         <div class="col-md-6">
 
             <form enctype="multipart/form-data" asp-action="Update">
@@ -172,7 +180,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label asp-for="UploadFiles" class="control-label font-weight-bold"></label>
-                            <span id="drop"> File maximum size 5MB <br /> File type allowed: .jpg, .png </span>
+                            <span id="drop"> File maximum size 5MB <br /> File type allowed: .jpeg, .jpg, .png </span>
                             <ejs-uploader id="UploadFiles" allowedExtensions=" .jpeg, .jpg, .png" autoUpload="false" maxFileSize="5120000"></ejs-uploader>
                         </div>
                     </div>
@@ -223,60 +231,93 @@
 
         </div>
 
-        <div class="col-md-6">
+        @*<div class="col-md-6" style="padding: 20px 100px 20px 100px;">*@
+            <div class="col-md-6 img-wrapper " style="padding: 5px 95px 5px 95px;">
 
-            <div class="box">
+            @*<div class="box">*@
                 
                 @*<div class="imageStyle" style="background-size: cover;"></div>*@
             
-                <div class="imageStyle" style="background:Url(@Model.ImageFirst) no-repeat center;background-size: cover;"></div>
+                @*<div class="imageStyle" style="background:Url(@Model.ImageFirst) no-repeat center;background-size: cover;"></div>*@
 
+                @if (Model.Images != null)
+                {
+                    @if (Model.Images.Count() > 0)
+                    {
+                            int imageCounter = 0;
+                            <div id="productSlideShow" class="carousel carousel-dark slide carousel-fade" data-bs-ride="carousel">
 
-@*                <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active imageStyle">
-                            <img class="d-block w-100" style="background:Url(@Model.ImageFirst) no-repeat center;background-size: cover;">
-                            
-                            
-                            @if (Model.Images != null)
-                            {
+                                <div class="carousel-indicators">
+                                    @foreach (var item in Model.Images)
+                                    {
+                                        if (item == Model.Images.ElementAt(0))
+                                        {
+                                            <button type="button" data-bs-target="#productSlideShow" data-bs-slide-to="@imageCounter" class="active" aria-current="true" aria-label="Slide to @(imageCounter+1)"></button>
+                                            imageCounter++;
+                                        }
+                                        else
+                                        {
+                                            <button type="button" data-bs-target="#productSlideShow" data-bs-slide-to="@imageCounter" aria-current="true" aria-label="Slide to @(imageCounter+1)"></button>
+                                            imageCounter++;
+                                        }
+                                    }
+                                </div>
+                                <div class="carousel-inner">
 
-                                @foreach (var item in Model.Images)
-                                {
-                                    <div class="carousel-item">
-                                        <img src="https://webx2022.blob.core.windows.net/products/
-                                            @Html.DisplayFor(modelItem => item.ImageId)
-                                        " class="d-block w-100" alt="...">
-                                    </div>
-                                }
-                            }
-                            else
-                            {
-                                <div class="imageStyle" style="background:Url(@Model.ImageFirst) no-repeat center;background-size: cover;"></div>
-                            }
-                        
-                        
-                        
+                                    @foreach (var item in Model.Images)
+                                    {
+                                        if (item == Model.Images.ElementAt(0))
+                                        {
+                                            <div class="carousel-item active">
+                                            <img src="@item.ImageFullPath" class="d-block w-100 " alt="product">
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="carousel-item">
+                                            <img src="@item.ImageFullPath" class="d-block w-100" alt="product">
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#productSlideShow" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#productSlideShow" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+
+                            </div>
+
+                    }
+                    else
+                    {
+                        <div>
+                            <div>
+                                @*<img src="https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg" class="img-fluid blur-up lazyload" alt="product">*@
+                            </div>
+                            <div class="imageStyle"  style="background:Url(@Model.ImageFirst) no-repeat center;background-size: cover;" alt="product"></div>
                         </div>
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-                </div>*@
+                    }
+
+                }
 
 
 
-            
-            
-            
-            </div>
+
+            @*</div>*@
 
         </div>
 
     </div>
 </div>
+
+
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

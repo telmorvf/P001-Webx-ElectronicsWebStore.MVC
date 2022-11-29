@@ -172,7 +172,9 @@ namespace Webx.Web.Helpers
                 CategoryId = product.CategoryId.ToString(),
                 CategoryName = product.Category.Name,
                 Categories = _productRepository.GetCategoriesCombo(product.CategoryId),
-                Discount = product.Discount,                 
+                Images = product.Images,
+                Discount = product.Discount,                
+
             };
         }
         public Product ProductFromViewModel(ProductViewModel model, bool isNew)
