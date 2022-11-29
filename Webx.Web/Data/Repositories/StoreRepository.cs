@@ -130,5 +130,23 @@ namespace Webx.Web.Data.Repositories
 
             return store.Id;
         }
+
+        public IEnumerable<SelectListItem> GetComboAppointmentsStores()
+        {
+            var list = _context.Stores.Where(s => s.IsOnlineStore == false).Select(s => new SelectListItem
+            {
+                Text = s.Name,
+                Value = s.Id.ToString()
+            }).OrderBy(s => s.Text).ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "All Stores",
+                Value = "0"
+            });
+
+            return list;
+        }
+     
     }
 }

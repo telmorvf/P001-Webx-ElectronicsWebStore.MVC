@@ -117,6 +117,10 @@
                                  {
                                      <p style="cursor:default;color:white" class="btn btn-sm btn-secondary">Appointment Done</p>
                                  }
+                                 @if(Model.CustomerOrders.FirstOrDefault().Order.Status.Name == "Ongoing")
+                                 {
+                                     <p style="cursor:default;color:white" class="btn btn-sm btn-info">Booking in progress</p>
+                                 }
                              </td>
                          </tr>
                          @{
@@ -150,7 +154,7 @@
                                     <p class="mt-0"><b>Hour scheduled:</b> @Model.CustomerOrders.FirstOrDefault().Order.Appointment.BegginingHour.ToString("HH:mm")</p>
                                 </td>
                             </tr>
-                            @if(Model.CustomerOrders.FirstOrDefault().Order.Appointment.HasAttended == true)
+                            @if(Model.CustomerOrders.FirstOrDefault().Order.Status.Name == "Appointment Done")
                             {
                                 <tr>
                                     <td>
