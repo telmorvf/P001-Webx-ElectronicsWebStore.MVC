@@ -136,7 +136,7 @@ namespace Webx.Web
 
             });
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
         }
 
 
