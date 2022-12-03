@@ -393,9 +393,21 @@ namespace Webx.Web.Data
             //var categories = new List<Category>();
             if (!_context.Categories.Any())
             {
-                int nTimes = 6;
-                string[] categ = new string[6] { "Motherboards", "Memory", "Cases", "CPU Coolers", "CPU Processors", "Services" };
-                Guid[] images = new Guid[6] { Guid.Parse("00000000-0000-0000-0000-900000000006"), Guid.Parse("00000000-0000-0000-0000-900000000005"), Guid.Parse("00000000-0000-0000-0000-900000000004"), Guid.Parse("00000000-0000-0000-0000-900000000003"), Guid.Parse("00000000-0000-0000-0000-900000000002"), Guid.Parse("00000000-0000-0000-0000-900000000001") };
+                int nTimes = 11;
+                string[] categ = new string[11] {
+                    "Toys","Routers",
+                    "Laptops" ,"Solid Drives",
+                    "Mouses & Keyboards",
+                    "Motherboards", "Memory", 
+                    "Cases", "CPU Coolers", 
+                    "CPU Processors", "Services" };
+                  Guid[] images = new Guid[11] {
+                                                                        Guid.Parse("00000000-0000-0000-0000-900000000011"),
+                    Guid.Parse("00000000-0000-0000-0000-900000000010"), Guid.Parse("00000000-0000-0000-0000-900000000009"),
+                    Guid.Parse("00000000-0000-0000-0000-900000000008"), Guid.Parse("00000000-0000-0000-0000-900000000007"),
+                    Guid.Parse("00000000-0000-0000-0000-900000000006"), Guid.Parse("00000000-0000-0000-0000-900000000005"), 
+                    Guid.Parse("00000000-0000-0000-0000-900000000004"), Guid.Parse("00000000-0000-0000-0000-900000000003"), 
+                    Guid.Parse("00000000-0000-0000-0000-900000000002"), Guid.Parse("00000000-0000-0000-0000-900000000001") };
 
                 for (int i = 0; i < nTimes; i++)
                 {

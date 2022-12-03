@@ -20,7 +20,6 @@ using Webx.Web.Helpers;
 using Webx.Web.Models;
 using X.PagedList.Mvc;
 using X.PagedList;
-using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Http;
 
 namespace Webx.Web.Controllers
@@ -628,6 +627,66 @@ namespace Webx.Web.Controllers
                 }
             };
             return View(model);
+        }
+
+
+
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ImageCards(int? id)
+        {
+            var product = await _productRepository.GetProductByIdAsync(id.Value);
+            var model = new ProductViewModel();
+            if (product != null)
+            {
+                //converterHelper
+                model = _converterHelper.ProductToViewModel(product);
+            }
+            else
+            {
+                _toastNotification.Error("Product could not be found.");
+                return RedirectToAction(nameof(ViewAll));
+            }
+            return View(model);
+        }
+
+
+        //[HttpPost, ActionName("ImageCardsDelete")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ImageCardsDelete(int? id, Guid? imagesId)
+        {
+            var product = await _productRepository.GetProductByIdAsync(id.Value);
+            //var model = new ProductViewModel();
+            if (product != null)
+            {
+                //List<ProductImages> productImagesTemp = new List<ProductImages>();
+                foreach (var file in product.Images)
+                {
+                    if (product.Images.Count() < 2 )
+                    {
+                        _toastNotification.Warning("You can not delete all images!!!");
+                    }
+                    if (file.ImageId == imagesId && product.Images.Count() > 1)
+                    {
+                        product.Images.Remove(file);
+                        //_dataContext.Products.Update(product);
+                        await _dataContext.SaveChangesAsync();
+                        _toastNotification.Success("Image has deleted!!!");
+                    }
+                }
+                //product = await _productRepository.GetProductByIdAsync(id.Value);
+                //model = _converterHelper.ProductToViewModel(product);              
+            }
+            else
+            {
+                _toastNotification.Error("Product could not be found.");
+                return RedirectToAction(nameof(Update));
+            }
+            //return View(model);
+            //var model = new ProductViewModel();
+            //product = await _productRepository.GetProductByIdAsync(id.Value);
+            //model = _converterHelper.ProductToViewModel(product);
+            return RedirectToAction("ImageCards", new { id = product.Id });
         }
 
 

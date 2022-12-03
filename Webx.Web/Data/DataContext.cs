@@ -64,6 +64,10 @@ namespace Webx.Web.Data
             .Property(p => p.Price)
             .HasColumnType("decimal(18,2)");
 
+            builder.Entity<Product>()
+            .Property(p => p.Discount)
+            .HasColumnType("decimal(18,2)");
+
             builder.Entity<User>().HasIndex(u => u.NIF).IsUnique();
 
             builder.Entity<Store>().HasIndex(u => u.Name).IsUnique();

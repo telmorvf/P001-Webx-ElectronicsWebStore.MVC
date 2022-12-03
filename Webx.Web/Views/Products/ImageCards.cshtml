@@ -1,0 +1,258 @@
+﻿@* Product Update  *@
+
+
+@model Webx.Web.Models.ProductViewModel
+
+@{
+    ViewData["Title"] = "Update";
+    ViewData["BreadCrumb"] = "Edit Product";
+    Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
+}
+
+<!--
+    <style>
+    .gridView {
+        border-color: #edebe9;
+        border-radius: 1px;
+        border-style: none solid solid;
+        border-width: 1px;
+        display: block;
+        position: relative;
+        width: auto;
+        background-color: #fff;
+    }
+
+    .form-group {
+        display: grid;
+    }
+
+    #submit {
+        border: solid 1px;
+        border-color: #46BAED;
+        color: #fff;
+        background-color: #46BAED;
+        width: 100%;
+        transition: ease-in-out 0.3s;
+    }
+
+        #submit:hover {
+            background-color: #edebe9;
+            color: #000;
+        }
+
+    #return {
+        border: solid 1px;
+        border-color: #46BAED;
+        color: #fff;
+        background-color: #46BAED;
+        width: 100%;
+        transition: ease-in-out 0.3s;
+    }
+
+        #return:hover {
+            background-color: #edebe9;
+            color: #000;
+        }
+
+    .imageStyle {
+        min-height: 500px;
+        min-width: 500px;
+        position: Absolute;
+        overflow: hidden;
+        margin: auto;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        border-radius: 0%;
+        display: flex;
+        box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+    }
+
+    .borderDashed{
+        padding: 20px 0;
+        border-bottom: 1px dashed #ced4da;
+    }
+    .carousel-indicators {
+        margin-bottom: -2rem;
+    }
+</style>
+-->
+
+<!--Div que permite dar espaçamento entre ejs grid e topo-->
+<div class="container-fluid" style="min-height:25px;background-color: #f4f6f9;">
+</div>
+
+<div class="container-fluid gridView" style="min-height:90%">
+
+    <div class="row">
+        <div class="col-md-12" style="margin-top: 15px;">
+            <h4 style="text-align:center">Edit Product @Model.Name</h4>
+            <hr />
+        </div>
+    </div>
+
+
+    <div class="row" style="padding:5px 20px; min-height: 700px;">
+        
+        
+            <div class="col-md-12">
+            <form enctype="multipart/form-data" asp-action="Update">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+
+                
+                   <div id="main-content" class="file_manager">
+                        <div class="container">
+                            <div class="row clearfix">
+
+                                @foreach (var item in Model.Images)
+                                {
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <div class="card">
+                                            <div class="file">
+                                                
+                                                <a href="javascript:void(0);">
+                                                    
+                                                    <div class="hover">
+                                                        <button type="submit" id="deleteImage" asp-action="ImageCardsDelete" asp-controller="Products" asp-route-id=@Model.Images asp-route-imagesId=@item.ImageId class="btn btn-icon btn-danger">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="image">
+                                                        <img src="@item.ImageFullPath" alt="img" class="img-fluid">
+                                                    </div>
+                                                    <div class="file-name" style="horizontal-align: middle;" >
+                                                        <small><p class="m-b-3 text-muted" >@item.ImageId</p></small>
+                                                        @*<small>Size: 2MB <span class="date text-muted">Dec 11, 2017</span></small>*@
+                                                    </div>
+                                                </a>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                <div class="">
+                                    <div class="">
+                                        <div class="">
+                                                <div class="form-group">
+                                                    <a id="return" asp-action="Update" asp-controller="Products" asp-route-id=@Model.Id class="btn">Go Back</a>
+                                                </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                  </div>
+                
+            </form>
+
+        </div>
+
+
+    </div>
+</div>
+
+<style type="text/css">
+    body{
+        background-color: #f4f7f6;
+        margin-top:0px;
+    }
+    .file_manager .file a:hover .hover,
+    .file_manager .file .file-name small{
+        display: block
+    }
+    .file_manager .file {
+        padding: 0 !important
+    }
+
+    .file_manager .file .icon{
+        text-align: center
+    }
+
+
+    .file_manager .file {
+        position: relative;
+        border-radius: .55rem;
+        overflow: hidden
+    }
+
+    .file_manager .file .image,
+    .file_manager .file .icon {
+        max-height: 230px;
+        overflow: hidden;
+        background-size: cover;
+        background-position: top
+    }
+
+    .file_manager .file .hover {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        display: none;
+        transition: all 0.2s ease-in-out
+    }
+
+    .file_manager .file a:hover .hover {
+        transition: all 0.2s ease-in-out
+    }
+
+    .file_manager .file .icon {
+        padding: 15px 10px;
+        display: table;
+        width: 100%
+    }
+
+    .file_manager .file .icon i {
+        display: table-cell;
+        font-size: 30px;
+        vertical-align: middle;
+        color: #777;
+        line-height: 100px
+    }
+
+    .file_manager .file .file-name {
+        padding: 10px;
+        border-top: 1px solid #f7f7f7
+    }
+
+    .file_manager .file .file-name small .date {
+        float: right
+    }
+
+    .folder {
+        padding: 20px;
+        display: block;
+        color: #777
+    }
+
+    media only screen and (max-width: 992px) {
+        .file_manager .nav-tabs {
+            padding-left: 0;
+            padding-right: 0
+        }
+        .file_manager .nav-tabs .nav-item {
+            display: inline-block
+        }
+    }
+
+    .card {
+        background: #fff;
+        transition: .5s;
+        border: 0;
+        margin-bottom: 30px;
+        border-radius: .55rem;
+        position: relative;
+        width: 100%;
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
+    }
+
+    a:hover {
+        text-decoration:none;
+    }
+</style>
+
+<script type="text/javascript"></script>

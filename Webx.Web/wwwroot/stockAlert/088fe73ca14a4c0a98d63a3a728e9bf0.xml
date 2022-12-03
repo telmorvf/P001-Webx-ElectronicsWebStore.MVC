@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<OrderData>
+  <Header>
+    <CompanyName>WebX - Company</CompanyName>
+    <OrderDate>30/11/2022</OrderDate>
+    <ProductManager>Telmo Fernandes</ProductManager>
+  </Header>
+  <Products>
+    <Store Name="WebX Lisbon Store" Address="Zona Industrial de Alfragide - Estrada Nacional 117" Phone="213645895" Email="webxLisbon@gmail.com">
+      <Product>
+        <Name>Intel Core i9-11900K 8-Core 3.5GHz W/Turbo 5.3GHz 16MB Skt1200 Processor</Name>
+        <Brand>Intel</Brand>
+        <Category>CPU Processors</Category>
+        <Price>413,90</Price>
+        <Quantity>1</Quantity>
+      </Product>
+    </Store>
+  </Products>
+</OrderData>
