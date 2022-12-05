@@ -108,9 +108,7 @@ namespace Webx.Web.Controllers
             return View(model);
         }
 
-       
-
-        private int CheckProductExists(int productId, List<CookieItemModel> cart)
+         private int CheckProductExists(int productId, List<CookieItemModel> cart)
         {
             for (int i = 0; i < cart.Count; i++)
             {
@@ -229,7 +227,7 @@ namespace Webx.Web.Controllers
 
             return PartialView("_shopSectionPartial", model);
         }
-        
+       
 
               /*  foreach (var product in products)
                 {
@@ -246,9 +244,7 @@ namespace Webx.Web.Controllers
                     productsList.Add(model);
                 }*/
 
-           
-
-
+ 
         public async Task<IActionResult> ReturnDesiredProductPage(string category, int resultsPerPage, int? page, List<string> brandsFilter = null)
         {
             var products = new List<Product>();
@@ -277,8 +273,6 @@ namespace Webx.Web.Controllers
 
             return View("Index", model);
         }
-
-
 
         [HttpGet]
         public async Task<IActionResult> ChangePriceRange(string category, int resultsPerPage, int minRange,int maxRange, string brandsFilter = null)
@@ -357,7 +351,6 @@ namespace Webx.Web.Controllers
             return PartialView("_ProductModalPartial",model);
         }
 
-
         [HttpGet]
         public async Task<IActionResult> AddProduct(int? id)
         {
@@ -412,20 +405,14 @@ namespace Webx.Web.Controllers
             return PartialView("_CartDropDownPartial", model);
         }
 
-
-
         public IActionResult ProductNotFound()
          {
          //TODO: View with a nice look, search in the net
          return View();
          }
 
-
-        /// <summary>
-        /// CRUD View All Products
-        /// </summary>
-        /// <returns></returns>
-       public async Task<IActionResult> ViewAll(bool isService)
+        [Authorize(Roles = "Admin, Product Manager, Technician")]
+        public async Task<IActionResult> ViewAll(bool isService)
        {
             IEnumerable<Product> products;
 
@@ -448,9 +435,8 @@ namespace Webx.Web.Controllers
 
             return View(products);
         }
-        
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Product Manager")]
         public IActionResult Create()
         {
             var model = new ProductAddViewModel();
@@ -462,7 +448,7 @@ namespace Webx.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Product Manager")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductAddViewModel model)
         {
@@ -629,10 +615,7 @@ namespace Webx.Web.Controllers
             return View(model);
         }
 
-
-
-
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Product Manager, Technician")]
         public async Task<IActionResult> ImageCards(int? id)
         {
             var product = await _productRepository.GetProductByIdAsync(id.Value);
@@ -652,7 +635,7 @@ namespace Webx.Web.Controllers
 
 
         //[HttpPost, ActionName("ImageCardsDelete")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Product Manager")]
         public async Task<IActionResult> ImageCardsDelete(int? id, Guid? imagesId)
         {
             var product = await _productRepository.GetProductByIdAsync(id.Value);
@@ -690,7 +673,7 @@ namespace Webx.Web.Controllers
         }
 
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Product Manager")]
         public async Task<IActionResult> Update(int? id)
         {
             var product = await _productRepository.GetProductByIdAsync(id.Value);
@@ -709,7 +692,7 @@ namespace Webx.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Product Manager")]
         public async Task<IActionResult> Update(ProductViewModel model)
         {
             if (!this.ModelState.IsValid)
@@ -898,10 +881,8 @@ namespace Webx.Web.Controllers
             return View(model);
         }
 
-
-
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Product Manager, Technician")]
         [Route("Products/ProductDetails")]
         public async Task<JsonResult> ProductDetails(int? Id)
         {
@@ -933,7 +914,7 @@ namespace Webx.Web.Controllers
             return json;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Product Manager, Technician")]
         [HttpPost]
         [Route("Products/ToastNotification")]
         public JsonResult ToastNotification(string message, string type)
@@ -967,6 +948,7 @@ namespace Webx.Web.Controllers
             return Json(result);
         }
 
+        [Authorize(Roles = "Admin, Product Manager, Technician")]
         public async Task<IActionResult> ProductInfo(int? id)
         {
             if(id == null)

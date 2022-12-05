@@ -37,6 +37,7 @@ namespace Webx.Web.Controllers
             _imageHelper = imageHelper;
         }
 
+        [Authorize(Roles = "Admin, Product Manager, Technician")]
         public async Task<IActionResult> ViewAll()
         {
             IEnumerable<Brand> brands;
@@ -185,7 +186,7 @@ namespace Webx.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Product Manager, Technician")]
         [Route("Brand/BrandDetails")]
         public async Task<JsonResult> BrandDetails(int? Id)
         {
@@ -217,7 +218,7 @@ namespace Webx.Web.Controllers
             return json;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Product Manager, Technician")]
         [HttpPost]
         [Route("Brand/ToastNotification")]
         public JsonResult ToastNotification(string message, string type)

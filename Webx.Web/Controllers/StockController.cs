@@ -50,7 +50,7 @@ namespace Webx.Web.Controllers
         }
 
 
-        [Authorize(Roles = "Admin, Product Manager")]
+        [Authorize(Roles = "Admin, Product Manager, Technician")]
         public async Task<IActionResult> ViewAll()
         {
             IEnumerable<Stock> stocks;
@@ -65,7 +65,7 @@ namespace Webx.Web.Controllers
             return View("ViewAll", stocks);
         }
 
-        [Authorize(Roles = "Admin, Product Manager")]
+        [Authorize(Roles = "Admin, Product Manager, Technician")]
         public async Task<IActionResult> ViewAllAlert()
         {
             IEnumerable<Stock> stocksAlerts;
@@ -82,7 +82,7 @@ namespace Webx.Web.Controllers
 
         [HttpGet]
         [Route("Stock/CountStockAlerts")]
-        [Authorize(Roles = "Admin, Product Manager")]
+        [Authorize(Roles = "Admin, Product Manager, Technician")]
         public async Task<JsonResult> CountStockAlerts()
         {
             var count = await _stockRepository.GetStockAlertsCount();
@@ -220,7 +220,7 @@ namespace Webx.Web.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin, Product Manager")]
+        [Authorize(Roles = "Admin, Product Manager, Technician")]
         [HttpPost]
         [Route("Stock/ToastNotification")]
         public JsonResult ToastNotification(string message, string type)
