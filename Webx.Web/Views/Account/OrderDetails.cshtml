@@ -2,11 +2,22 @@
 @model Webx.Web.Models.ShopViewModel
 
 @{
-    ViewData["Title"] = "OrderDetails";
+    ViewData["Title"] = "WebX";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container">
+<style>
+    .review i{
+        color: var(--theme-color);
+        transition: all 0.3s;
+    }
+
+    .review i:hover{
+        color: #FFCD3C;
+    }
+</style>
+
+<div class="container" style="max-width: 1500px !important;">
     <div class="row" style="margin-top:50px;margin-bottom:50px;">
 
         <div class="col-md-8">
@@ -22,17 +33,23 @@
                             <thead>
                                 <tr class="table-head">
                                     <th scope="col">Image</th>
-                                    <th scope="col">Product</th>                        
+                                    <th scope="col">Product</th>
+                                    @if(Model.CustomerOrders.FirstOrDefault().Order.Status.Name == "Appointment Done" || Model.CustomerOrders.FirstOrDefault().Order.Status.Name == "Order Closed")
+                                    {
+                                        <th scope="col">Review</th>
+                                    }                                
                                     <th scope="col">Price</th>
                                     <th scope="col">Quantity</th>
-                                    <th scope="col">Total Price</th>                        
+                                    <th scope="col">Total Price</th>                                    
                                 </tr>
                             </thead>
                             <tbody>                   
                                 
                                 @foreach(var item in Model.CustomerOrders.FirstOrDefault().OrderDetails)
                                 {
+                                   
                                   <tr>
+                                      
                                     <td>
                                         <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@item.Product.Id">
                                             @if(item.Product.Images.Count() > 0)
@@ -47,6 +64,12 @@
                                     <td style="max-width:300px;">
                                         <p style="max-width:310px;overflow:hidden;text-overflow:ellipsis;" class="mt-0">@item.Product.Name</p>
                                     </td>
+                                    @if (Model.CustomerOrders.FirstOrDefault().Order.Status.Name == "Appointment Done" || Model.CustomerOrders.FirstOrDefault().Order.Status.Name == "Order Closed")
+                                    {
+                                        <td>
+                                            <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@item.Product.Id" class="review"><i style="font-size:18px" class="fas fa-star"></i></a>
+                                        </td>
+                                    }
                                     <td>
                                         @if(item.Product.Discount > 0){
                                             <p><del style="font-size:14px;" class="font-light">@item.Product.Price.ToString("C2")</del></p>
@@ -60,7 +83,9 @@
                                     <td>
                                         <p class="theme-color fs-6">@item.Price.ToString("C2")</p>
                                     </td>
+                                   
                                   </tr>
+                                  
                                 }                                
                             </tbody>                            
                            

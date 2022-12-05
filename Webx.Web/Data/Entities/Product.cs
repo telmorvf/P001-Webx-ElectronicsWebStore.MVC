@@ -80,5 +80,7 @@ namespace Webx.Web.Data.Entities
         [Display(Name = "Price with Discount")]
         [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
         public decimal PriceWithDiscount => Price * (1 - (Discount / 100));
+
+        
     }
 }

@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 ﻿using Microsoft.EntityFrameworkCore;
 using Syncfusion.EJ2.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Threading.Tasks;
 using Webx.Web.Data.Entities;
 using Webx.Web.Helpers;
@@ -16,9 +18,10 @@ namespace Webx.Web.Data.Repositories
     {
         private readonly DataContext _context;
 
+
         public OrderRepository(DataContext context) : base(context)
         {
-            _context = context;
+            _context = context;           
         }
 
         public async Task AddOrderAsync(OrderViewModel model,int storeId)
@@ -171,7 +174,7 @@ namespace Webx.Web.Data.Repositories
             return await _context.Statuses.Where(os => os.Name == orderStatusName).FirstOrDefaultAsync();
         }
 
-        public async Task CheckAndConvertOrdersStatusAsync()
+        public async Task<List<Order>> CheckAndConvertOrdersStatusAsync()
         {
             var statusCheckers = await _context.StatusCheckers.ToListAsync();
 
@@ -212,18 +215,42 @@ namespace Webx.Web.Data.Repositories
                     {
                         order.Status = await GetOrderStatusByNameAsync("Order Closed");
                         _context.Orders.Update(order);
-                    }
+                    }                                      
                 }
 
                 checker.Date = DateTime.UtcNow;
                 _context.StatusCheckers.Update(checker);
                 await _context.SaveChangesAsync();
+
+                return orderShipped;
             }
+
+            return null;
         }
 
         public async Task<List<Order>> GetAllOrdersWithAppointmentsAsync()
         {
             return await _context.Orders.Include(o => o.Appointment).Include(o => o.Status).Include(o => o.Store).Where(o => o.Appointment != null).ToListAsync();
+        }
+
+        public async Task<bool> CheckIfCanReviewAsync(User user, Product product)
+        {
+            var userOrders = await _context.Orders.Include(o => o.Status).Where(o => o.Customer.Id == user.Id && o.Status.Name == "Order Closed" || o.Customer.Id == user.Id && o.Status.Name == "Appointment Done").ToListAsync();
+
+            if(userOrders != null)
+            {
+                foreach(var order in userOrders)
+                {
+                    var orderDetails = await _context.OrderDetails.Where(od => od.Order.Id == order.Id && od.Product.Id == product.Id).FirstOrDefaultAsync();
+
+                    if(orderDetails != null)
+                    {
+                        return true;                        
+                    }                  
+                }
+            }
+
+            return false;
         }
     }
 }

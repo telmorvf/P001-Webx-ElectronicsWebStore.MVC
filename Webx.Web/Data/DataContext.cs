@@ -37,6 +37,8 @@ namespace Webx.Web.Data
         
         public DbSet<StatusChecker> StatusCheckers { get; set; }
 
+        public DbSet<ProductReview> Reviews { get; set; }
+
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
 

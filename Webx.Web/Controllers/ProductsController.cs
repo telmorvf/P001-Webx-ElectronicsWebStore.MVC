@@ -38,7 +38,7 @@ namespace Webx.Web.Controllers
         private readonly IConverterHelper _converterHelper;
         private readonly IBrandRepository _brandRepository;       
         private readonly IUserHelper _userHelper;
-
+        private readonly IOrderRepository _orderRepository;
 
         public ProductsController(
             IProductRepository productRepository,
@@ -51,7 +51,8 @@ namespace Webx.Web.Controllers
             IBlobHelper blobHelper,
             IConverterHelper converterHelper,
             IBrandRepository brandRepository,      
-            IUserHelper userHelper
+            IUserHelper userHelper,
+            IOrderRepository orderRepository
             )
         {
             _productRepository = productRepository;
@@ -65,6 +66,7 @@ namespace Webx.Web.Controllers
             _converterHelper = converterHelper;
             _brandRepository = brandRepository;
             _userHelper = userHelper;
+            _orderRepository = orderRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -88,13 +90,16 @@ namespace Webx.Web.Controllers
             {
                 _toastNotification.Error("There was a problem loading the store.Please try again later!");
                 return NotFound();
-            }      
+            }
+
+            var productWithReviews = await _converterHelper.ToProductsWithReviewsViewModelList(products);
+
 
             var cart = await _productRepository.GetCurrentCartAsync();
 
             var model = new ShopViewModel
             {
-                PagedListProduct = products.ToPagedList(1, 12),
+                PagedListProduct = productWithReviews.ToPagedList(1, 12),
                 SelectedCategory = "AllCategories",
                 Categories = await _categoryRepository.GetAllCategoriesAsync(),
                 ResultsPerPage = 12,
@@ -129,11 +134,12 @@ namespace Webx.Web.Controllers
         public async Task<ActionResult> ClearFilters(int? resultsPerPage)
         {
             var products = await _productRepository.GetAllProducts("AllCategories");
-                      
+
+            var productWithReviews = await _converterHelper.ToProductsWithReviewsViewModelList(products);
 
             var model = new ShopViewModel
             {
-                PagedListProduct = products.ToPagedList(1, resultsPerPage ?? 12),
+                PagedListProduct = productWithReviews.ToPagedList(1, resultsPerPage ?? 12),
                 SelectedCategory = "AllCategories",
                 Categories = await _categoryRepository.GetAllCategoriesAsync(),
                 NumberOfProductsFound = products.Count(),
@@ -144,10 +150,11 @@ namespace Webx.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> FilterBrand(string category, int? resultsPerPage,int minRange,int maxRange ,string brandsfilter)
+        public async Task<ActionResult> FilterBrand(string category, int? resultsPerPage,int minRange,int maxRange ,string brandsfilter,string ratefilter)
         {       
             
             var brandsList = JsonConvert.DeserializeObject<List<string>>(brandsfilter);
+            var desiredRates = JsonConvert.DeserializeObject<List<int>>(ratefilter);
 
             var products = await _productRepository.GetFilteredProducts(category, brandsList);
 
@@ -159,14 +166,29 @@ namespace Webx.Web.Controllers
 
             products = products.Where(p => p.Price >= minRange && p.Price <= maxRange).ToList();
 
+            var productWithReviews = await _converterHelper.ToProductsWithReviewsViewModelList(products);
+            List<ProductWithReviewsViewModel> productFilteredList = new List<ProductWithReviewsViewModel>();
+
+            if(desiredRates != null && desiredRates.Count > 0)
+            {
+                foreach(var rate in desiredRates)
+                {
+                    productFilteredList.AddRange(productWithReviews.Where(p => p.ProductOverallRating == rate));
+                }       
+            }
+            else
+            {
+                productFilteredList = productWithReviews;
+            }
+
             var model = new ShopViewModel
             {
-                PagedListProduct = products.ToPagedList(1, resultsPerPage ?? 12),
+                PagedListProduct = productFilteredList.ToPagedList(1, resultsPerPage ?? 12),
                 SelectedCategory = category,
                 ResultsPerPage = resultsPerPage?? 12,
                 BrandsTags = brandsList,
                 Categories = await _categoryRepository.GetAllCategoriesAsync(),
-                NumberOfProductsFound = products.Count(),
+                NumberOfProductsFound = productFilteredList.Count(),
                 Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync()
             };              
 
@@ -184,9 +206,11 @@ namespace Webx.Web.Controllers
                 return NotFound();
             }
 
+            var productWithReviews = await _converterHelper.ToProductsWithReviewsViewModelList(products);
+
             var model = new ShopViewModel
             {
-                PagedListProduct = products.ToPagedList(1, 12),
+                PagedListProduct = productWithReviews.ToPagedList(1, 12),
                 SelectedCategory = category,
                 Categories = await _categoryRepository.GetAllCategoriesAsync(),
                 NumberOfProductsFound = products.Count(),
@@ -218,9 +242,11 @@ namespace Webx.Web.Controllers
                 return NotFound();
             }
 
+            var productWithReviews = await _converterHelper.ToProductsWithReviewsViewModelList(products);
+
             var model = new ShopViewModel
             {
-                PagedListProduct = products.ToPagedList(1, resultsPerPage),
+                PagedListProduct = productWithReviews.ToPagedList(1, resultsPerPage),
                 SelectedCategory = category,
                 ResultsPerPage = resultsPerPage,
                 NumberOfProductsFound = products.Count(),
@@ -264,16 +290,20 @@ namespace Webx.Web.Controllers
                 products = await _productRepository.GetAllProducts(category);
             }
 
+            var productWithReviews = await _converterHelper.ToProductsWithReviewsViewModelList(products);
+            var cart = await _productRepository.GetCurrentCartAsync();
+
             var model = new ShopViewModel
             {
-                PagedListProduct = products.ToPagedList(page?? 1, resultsPerPage),
+                PagedListProduct = productWithReviews.ToPagedList(page?? 1, resultsPerPage),
                 SelectedCategory = category,
                 ResultsPerPage = resultsPerPage,
                 Categories = await _categoryRepository.GetAllCategoriesAsync(),
                 NumberOfProductsFound = products.Count(),
                 Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync(),
                 MostExpensiveProductPrice = await _productRepository.MostExpensiveProductPriceAsync(),
-                WishList = await _productRepository.GetOrStartWishListAsync()
+                WishList = await _productRepository.GetOrStartWishListAsync(),
+                Cart = cart,
             };
 
             return View("Index", model);
@@ -282,30 +312,56 @@ namespace Webx.Web.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> ChangePriceRange(string category, int resultsPerPage, int minRange,int maxRange, string brandsFilter = null)
+        public async Task<IActionResult> ChangePriceRange(string category, int resultsPerPage, int minRange,int maxRange, string brandsFilter = null, string ratefilter = null)
         {
             var products = new List<Product>();
             var brandsList = new List<string>();
+            var rateList = new List<int>();
 
             if (brandsFilter != null && brandsFilter.Length > 2)
             {
                 brandsList = JsonConvert.DeserializeObject<List<string>>(brandsFilter);
                 products = await _productRepository.GetFilteredProducts(category, brandsList);
-                products = products.Where(p => p.Price >= minRange && p.Price <= maxRange).ToList();
+                products = products.Where(p => p.PriceWithDiscount >= minRange && p.PriceWithDiscount <= maxRange).ToList();
             }
             else
             {
                 products = await _productRepository.GetAllProducts(category);
-                products = products.Where(p => p.Price >= minRange && p.Price <= maxRange).ToList();
+                products = products.Where(p => p.PriceWithDiscount >= minRange && p.PriceWithDiscount <= maxRange).ToList();
+            }
+
+            var productWithReviews = await _converterHelper.ToProductsWithReviewsViewModelList(products);
+            List<ProductWithReviewsViewModel> productFilteredList = new List<ProductWithReviewsViewModel>();
+
+            if (ratefilter != null && ratefilter.Length > 2)
+            {
+                rateList = JsonConvert.DeserializeObject<List<int>>(ratefilter);
+                
+
+                if (rateList != null && rateList.Count > 0)
+                {
+                    foreach (var rate in rateList)
+                    {
+                        productFilteredList.AddRange(productWithReviews.Where(p => p.ProductOverallRating == rate));
+                    }
+                }
+                else
+                {
+                    productFilteredList = productWithReviews;
+                }
+            }
+            else
+            {
+                productFilteredList = productWithReviews;
             }
 
 
             var model = new ShopViewModel
             {
-                PagedListProduct = products.ToPagedList(1, resultsPerPage),
+                PagedListProduct = productFilteredList.ToPagedList(1, resultsPerPage),
                 SelectedCategory = category,
                 ResultsPerPage = resultsPerPage,
-                NumberOfProductsFound = products.Count(),
+                NumberOfProductsFound = productFilteredList.Count(),
                 Categories = await _categoryRepository.GetAllCategoriesAsync(),
                 Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync()
             };
@@ -343,10 +399,12 @@ namespace Webx.Web.Controllers
                 products = products.Where(p => p.Price >= minRange && p.Price <= maxRange).ToList();
             }
 
+            var productWithReviews = await _converterHelper.ToProductsWithReviewsViewModelList(products);
+
             var model = new ShopViewModel
             {
                 Product = product,
-                PagedListProduct = products.ToPagedList(1, resultsPerPage),
+                PagedListProduct = productWithReviews.ToPagedList(1, resultsPerPage),
                 SelectedCategory = category,
                 ResultsPerPage = resultsPerPage,
                 NumberOfProductsFound = products.Count(),
@@ -929,10 +987,43 @@ namespace Webx.Web.Controllers
                 return NotFound();
             }
 
+            model.CanReview = false;
+
+            if (this.User.Identity.IsAuthenticated)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+
+                if(user == null)
+                {
+                    return NotFound();
+                }
+                
+                var thisProductCustomerReview = await _productRepository.GetThisCustomerProdReviewAsync(user, product);
+
+                if(thisProductCustomerReview != null)
+                {
+                    model.CustomerReview = thisProductCustomerReview;
+                }
+
+                model.Customer = user;
+
+                bool canReview = await _orderRepository.CheckIfCanReviewAsync(user, product);
+
+                model.CanReview = canReview;
+            }
+
             model.Product = product;
             model.Stocks = await _stockRepository.GetAllStockWithStoresAsync();
             model.Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync();
             model.WishList = await _productRepository.GetOrStartWishListAsync();
+            
+            var reviews = await _productRepository.GetProductReviewsAsync(product.Id);
+            
+            if(reviews != null && reviews.Count > 0)
+            {
+                model.Reviews = reviews;
+                model.OveralRating = GetProductOveralRating(reviews);
+            }            
 
             if (User.Identity.IsAuthenticated)
             {
@@ -943,6 +1034,21 @@ namespace Webx.Web.Controllers
 
             return View(model);
 
+        }
+
+        private int GetProductOveralRating(List<ProductReview> reviews)
+        {
+            int rating = 0;
+            int reviewsCount = reviews.Count();
+
+            foreach(var review in reviews)
+            {
+                rating += review.Rating;
+            }
+
+            rating = rating / reviewsCount;
+
+            return rating;
         }
 
         [HttpGet]

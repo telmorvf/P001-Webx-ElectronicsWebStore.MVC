@@ -192,41 +192,41 @@
                     <div class="product-wrapper slide-6">
                         
 
-                            @foreach(var product in Model.HighlightedProducts)
+                            @foreach(var item in Model.HighlightedProducts)
                             {
                               <div>
                                     <div class="product-box">
                                         <div class="img-wrapper" style="max-width:260px;margin:auto;box-shadow: rgba(149, 157, 165, 0.4) 0px 8px 15px;">    
                                             @*#EEF1F6*@
-                                            <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@product.Id">
-                                                @if(product.ImageFirst != null && !string.IsNullOrEmpty(product.ImageFirst))
+                                            <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@item.Product.Id">
+                                                @if(item.Product.ImageFirst != null && !string.IsNullOrEmpty(item.Product.ImageFirst))
                                                 {
-                                                   <img src="@product.ImageFirst" class="bg-img blur-up lazyload" alt="">   
+                                                   <img src="@item.Product.ImageFirst" class="bg-img blur-up lazyload" alt="">   
                                                 }                                                                                      
                                             </a>
-                                            @if(product.Discount > 0)
+                                            @if(item.Product.Discount > 0)
                                             {
                                                 <div class="label-block">
                                                     <span class="label label-black">Promo</span>
-                                                    <span class="label label-theme">@Decimal.Truncate(product.Discount)% Off</span>
+                                                    <span class="label label-theme">@Decimal.Truncate(item.Product.Discount)% Off</span>
                                                 </div>
                                             }
                                     
                                             <div class="cart-wrap">
                                                 <ul>
                                                     <li>
-                                                        <a href="#" onclick="AddtoCart(@product.Id)" class="addtocart-btn" 
+                                                        <a href="#" onclick="AddtoCart(@item.Product.Id)" class="addtocart-btn" 
                                                             data-bs-toggle="modal" data-bs-target="#addtocart">
                                                             <i data-feather="shopping-bag"></i>
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="#" data-bs-toggle="modal" onclick="showHomeProductDetails(@product.Id)" data-bs-target="#quick-view">
+                                                        <a href="#" data-bs-toggle="modal" onclick="showHomeProductDetails(@item.Product.Id)" data-bs-target="#quick-view">
                                                             <i data-feather="eye"></i>
                                                         </a>
                                                     </li>                                                  
                                                     <li>                                                        
-                                                        <a href="#" onclick="AddtoWishlist('@product.Id')" >
+                                                        <a href="#" onclick="AddtoWishlist('@item.Product.Id')" >
                                                             <i data-feather="heart"></i>
                                                         </a>
                                                     </li>
@@ -235,32 +235,32 @@
                                         </div>
                                         <div class="product-details text-center">
                                             <h3 class="theme-color">
-                                                @product.PriceWithDiscount.ToString("C2")
-                                                @if(product.Discount > 0)
+                                                @item.Product.PriceWithDiscount.ToString("C2")
+                                                @if(item.Product.Discount > 0)
                                                 {
-                                                    <span class="font-light ml-1">@product.Price.ToString("C2")</span>
+                                                    <span class="font-light ml-1">@item.Product.Price.ToString("C2")</span>
                                                 }                                        
                                             </h3>
                                             @*;white-space:nowrap*@
-                                            <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@product.Id" class="font-default">
-                                                <h5 style="max-width:275px;overflow:hidden;text-overflow:ellipsis;">@product.Name</h5>
+                                            <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@item.Product.Id" class="font-default">
+                                                <h5 style="max-width:275px;overflow:hidden;text-overflow:ellipsis;">@item.Product.Name</h5>
                                             </a>
                                             <ul class="rating">
-                                                <li>
-                                                    <i class="fas fa-star theme-color"></i>
-                                                </li>
-                                                <li>
-                                                    <i class="fas fa-star theme-color"></i>
-                                                </li>
-                                                <li>
-                                                    <i class="fas fa-star theme-color"></i>
-                                                </li>
-                                                <li>
-                                                    <i class="fas fa-star theme-color"></i>
-                                                </li>
-                                                <li>
-                                                    <i class="fas fa-star"></i>
-                                                </li>
+                                                @for(int i = 1; i < 6; i++)
+                                                {
+                                                    @if(i <= @item.ProductOverallRating)
+                                                    {
+                                                         <li>
+                                                            <i class="fas fa-star theme-color"></i>
+                                                         </li>
+                                                    }
+                                                    else
+                                                    {
+                                                        <li>
+                                                            <i class="fas fa-star"></i>
+                                                        </li>
+                                                    }
+                                                }          
                                             </ul>
                                         </div>
                                     </div>

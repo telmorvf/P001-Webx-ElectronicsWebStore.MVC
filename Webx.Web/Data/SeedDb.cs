@@ -42,9 +42,61 @@ namespace Webx.Web.Data
             await AddAppointmentsAsync();      
             await AddOrdersAsync();
             await AddOrdersDetailsAsync();
+            await AddProductReviews();
 
         }
-       
+
+        private async Task AddProductReviews()
+        {
+            if (!_context.Reviews.Any())
+            {
+                Product[] products = new Product[3] {await _context.Products.Include(p => p.Category).Where(p => p.Category.Name == "Memory").FirstOrDefaultAsync(),
+                                                     await _context.Products.Include(p => p.Category).Where(p => p.Category.Name == "CPU Processors").FirstOrDefaultAsync(),
+                                                     await _context.Products.Include(p => p.Category).Where(p => p.Category.Name == "CPU Coolers").FirstOrDefaultAsync()
+                };
+                
+                var users = (List<User>)await _userHelper.GetAllCustomersUsersAsync();
+                Random r = new Random();
+                String[] Status = new string[2] { "Authorized", "Unauthorized"};
+
+
+                foreach(var product in products)
+                {
+                    foreach(var user in users)
+                    {
+                        _context.Reviews.Add(new ProductReview
+                        {
+                            Status = Status[r.Next(2)],
+                            Product = product,
+                            User = user,
+                            Rating = r.Next(1,6),
+                            ReviewDate = RandomDay(),
+                            WouldRecommend = r.Next(2) == 1, //atribui o resultado da expressão ao boleano, ou seja, se o random sair 0 a resposta é false, se for 1 é verdadeira
+                            ReviewText = RandomString(200),
+                            ReviewTitle = RandomString(25),                            
+                        });
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        private DateTime RandomDay()
+        {
+            Random gen = new Random();
+            DateTime start = new DateTime(2020, 1, 1);
+            int range = (DateTime.Today - start).Days;
+            return start.AddDays(gen.Next(range));
+        }
+
+        public static string RandomString(int length)
+        {
+            Random random = new Random();
+            const string chars = "ABC DEF GHI JKL MNO PQR STU VWXY Z abcdefghijklmnopqrstuvwxyz 0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
 
         private async Task AddOrdersDetailsAsync()
         {

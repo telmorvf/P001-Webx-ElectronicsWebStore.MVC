@@ -20,12 +20,14 @@ namespace Webx.Web.Controllers
         private readonly IUserHelper _userHelper;
         private readonly IConverterHelper _converterHelper;
         private readonly IStatusRepository _statusRepository;
+        private readonly IMailHelper _mailHelper;
 
         public OrderController(IOrderRepository orderRepository,
                                INotyfService toastNotification,
                                IUserHelper userHelper,
                                IConverterHelper converterHelper,                             
-                               IStatusRepository statusRepository
+                               IStatusRepository statusRepository,
+                               IMailHelper mailHelper
             )
         {
             _orderRepository = orderRepository;
@@ -33,15 +35,33 @@ namespace Webx.Web.Controllers
             _userHelper = userHelper;
             _converterHelper = converterHelper;
             _statusRepository = statusRepository;
+            _mailHelper = mailHelper;
         }
 
         public async Task<IActionResult> ViewAll()
         {
 
             //Verifica o estado das encomendas uma única vez ao dia e convert o estado das encomendas que se encontram em order Created para order shipped e posteriormente
-            //para order closed.
-            await _orderRepository.CheckAndConvertOrdersStatusAsync();
+            //para order closed. recebe também a lista de orders que passaram a closed para envio de email da review dos artigos;
+            var closedOrders = await _orderRepository.CheckAndConvertOrdersStatusAsync();
 
+            if(closedOrders != null)
+            {
+                foreach(Order order in closedOrders)
+                {                    
+                    string tokenLink = Url.Action("OrderDetails", "Account", new
+                    {
+                        id = order.Id                      
+                    }, protocol: HttpContext.Request.Scheme);
+
+                    Response response = await _mailHelper.SendRequestReviewEmail(tokenLink, order.Customer,order.Customer.Email);
+
+                    if (!response.IsSuccess)
+                    {
+                        _toastNotification.Warning("There was a problem sending one Request Review Email.",5);
+                    }
+                }
+            }
 
             IEnumerable<Order> orders;
             orders = await _orderRepository.GetAllOrdersAsync();
@@ -113,11 +133,34 @@ namespace Webx.Web.Controllers
                     }
                 }
 
+                if (order.Status.Name == "Order Closed" || order.Status.Name == "Appointment Done")
+                {
+                    string tokenLink = Url.Action("OrderDetails", "Account", new
+                    {
+                        id = order.Id
+                    }, protocol: HttpContext.Request.Scheme);
+
+                    Response response = await _mailHelper.SendRequestReviewEmail(tokenLink, order.Customer, order.Customer.Email);
+
+                    if (!response.IsSuccess)
+                    {
+                        _toastNotification.Warning("There was a problem sending one Request Review Email.", 5);
+                    }
+                    else
+                    {
+                        _toastNotification.Success($"A Request for a review as been sent to {order.Customer.Email}", 10);
+                    }
+                }
+
+
                 try
                 {
+                    
                     await _orderRepository.UpdateAsync(order);
-                    _toastNotification.Success("Order status updated!");
+                    _toastNotification.Success("Order status updated!");                                      
+
                     return RedirectToAction("ViewAll", "Order");
+
                 }
                 catch (Exception ex)
                 {

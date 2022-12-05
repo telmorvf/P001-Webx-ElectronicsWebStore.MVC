@@ -225,7 +225,6 @@ namespace Webx.Web.Controllers
                 return NotFound();
             }
 
-
             var model = new AddUserPasswordViewModel
             {
                 UserId = userId,

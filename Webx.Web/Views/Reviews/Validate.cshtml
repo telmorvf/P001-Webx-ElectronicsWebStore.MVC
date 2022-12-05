@@ -1,0 +1,313 @@
+﻿@model List<Webx.Web.Data.Entities.ProductReview>
+
+@{
+    ViewData["Title"] = "Validate Reviews";
+    Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
+
+    List<Object> toolbarItems = new List<Object>();
+    toolbarItems.Add("Search");
+}
+
+<style>
+ .e-grid .e-gridheader .e-sortfilter .e-headercelldiv, .e-grid .e-gridheader .e-stackedheadercelldiv {
+    padding: 0px !important;
+}
+
+    .ck-button {
+    /*margin:4px;*/
+    background-color:#EFEFEF;
+    /*border-radius:4px;*/
+    border:1px solid #D0D0D0;
+    overflow:auto;
+    width:40%;
+    justify-content:center;
+    align-items:center;
+    display:inline-flex;
+    margin-right:5%;
+    margin-left:5%;
+   
+    }
+
+    .ck-button label {
+        float:left;
+        width: 100%;
+        margin-bottom:0px !important;
+    }
+    
+    .ck-button label span {
+        text-align:center;
+        padding:3px 0px;
+        display:block;
+    }
+    
+    .ck-button label input {
+        position:absolute;
+        top:-20px;
+    }
+    
+    .ck-button input:checked + span {
+        background-color:#0163D2;
+        -webkit-box-shadow: inset 0px 0px 7px #3f3f3f;
+        -moz-box-shadow: inset 0px 0px 7px #3f3f3f;
+        box-shadow: inset 0px 0px 7px #3f3f3f;
+        color:#fff;
+    }
+
+    .buttonStyle{
+        width: 100%;
+        background-color: #0163D2;
+        color: white;
+        font-weight: 500;
+        border: none;
+        padding: 3px;
+        
+    }
+
+    .buttonStyle:hover{
+        -webkit-box-shadow: inset 0px 0px 7px #3f3f3f;
+        -moz-box-shadow: inset 0px 0px 7px #3f3f3f;
+        box-shadow: inset 0px 0px 7px #3f3f3f;
+    }
+
+    .e-dialog .e-dlg-header-content .e-btn.e-dlg-closeicon-btn{
+        position: absolute;
+        top: -30px;        
+        float: right;
+        left: 600px;  
+        background-color:unset !important;
+        color:white !important;
+    }
+
+    .e-dialog .e-dlg-header-content .e-btn.e-dlg-closeicon-btn:hover{
+        background-color:unset !important;
+        color:white !important;
+    }
+
+    .e-dialog .e-btn .e-btn-icon.e-icon-dlg-close {
+        color: white;
+    }
+
+    .e-dialog.e-draggable > .e-dlg-header-content {
+        background-color: #0163D2;
+        color: white;
+        border: 3px solid white;
+        justify-content: center;
+        display: flex;
+        align-items: center;
+    }
+
+    .e-dialog .e-dlg-header{
+        color: white;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+    }
+
+</style>
+
+<div class="container-fluid" style="min-height:25px;background-color: #f4f6f9;">
+   
+</div>
+
+<div id='container' class="container-fluid">
+
+    <!-- Tabela/Grid do syncfusion  -->
+    <ejs-grid id="grid" TValue="@ViewBag.Type" dataSource="Model" rowSelected="rowSelected" allowSelection="true" allowPaging="true" allowSorting="true" allowFiltering="false" toolbar="toolbarItems" >
+        <e-grid-selectionsettings type="Single" mode="Row"></e-grid-selectionsettings>
+        <e-grid-pagesettings pageSize="6"></e-grid-pagesettings>        
+        <e-grid-columns>            
+            <e-grid-column headerText="Product" template="#template" width="100px" textAlign="Center" allowEditing="false"></e-grid-column>
+            <e-grid-column field="Product.Name" width="0px"></e-grid-column>
+            <e-grid-column field="Product.Brand.Name" width="0px"></e-grid-column> > 
+            <e-grid-column field="Product.Category.Name" width="0px"></e-grid-column> 
+            <e-grid-column field="Id" isPrimaryKey="true" width="0px"></e-grid-column>       
+            <e-grid-column field="User.FullName" headerText="Customer" textAlign="Center" allowEditing="false" width="200px"></e-grid-column>
+            <e-grid-column field="ReviewTitle" headerText="Title" textAlign="Center" width="200px"></e-grid-column>
+            <e-grid-column headerText="Message" template="#message" textAlign="Center" width="200px"></e-grid-column>
+            <e-grid-column headerText="Rating" template="#rateTemplate" textAlign="Center" width="100px"></e-grid-column>
+            <e-grid-column headerText="Recommends" template="#recommend" textAlign="Center" width="150px"></e-grid-column>            
+            <e-grid-column headerText="Authorization" template="#authorize" textAlign="Center" width="150px"></e-grid-column>
+        </e-grid-columns>
+    </ejs-grid>
+            
+</div>
+
+
+<ejs-dialog id='dialog' visible="false" isModal="true" width="600px" showCloseIcon="true" allowDragging="true" overlayClick="onOverlayClick" target="#container">
+          <e-dialog-animationsettings effect="Fade" duration="400" delay="0"></e-dialog-animationsettings>
+          
+</ejs-dialog>
+
+<div class="container-fluid" style="min-height:25px;background-color: #f4f6f9;">
+   
+</div>
+
+
+<script id="template" type="text/x-template"> 
+    <a onclick="goToProductInfo(${Product.Id})">
+         <div class="image">          
+              <img style="max-width:100px;cursor: pointer;" src="${Product.ImageFirst}" />         
+         </div>
+    </a>
+</script>
+
+<script id="rateTemplate" type="text/x-template"> 
+    <p>   
+       ${Rating} <i class="fas fa-star" style="color: #FFB703"></i>          
+    </p>
+</script>
+
+<script id="recommend" type="text/x-template"> 
+    <p style="margin-bottom:0px !important">   
+       ${if(WouldRecommend)}
+            <i class="fas fa-check" style="color: #008000;font-size:20px"></i>
+            ${else}
+            <i class="far fa-times" style="color: #A60000;font-size:20px" ></i>
+       ${/if}
+    </p>
+</script>
+
+<script id="message" type="text/x-template"> 
+     <div style="margin-bottom:0px !important;display:inline-flex;width:100px;justify-content:center">   
+           <button class="buttonStyle" onclick="  showmessage(${Id})">View</button>
+     </div>
+</script>
+
+<script id="authorize" type="text/x-template"> 
+    <div style="margin-bottom:0px !important;display:inline-flex;width:130px">   
+       ${if(Status === "Authorized")}
+             <div class="ck-button">
+                <label>
+                    <input id="${Id}checkYes" type="checkbox" checked onclick="someFunction(true)" /><span>Yes</span> 
+                </label>
+             </div>
+             <div class="ck-button">
+                 <label>                                 
+                    <input id="${Id}checkNo" type="checkbox" onclick="someFunction(false)" /><span>No</span> 
+                 </label>
+             </div>          
+
+       ${else}
+            <div class="ck-button">
+                <label>
+                    <input id="${Id}checkYes" type="checkbox" onclick="someFunction(true)" /><span>Yes</span> 
+                </label>
+             </div>
+             <div class="ck-button">
+                 <label>                                 
+                    <input id="${Id}checkNo" type="checkbox" checked onclick="someFunction(false)" /><span>No</span> 
+                 </label>
+             </div>
+            
+       ${/if}
+    </div>
+</script>
+
+<script>
+    let id;
+    let records;
+
+    function rowSelected(args){
+       // obtem a linha da tabela selecionada     
+       var selectedrecords = this.getSelectedRecords();  
+       records = selectedrecords;
+       // atribui à variàvel id o valor do user id selecionado na tabela
+       id = selectedrecords[0].Id;   
+    }
+
+    function onOverlayClick() {
+            var dialog = document.getElementById("dialog").ej2_instances[0];              
+            dialog.hide();        
+    }; 
+
+    function showmessage(value) {
+        $.ajax({
+            url: '@Url.Action("GetReview","Reviews")',
+            type: 'POST',
+            dataType: 'json',
+            data: { id: value },
+            success: function (result) {
+                
+                if (result != null) {
+                    var dialog = document.getElementById("dialog").ej2_instances[0];
+
+                    dialog.header = result.reviewTitle;
+                    dialog.content = "<b>Message</b></br>" +result.reviewText;
+
+                    dialog.show();
+
+                }
+
+
+            },
+            error: function (ex) {
+                console.log(ex);
+            }
+        });
+    }
+
+    function someFunction(value) {
+        
+               
+        let checkboxYesId = id+"checkYes";
+        let checkboxNoId = id + "checkNo";
+
+        let checkboxNo = document.getElementById(checkboxNoId);
+        let checkboxYes = document.getElementById(checkboxYesId);
+
+        if (checkboxNo.checked === false && checkboxYes.checked === false) {
+            if(value === true){
+                checkboxYes.checked = true;
+            }
+            else{
+                checkboxNo.checked = true;
+            }
+        }
+        else {
+            if (value === true) {
+                if (checkboxYes.checked === true) {
+                    checkboxYes.checked = true;
+                    checkboxNo.checked = false;
+                }
+            }
+            else {
+                if (checkboxNo.checked === true) {
+                    checkboxNo.checked = true;
+                    checkboxYes.checked = false;
+                }
+            }
+        }
+                
+        let statusValue = "";
+
+        if (value === true) {
+            statusValue = "Authorized";
+        }
+        else {
+            statusValue = "Unauthorized";
+        }
+
+        $.ajax({
+            url: '@Url.Action("ChangeStatus","Reviews")',
+            type: 'POST',
+            dataType: 'json',
+            data: { id: id, status: statusValue },
+            success: function (result) {
+                console.log(result);
+            },
+            error: function (ex) {
+                console.log(ex);
+            }
+        });
+        
+    } 
+
+    function goToProductInfo(value){
+        
+        window.location.href = '/Products/ProductInfo?id=' + value;
+
+    }
+ 
+    
+
+</script>

@@ -600,5 +600,42 @@ namespace Webx.Web.Data.Repositories
                 };
             }
         }
+
+        public async Task<List<ProductReview>> GetProductReviewsAsync(int productId)
+        {
+            return await _context.Reviews.Include(r => r.User).Include(r => r.Product).Where(r => r.Product.Id == productId).ToListAsync();
+        }
+
+        public async Task<ProductReview> GetThisCustomerProdReviewAsync(User user, Product product)
+        {
+            return await _context.Reviews.Include(r => r.User).Where(r => r.User.Id == user.Id && r.Product.Id == product.Id).FirstOrDefaultAsync();
+        }
+
+        public async Task CreateReviewAsync(ProductReview review)
+        {
+            await _context.Reviews.AddAsync(review);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<ProductReview> GetProductReviewByIdAsync(int value)
+        {
+            return await _context.Reviews.Include(r => r.User).Include(r => r.Product).ThenInclude(p => p.Images).Where(r => r.Id == value).FirstOrDefaultAsync();
+        }
+
+        public async Task UpdateReviewAsync(ProductReview customerReview)
+        {
+            _context.Reviews.Update(customerReview);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<ProductReview>> GetAllReviewsAsync()
+        {
+            return await _context.Reviews
+                .Include(r => r.User)
+                .Include(r => r.Product).ThenInclude(p => p.Images)
+                .Include(r => r.Product).ThenInclude(p => p.Brand)
+                .Include(r => r.Product).ThenInclude(p => p.Category)
+                .ToListAsync();
+        }
     }
 }
