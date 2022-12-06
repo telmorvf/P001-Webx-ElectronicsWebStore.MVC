@@ -1,8 +1,552 @@
-﻿
+﻿@model Webx.Web.Models.ProductViewModel
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Dashboard";
+    //ViewData["BreadCrumb"] = "Edit Product";
     Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
 }
 
-<h1>Index</h1>
+<div class="container-fluid" style="padding: 13px">
+    <div class="row">
+        <div class=col-7>
 
+            <div class="row">
+                <div class="col-2"></div>
+
+                <!-- Registered Total Users -->
+                <div class="col-4">
+                    <div class="card" style="width:100%;" id="users" tabindex="-1">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="card-body">
+
+                                    <h1 class="card-title" style="font-weight:bold;font-size:xx-large">@ViewBag.totalUsers</h1>
+                                    <p class="card-text" style="text-align:left;">Registered Users</p>
+
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="card-icon"><i class="fa fa-users fa-3x" style="margin-top:25px"></i></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-1"></div>
+
+                <!-- Unshipped Orders -->
+                <div class="col-4">
+                    <div class="card" style="width:100%;" id="unshippedOrders" tabindex="-2">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="card-icon"><i class="fas fa-cash-register fa-3x" style="margin-left: 25px;margin-top:25px"></i></div>
+                            </div>
+                            <div class="col-8">
+                                <div class="card-body">
+                                    
+                                    <h1 class="card-title" style="font-weight:bold;font-size:xx-large">@ViewBag.UnshippedOrders</h1>
+                                    <p class="card-text" style="text-align:left;">Unshipped Orders</p>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-1"></div>
+            
+            </div>
+
+            <div class="row" style="margin-top:25px">
+                <div class="col-2"></div>
+                
+                <!-- Registered Brands -->
+                <div class="col-4">
+                    <div class="card" style="width:100%;" id="brands" tabindex="-3">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="card-body">
+                                    <h1 class="card-title" style="font-weight:bold;font-size:xx-large">@ViewBag.totalBrands</h1>
+                                    <p class="card-text" style="text-align:left;">Registered Products</p>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="card-icon"><i class="fas fa-shopping-bag fa-3x" style="margin-top:25px"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-1"></div>
+                
+                <!-- Most Sold Category -->
+                <div class="col-4">
+                    <div class="card" style="width:100%;" id="categories" tabindex="-4">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="card-icon"><i class="fa fa-chart-line fa-3x" style="margin-left: 25px;margin-top:25px"></i></div>
+                            </div>
+                            <div class="col-8">
+                                <div class="card-body">
+
+                                    <h1 class="card-title" style="font-weight:bold;font-size:larger">@ViewBag.mostSoldCategory</h1>
+                                    <p class="card-text" style="text-align:left;">Most sold category</p>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-1"></div>
+            </div>
+
+        </div>
+
+        <div class="col-4">
+
+            <div class="card" id="chart" style="width:100%;height:278px">
+                <!--Dynamic Charts do come here (Os gráficos dinãmicos entram aqui)-->
+            </div>
+
+        </div>
+        <div class="col-1"></div>
+
+    </div>
+
+
+    <div class="row" style="margin-top:25px">
+        <div class="col-1"></div>
+        <div class="col-10">
+            <ejs-chart id="yearly" title="Overall Year Sales" width="100%" height="100px" pointRender="pointRender">
+                <e-chart-tooltipsettings enable="true" header="${point.tooltip}" format="<b>${point.y}</b>">
+                </e-chart-tooltipsettings>
+                <e-chart-primaryxaxis valueType="Category"></e-chart-primaryxaxis>
+                <e-chart-primaryyaxis edgeLabelPlacement="Shift" labelFormat="{value} €">
+                    <e-linestyle width="0"></e-linestyle>
+                    <e-majorticklines width="0"></e-majorticklines>
+                </e-chart-primaryyaxis>
+                <e-series-collection>
+                    <e-series dataSource="ViewBag.OverallMonthsSales" tooltipMappingName="Month" yName="Sales" xName="Year" type="@Syncfusion.EJ2.Charts.ChartSeriesType.StackingBar">
+                        <e-series-marker visible="true" shape="Circle">
+
+                        </e-series-marker>
+                    </e-series>
+                </e-series-collection>
+            </ejs-chart>
+        </div>
+        <div class="col-1"></div>
+    </div>
+
+
+
+    <div class="row">
+
+        <div class="col-1"></div>
+
+        <div class="col-4">
+            <ejs-chart id="daily" title="Daily Sales" theme="Bootstrap" width="100%" height="350px">
+                <e-chart-tooltipsettings enable="true">
+                </e-chart-tooltipsettings>
+                <e-chart-chartarea>
+                    <e-chartarea-border width="0"></e-chartarea-border>
+                </e-chart-chartarea>
+                <e-chart-primaryxaxis valueType="Double" intervalType="Days" title="@ViewBag.MonthName" labelPlacement="OnTicks"></e-chart-primaryxaxis>
+                <e-chart-primaryyaxis edgeLabelPlacement="Shift" interval="300" title="Sales" labelFormat="{value} €">
+                    <e-majorticklines width="0"></e-majorticklines>
+                    <e-linestyle width="0"></e-linestyle>
+                </e-chart-primaryyaxis>
+                <e-series-collection>
+                    <e-series dataSource="ViewBag.MonthlySales" xName="Day" yName="Sales" opacity="1" width="10" type="@Syncfusion.EJ2.Charts.ChartSeriesType.Column"></e-series>
+
+                </e-series-collection>
+                <e-chart-rangecolorsettings>
+                    <e-chart-rangecolorsetting label="1€ to 500€" start="1" end="500" colors="ViewBag.color1"></e-chart-rangecolorsetting>
+                    <e-chart-rangecolorsetting label="501€ to 1200€" start="501" end="1200" colors="ViewBag.color2"></e-chart-rangecolorsetting>
+                    <e-chart-rangecolorsetting label="> 1201" start="1201" end="100000" colors="ViewBag.color3"></e-chart-rangecolorsetting>
+                </e-chart-rangecolorsettings>
+            </ejs-chart>
+        </div>
+
+        <div class="col-6">
+            <ejs-chart id="monthly" title="Overall Month Sales" theme="Bootstrap" width="100%" height="350px">
+                <e-chart-tooltipsettings enable="true"></e-chart-tooltipsettings>
+                <e-chart-chartarea>
+                    <e-chartarea-border width="0"></e-chartarea-border>
+                </e-chart-chartarea>
+                <e-chart-primaryxaxis valueType="Category" edgeLabelPlacement="Shift"></e-chart-primaryxaxis>
+                <e-chart-primaryyaxis edgeLabelPlacement="Shift" interval="1000" title="Sales" labelFormat="{value} €">
+                    <e-majorticklines width="0"></e-majorticklines>
+                    <e-linestyle width="0"></e-linestyle>
+                </e-chart-primaryyaxis>
+                <e-series-collection>
+                    <e-series dataSource="ViewBag.OverallMonthsSales" xName="Month" yName="Sales" opacity="1" width="2" type="@Syncfusion.EJ2.Charts.ChartSeriesType.Line">
+                        <e-series-marker visible="true" height="10" width="10"></e-series-marker>
+                    </e-series>
+
+                </e-series-collection>
+            </ejs-chart>
+        </div>
+
+        <div class="col-1"></div>
+
+    </div>
+
+
+
+    <style>
+
+        *:focus {
+            outline: 0;
+        }
+
+
+        .card {
+            /* box-shadow: 5px 5px 10px #e1e1e1; */
+            height: 100%;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+
+            .card:hover {
+                color: #e5e5e5;
+            }
+
+
+        #chart {
+            border-bottom-left-radius: 2em;
+            border-bottom-right-radius: 2em;
+            border-top-right-radius: 2em;
+            border-top-left-radius: 2em;
+        }
+
+        #users {
+            border-bottom-left-radius: 2em;
+            border-top-right-radius: 2em;
+            background: linear-gradient(to left, white 50%,#26282b 50%);
+            background-position: right;
+            transition: background-position 0.5s ease-out;
+            background-size: 200%;
+        }
+
+            #users.card:hover {
+                background-position: left;
+                transition: 0.5s ease-in;
+                cursor: pointer;
+            }
+
+            #users:focus {
+                background: #26282b;
+                color: #e5e5e5;
+            }
+
+        #unshippedOrders {
+            border-bottom-right-radius: 2em;
+            border-top-left-radius: 2em;
+            background: linear-gradient(to left, white 50%,#5a189a 50%);
+            background-position: right;
+            transition: background-position 0.5s ease-out;
+            background-size: 200%;
+        }
+
+            #unshippedOrders.card:hover {
+                background-position: left;
+                transition: 0.5s ease-in;
+                cursor: pointer;
+            }
+
+            #unshippedOrders:focus {
+                background: #5a189a;
+                color: #e5e5e5;
+            }
+
+        #brands {
+            border-bottom-right-radius: 2em;
+            border-top-left-radius: 2em;
+            background: linear-gradient(to left, white 50%,#e63946 50%);
+            background-position: right;
+            transition: background-position 0.5s ease-out;
+            background-size: 200%;
+        }
+
+            #brands.card:hover {
+                background-position: left;
+                transition: 0.5s ease-in;
+                cursor: pointer;
+            }
+
+            #brands:focus {
+                background: #e63946;
+                color: #e5e5e5;
+            }
+
+
+        #categories {
+            border-bottom-left-radius: 2em;
+            border-top-right-radius: 2em;
+            background: linear-gradient(to left, white 50%,#fca311 50%);
+            background-position: right;
+            transition: background-position 0.5s ease-out;
+            background-size: 200%;
+        }
+
+            #categories.card:hover {
+                background-position: left;
+                transition: 0.5s ease-in;
+                cursor: pointer;
+            }
+
+            #categories:focus {
+                background: #fca311;
+                color: #e5e5e5;
+                outline: hidden;
+            }
+
+    </style>
+
+
+
+
+
+
+
+
+    <script type="text/javascript">
+
+        debugger;
+        if (window.addEventListener) {
+            debugger;
+            window.addEventListener('load', function () {
+                var active = document.getElementById("categories");
+                active.click();
+                active.focus();
+
+                $(document).ready(function () {
+
+                    $('#brands').blur(function () {
+                        $(this).focus();
+                    });
+
+                    $('#users').blur(function () {
+                        $(this).focus();
+                    });
+
+                    $('#unshippedOrders').blur(function () {
+                        $(this).focus();
+                    });
+
+                    $('#categories').blur(function () {
+                        $(this).focus();
+                    });
+                });
+
+            }, false);
+        }
+        else if (window.attachEvent) {
+            window.attachEvent('onload', function () { document.getElementById("categories").click(); })
+        }
+
+
+        var colors = ["#277da1", "#577590", "#4d908e", "#43aa8b", "#90be6d", "#f9c74f", "#f9844a", "#f8961e", "#f3722c", "#f94144", "#012a4a", "#3c096c"];
+        pointRender = function (args) {
+            args.fill = colors[args.point.index];
+        };
+
+
+        document.getElementById("users").onclick = () => {
+
+            $('#brands').blur();
+            $('#categories').blur();
+            $('#unshippedOrders').blur();
+            $('#users').focus();
+
+            $("#chart").html("");
+
+
+            var div = document.getElementById("chart");
+            $.ajax({
+                url: '@Url.Action("GetChartUserData","AdminPanel")',
+                type: 'POST',
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+
+                    var chart1 = new ej.charts.Chart({
+                        primaryXAxis: {
+                            valueType: 'Category',
+                            title: 'Roles',
+                        },
+                        series: [{
+                            type: 'Column',
+                            pointColorMapping: "color",
+                            dataSource: data,
+                            xName: 'userRoleName',
+                            yName: 'quantity',
+                            marker: {
+                                visible: true,
+                                fill: '#26282b',
+                                border: { color: '#e5e5e5' },
+                            },
+                        }],
+                        title: 'Users per role',
+                        tooltip: { enable: true },
+                    });
+                    chart1.appendTo(div);
+                },
+                error: function (ex) {
+                    console.log("error" + ex);
+                }
+            });
+        }
+
+
+        document.getElementById("unshippedOrders").onclick = () => {
+
+
+            $('#brands').blur();
+            $('#categories').blur();
+            $('#users').blur();
+            $('#unshippedOrders').focus();
+
+            $("#chart").html("");
+
+            var div = document.getElementById("chart");
+
+            $.ajax({
+                url: '@Url.Action("GetUnshippedOrdersChart","AdminPanel")',
+                type: 'POST',
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+
+                    var chart2 = new ej.charts.AccumulationChart({
+                        series: [{
+                            type: 'Pie',
+                            pointColorMapping: "color",
+                            dataSource: data,
+                            xName: 'status',
+                            yName: 'quantity',
+                            radius: '80%',
+                            dataLabel:
+                            {
+                                visible: true, position: 'Outside', name: 'quantity'
+                            },
+                        }],
+                        title: 'Current month orders overall status',
+                        tooltip: { enable: true },
+                    });
+                    chart2.appendTo(div);
+                },
+                error: function (ex) {
+                    console.log("error" + ex);
+                }
+            });
+        }
+
+        document.getElementById("brands").onclick = () => {
+
+            $('#users').blur();
+            $('#categories').blur();
+            $('#unshippedOrders').blur();
+            $('#brands').focus();
+
+            $("#chart").html("");
+
+            var div = document.getElementById("chart");
+            $.ajax({
+                url: '@Url.Action("GetBrandsChartData","AdminPanel")',
+                type: 'POST',
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+
+                    var chart1 = new ej.charts.AccumulationChart({
+
+                        series:
+                            [{
+                                type: 'Pie',
+                                pointColorMapping: "color",
+                                dataSource: data,
+                                xName: 'brand',
+                                yName: 'quantity',
+                                radius: '70%',
+                                innerRadius: '40%',
+                                explode: false,
+                                explodeOffset: '10%',
+                                startAngle: 0,
+                                endAngle: 360,
+                                dataLabel:
+                                {
+                                    visible: true, position: 'Outside', name: 'percentage'
+                                },
+
+                            },
+                            ],
+                        title: 'Products per brand %',
+                        tooltip: { enable: true },
+
+                    });
+                    chart1.appendTo(div);
+                },
+                error: function (ex) {
+                    console.log("error" + ex);
+                }
+            });
+        }
+
+        document.getElementById("categories").onclick = () => {
+
+
+            $('#brands').blur();
+            $('#users').blur();
+            $('#unshippedOrders').blur();
+            $('#categories').focus();
+
+            $("#chart").html("");
+            var div = document.getElementById("chart");
+            $.ajax({
+                url: '@Url.Action("GetCategoriesChartData","AdminPanel")',
+                type: 'POST',
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+
+                    var chart1 = new ej.charts.Chart({
+                        primaryXAxis: {
+                            valueType: 'Category',
+                        },
+                        series: [{
+                            type: 'Column',
+                            pointColorMapping: "color",
+                            dataSource: data,
+                            xName: 'name',
+                            yName: 'quantity',
+                            marker: {
+                                visible: true,
+                            },
+                            cornerRadius: { topLeft: 25, topRight: 25 },
+                        }],
+                        title: 'Top 5 categories sold',
+                        tooltip: { enable: true },
+                    });
+                    chart1.appendTo(div);
+                },
+                error: function (ex) {
+                    console.log("error" + ex);
+                }
+            });
+        }
+
+
+    </script>
+
+
+
+
+
+
+
+
+
+</div>

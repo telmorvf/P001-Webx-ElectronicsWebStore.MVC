@@ -8,10 +8,10 @@
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    
+
     <!-- Font Awesome -->
     <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@4cac1a6/css/all.css" rel="stylesheet" type="text/css" />
-    
+
     <!-- Theme style -->
     <link rel="stylesheet" href="~/assets/adminlte/css/adminlte.min.css">
 
@@ -23,8 +23,8 @@
     <!-- bootstrap css -->
     <link id="rtl-link" rel="stylesheet" type="text/css" href="~/assets/css/vendors/bootstrap.css">
 
-     <!-- FullCalendar-->
-    <link  rel="stylesheet" href="~/css/main.css"> 
+    <!-- FullCalendar-->
+    <link rel="stylesheet" href="~/css/main.css">
     <script src='~/js/main.js'></script>
 
 
@@ -210,55 +210,55 @@
             </li>
             <li class="nav-item">
 
-               <a asp-area="" asp-action="" asp-controller="" class="nav-link">
-                 <i class="nav-icon fas fa-shopping-bag"></i>
-                 <p>
-                   Manage Products
-                   <i class="fas fa-angle-left right"></i>
-                 </p>
-               </a>
-               <ul class="nav nav-treeview">
+            <a asp-area="" asp-action="" asp-controller="" class="nav-link">
+            <i class="nav-icon fas fa-shopping-bag"></i>
+            <p>
+            Manage Products
+            <i class="fas fa-angle-left right"></i>
+            </p>
+            </a>
+            <ul class="nav nav-treeview">
 
-                    <li class="nav-item">
-                      <a asp-area="" asp-action="" asp-controller="" class="nav-link">
-                        <i class="far fa-eye nav-icon text-info"></i>
-                        <p>View All Products</p>
-                      </a>
-                    </li>
+            <li class="nav-item">
+            <a asp-area="" asp-action="" asp-controller="" class="nav-link">
+            <i class="far fa-eye nav-icon text-info"></i>
+            <p>View All Products</p>
+            </a>
+            </li>
 
-                    <li class="nav-item">
-                      <a asp-area="" asp-action="" asp-controller="" class="nav-link">
-                        <i class="fas fa-plus-circle nav-icon text-info"></i>
-                        <p>Add Product</p>
-                      </a>
-                    </li>
+            <li class="nav-item">
+            <a asp-area="" asp-action="" asp-controller="" class="nav-link">
+            <i class="fas fa-plus-circle nav-icon text-info"></i>
+            <p>Add Product</p>
+            </a>
+            </li>
 
-                    <li class="nav-item">
-                      <a asp-area="" asp-action="" asp-controller="" class="nav-link">
-                        <i class="fas fa-copyright nav-icon text-info"></i>
-                        <p>Products Brands</p>
-                      </a>
-                    </li>
+            <li class="nav-item">
+            <a asp-area="" asp-action="" asp-controller="" class="nav-link">
+            <i class="fas fa-copyright nav-icon text-info"></i>
+            <p>Products Brands</p>
+            </a>
+            </li>
 
 
-                    <li class="nav-item">
-                      <a asp-area="" asp-action="" asp-controller="" class="nav-link">
-                        <i class="fas fa-cubes nav-icon text-info"></i>
-                        <p>Stocks</p>
-                      </a>
-                    </li>
-               </ul>
-             </li>
+            <li class="nav-item">
+            <a asp-area="" asp-action="" asp-controller="" class="nav-link">
+            <i class="fas fa-cubes nav-icon text-info"></i>
+            <p>Stocks</p>
+            </a>
+            </li>
+            </ul>
+            </li>
 
 
 
             <li class="nav-item">
-               <a asp-area="" asp-action="" asp-controller="" class="nav-link">
-                 <i class="nav-icon fas fa-store"></i>
-                 <p>
-                   Manage Stores                
-                 </p>
-               </a>            
+            <a asp-area="" asp-action="" asp-controller="" class="nav-link">
+            <i class="nav-icon fas fa-store"></i>
+            <p>
+            Manage Stores
+            </p>
+            </a>
 
             <a class="nav-link" data-widget="fullscreen" href="#" role="button">
             <i class="fas fa-expand-arrows-alt"></i>
@@ -282,13 +282,36 @@
             <!-- Sidebar -->
             <div class="sidebar">
                 <!-- Sidebar user (optional) -->
+                <div class="user-panel mt-3 pb-1 mb-3 d-flex">
+                
+                    <div class="row">
+                    
+                        <div>
+                        <div class="image">
+                            <img src="" id="userProfilePicture" class="img-circle elevation-2 img-scale-down" alt="User Image" style="height:40px; width:40px">
+                        </div>
 
-                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                    <div class="image">
-                        <img src="" id="userProfilePicture" class="img-circle elevation-2 img-scale-down" alt="User Image" style="height:40px; width:40px">
-                    </div>
-                    <div class="info">
-                        <a asp-action="ViewUser" asp-controller="Account" class="d-block" id="userFullName"></a>
+                        <div class="info">
+                            <a asp-action="ViewUser" asp-controller="Account" class="d-block" id="userFullName"></a>
+                        </div>
+                        </div>
+
+                        <!-- USER ROLE -->
+                         <div class="text-center">
+                            @if (this.User.IsInRole("Admin"))
+                            {
+                                <h6 style="color: white; padding: 15px">ADMIN</h6>
+                            }
+                            @if (this.User.IsInRole("Product Manager"))
+                            {
+                                <h6 style="color: white; padding: 15px">PRODUCT MANAGER</h6>
+                            }
+                            @if (this.User.IsInRole("Technician"))
+                            {
+                                <h6 style="color: white; padding: 15px">TECHNICIAN</h6>
+                            }
+                         </div>
+
                     </div>
                 </div>
 
@@ -317,197 +340,208 @@
                                 </p>
                             </a>
                         </li>
+                        @if ((this.User.Identity.IsAuthenticated) && ((this.User.IsInRole("Admin")) || (this.User.IsInRole("Product Manager")) || (this.User.IsInRole("Technician"))))
+                        {
+                            <li class="nav-item">
+                                <a asp-area="" asp-action="ViewAll" asp-controller="Order" class="nav-link">
+                                    <i class="nav-icon fas fa-cash-register"></i>
+                                    <p>
+                                        Orders
+                                        <span class="badge badge-info right"></span>
+                                    </p>
+                                </a>
+                            </li>
 
-                        <li class="nav-item">
-                            <a asp-area="" asp-action="ViewAll" asp-controller="Order" class="nav-link">
-                                <i class="nav-icon fas fa-cash-register"></i>
-                                <p>
-                                    Orders
-                                    <span class="badge badge-info right"></span>
-                                </p>
-                            </a>
-                        </li>
+                            <li class="nav-item">
+                                <a asp-area="" asp-action="Index" asp-controller="Appointment" class="nav-link">
+                                    <i class="nav-icon fas fa-calendar-check"></i>
+                                    <p>
+                                        Appointments
+                                        <span class="right badge badge-danger"></span>
+                                    </p>
+                                </a>
+                            </li>
+                        }
+                        @if ((this.User.Identity.IsAuthenticated) && (this.User.IsInRole("Admin")) || (this.User.IsInRole("Technician")))
+                        {
+                            <li class="nav-item">
+                                <a asp-area="" asp-action="" asp-controller="" class="nav-link">
+                                    <i class="nav-icon fas fa-users"></i>
+                                    <p>
+                                        Customers
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a asp-area="" asp-action="ViewAll" asp-controller="Customer" class="nav-link">
+                                            <i class="far fa-eye nav-icon text-info"></i>
+                                            <p>View All</p>
+                                        </a>
+                                    </li>
 
-                        <li class="nav-item">
-                            <a asp-area="" asp-action="Index" asp-controller="Appointment" class="nav-link">
-                                <i class="nav-icon fas fa-calendar-check"></i>
-                                <p>
-                                    Appointments
-                                    <span class="right badge badge-danger"></span>
-                                </p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a asp-area="" asp-action="" asp-controller="" class="nav-link">
-                                <i class="nav-icon fas fa-users"></i>
-                                <p>
-                                    Customers
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-area="" asp-action="ViewAll" asp-controller="Customer" class="nav-link">
-                                        <i class="far fa-eye nav-icon text-info"></i>
-                                        <p>View All</p>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a asp-area="" asp-action="Create" asp-controller="Customer" class="nav-link">
-                                        <i class="fas fa-plus-circle nav-icon text-info"></i>
-                                        <p>Add Customer</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li class="nav-item">
-                            <a asp-area="" asp-action="" asp-controller="" class="nav-link">
-                                <i class="nav-icon fas fa-comment-dollar"></i>
-                                <p>
-                                    Invoices
-                                </p>
-                            </a>
-                        </li>
-
-                        <li class="nav-header">
-                            UTILITIES
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon far fa-envelope"></i>
-                                <p>
-                                    Mailbox
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="https://mail.google.com/mail/u/pitstopautoshoplisbon@gmail.com" target="_blank" class="nav-link">
-                                        <i class="fas fa-inbox nav-icon text-info"></i>
-                                        <p>Go to Gmail</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="" asp-action="" asp-controller="" class="nav-link">
-                                        <i class="fas fa-bullhorn nav-icon text-info"></i>
-                                        <p>Send Announcement</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-
-
+                                    <li class="nav-item">
+                                        <a asp-area="" asp-action="Create" asp-controller="Customer" class="nav-link">
+                                            <i class="fas fa-plus-circle nav-icon text-info"></i>
+                                            <p>Add Customer</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        @if ((this.User.Identity.IsAuthenticated) && ((this.User.IsInRole("Admin")) || (this.User.IsInRole("Product Manager")) || (this.User.IsInRole("Technician"))))
+                        {
+                            <li class="nav-item">
+                                <a asp-area="" asp-action="" asp-controller="" class="nav-link">
+                                    <i class="nav-icon fas fa-comment-dollar"></i>
+                                    <p>
+                                        Invoices
+                                    </p>
+                                </a>
+                            </li>
 
                         <li class="nav-header">
-                            MANAGEMENT
-                        </li>
+                                UTILITIES
+                            </li>
 
-                        <li class="nav-item">
-                            <a asp-area="" asp-action="" asp-controller="" class="nav-link">
-                                <i class="nav-icon fas fa-shopping-bag"></i>
-                                <p>
-                                    Manage Products
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon far fa-envelope"></i>
+                                    <p>
+                                        Mailbox
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="https://mail.google.com/mail/u/pitstopautoshoplisbon@gmail.com" target="_blank" class="nav-link">
+                                            <i class="fas fa-inbox nav-icon text-info"></i>
+                                            <p>Go to Gmail</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a asp-area="" asp-action="" asp-controller="" class="nav-link">
+                                            <i class="fas fa-bullhorn nav-icon text-info"></i>
+                                            <p>Send Announcement</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
 
-                                <li class="nav-item">
-                                    <a asp-area="" asp-action="ViewAll" asp-controller="Products" asp-route-isService="false" class="nav-link">
-                                        <i class="fas fa-shopping-bag nav-icon text-info"></i>
-                                        <p>View All Products</p>
-                                    </a>
-                                </li>
+                                                    }
+                        @if ((this.User.Identity.IsAuthenticated) && ((this.User.IsInRole("Admin")) || (this.User.IsInRole("Product Manager")) || (this.User.IsInRole("Technician"))  ))
+                        {
 
-                                <li class="nav-item">
-                                    <a asp-area="" asp-action="ViewAll" asp-controller="Products" asp-route-isService="true" class="nav-link">
-                                        <i class="far fa-eye nav-icon text-info"></i>
-                                        <p>View All Services</p>
-                                    </a>
-                                </li>
+                            <li class="nav-header">
+                                MANAGEMENT
+                            </li>
 
-                                <li class="nav-item">
-                                    <a asp-area="" asp-action="ViewAll" asp-controller="Brand" class="nav-link">
-                                        <i class="fas fa-scrubber nav-icon text-info"></i>
-                                        <p>Products Brands</p>
-                                    </a>
-                                </li>
+                            <li class="nav-item">
+                                <a asp-area="" asp-action="" asp-controller="" class="nav-link">
+                                    <i class="nav-icon fas fa-shopping-bag"></i>
+                                    <p>
+                                        Manage Products
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
 
-                                <li class="nav-item">
-                                    <a asp-area="" asp-action="ViewAll" asp-controller="Category" class="nav-link">
-                                        <i class="fas fa-copyright nav-icon text-info"></i>
-                                        <p>Products Categories</p>
-                                    </a>
-                                </li>
+                                    <li class="nav-item">
+                                        <a asp-area="" asp-action="ViewAll" asp-controller="Products" asp-route-isService="false" class="nav-link">
+                                            <i class="fas fa-shopping-bag nav-icon text-info"></i>
+                                            <p>View All Products</p>
+                                        </a>
+                                    </li>
 
-                            </ul>
-                        </li>
+                                    <li class="nav-item">
+                                        <a asp-area="" asp-action="ViewAll" asp-controller="Products" asp-route-isService="true" class="nav-link">
+                                            <i class="far fa-eye nav-icon text-info"></i>
+                                            <p>View All Services</p>
+                                        </a>
+                                    </li>
+                                        <li class="nav-item">
+                                            <a asp-area="" asp-action="ViewAll" asp-controller="Brand" class="nav-link">
+                                                <i class="fas fa-scrubber nav-icon text-info"></i>
+                                                <p>Products Brands</p>
+                                            </a>
+                                        </li>
 
-                        <li class="nav-item">
-                        <!--           Stock Alerts            -->
-                            <a asp-area="" asp-action="" asp-controller="" class="nav-link">
-                                <i class="nav-icon fas fa-cubes nav-icon"></i>
-                                    <p>Manage Stock </p>
-                                        <i class="fas fa-angle-left right"> </i>
-                                <span class="badge badge-pill badge-danger" hidden="hidden" id="stockCountAll"> 0</span>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                
-                                <li class="nav-item">
-                                    <a asp-area="" asp-action="ViewAll" asp-controller="Stock" class="nav-link">
-                                        <i class="fas fa-cubes nav-icon text-info"> </i>
-                                        <p>Stocks</p>
-                                    </a>
-                                </li>
-
+                                        <li class="nav-item">
+                                            <a asp-area="" asp-action="ViewAll" asp-controller="Category" class="nav-link">
+                                                <i class="fas fa-copyright nav-icon text-info"></i>
+                                                <p>Products Categories</p>
+                                            </a>
+                                        </li>
+                                </ul>
+                            </li>
+                        }
+                        @if ((this.User.Identity.IsAuthenticated) && ((this.User.IsInRole("Admin")) || (this.User.IsInRole("Product Manager")) || (this.User.IsInRole("Technician"))))
+                        {
+                            <li class="nav-item">
                                 <!--           Stock Alerts            -->
-                                <li class="nav-item">
-                                    <a asp-area="" asp-action="ViewAllAlert" asp-controller="Stock" class="nav-link">
-                                        <i class="fas fa-cubes nav-icon text-info"> </i> 
-                                         <p>Stock Alerts </p><span class="badge badge-pill badge-danger" hidden="hidden" id="stockCount"> 0 </span>
-                                    </a>
-                                </li>
+                                <a asp-area="" asp-action="" asp-controller="" class="nav-link">
+                                    <i class="nav-icon fas fa-cubes nav-icon"></i>
+                                    <p>Manage Stock </p>
+                                    <i class="fas fa-angle-left right"> </i>
+                                    <span class="badge badge-pill badge-danger" hidden="hidden" id="stockCountAll"> 0</span>
+                                </a>
+                                <ul class="nav nav-treeview">
 
-                            </ul>
-                        </li>
+                                    <li class="nav-item">
+                                        <a asp-area="" asp-action="ViewAll" asp-controller="Stock" class="nav-link">
+                                            <i class="fas fa-cubes nav-icon text-info"> </i>
+                                            <p>Stocks</p>
+                                        </a>
+                                    </li>
 
-                        <li class="nav-item">
-                            <a asp-area="" asp-action="ViewAll" asp-controller="Store" asp-route-isActive="true" class="nav-link">
-                                <i class="nav-icon fas fa-store"></i>
-                                <p>
-                                    Manage Stores
-                                </p>
-                            </a>
-                        </li>
+                                    <!--           Stock Alerts            -->
+                                    <li class="nav-item">
+                                        <a asp-area="" asp-action="ViewAllAlert" asp-controller="Stock" class="nav-link">
+                                            <i class="fas fa-cubes nav-icon text-info"> </i>
+                                            <p>Stock Alerts </p><span class="badge badge-pill badge-danger" hidden="hidden" id="stockCount"> 0 </span>
+                                        </a>
+                                    </li>
 
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-users-cog"></i>
-                                <p>
-                                    Manage Employees
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-area="" asp-action="ViewAll" asp-controller="Employee" asp-route-isActive="true" class="nav-link">
-                                        <i class="far fa-eye nav-icon text-info"></i>
-                                        <p>View All</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="" asp-action="Create" asp-controller="Employee" class="nav-link">
-                                        <i class="fas fa-plus-circle nav-icon text-info"></i>
-                                        <p>Add Employee</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-
+                                </ul>
+                            </li>
+                        }
+                        @if ((this.User.Identity.IsAuthenticated) && ((this.User.IsInRole("Admin")) || (this.User.IsInRole("Product Manager")) || (this.User.IsInRole("Technician"))))
+                        {
+                            <li class="nav-item">
+                                <a asp-area="" asp-action="ViewAll" asp-controller="Store" asp-route-isActive="true" class="nav-link">
+                                    <i class="nav-icon fas fa-store"></i>
+                                    <p>
+                                        Manage Stores
+                                    </p>
+                                </a>
+                            </li>
+                        }
+                        @if ((this.User.Identity.IsAuthenticated) && (this.User.IsInRole("Admin")))
+                        {
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-users-cog"></i>
+                                    <p>
+                                        Manage Employees
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a asp-area="" asp-action="ViewAll" asp-controller="Employee" asp-route-isActive="true" class="nav-link">
+                                            <i class="far fa-eye nav-icon text-info"></i>
+                                            <p>View All</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a asp-area="" asp-action="Create" asp-controller="Employee" class="nav-link">
+                                            <i class="fas fa-plus-circle nav-icon text-info"></i>
+                                            <p>Add Employee</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
                     </ul>
                     <div class="user-panel"></div>
                     <ul class="nav nav-pills nav-sidebar flex-column">

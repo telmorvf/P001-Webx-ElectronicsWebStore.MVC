@@ -33,7 +33,7 @@ namespace Webx.Web.Controllers
             _converterHelper = converterHelper;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Product Manager, Technician")]
         public async Task<IActionResult> ViewAll(bool isActive)
         {
             IEnumerable<Store> stores;
@@ -194,7 +194,7 @@ namespace Webx.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Product Manager, Technician")]
         [Route("Store/StoreDetails")]
         public async Task<JsonResult> StoreDetails(int? Id)
         {
@@ -254,7 +254,7 @@ namespace Webx.Web.Controllers
             return Json(result);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Product Manager, Technician")]
         [HttpPost]
         [Route("Store/ToastNotification")]
         public JsonResult ToastNotification(string message, string type)

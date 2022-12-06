@@ -17,9 +17,14 @@
     toolbarItems.Add("Search");
 
     toolbarItems.Add(new { text = "Info", tooltipText = "Store Details", prefixIcon = "e-expand", id = "infoStore" });
-    toolbarItems.Add(new { text = "Edit", tooltipText = "Edit Store", prefixIcon = "e-expand", id = "editStore" });
-    toolbarItems.Add(new { text = "Delete", tooltipText = "Delete Store", prefixIcon = "e-expand", id = "deleteStore" });
-    toolbarItems.Add(new { text = "Create", tooltipText = "Create Store", prefixIcon = "e-expand", id = "createStore" });
+    
+    @if ((this.User.Identity.IsAuthenticated) && (this.User.IsInRole("Admin"))){
+        toolbarItems.Add(new { text = "Edit", tooltipText = "Edit Store", prefixIcon = "e-expand", id = "editStore" });
+        toolbarItems.Add(new { text = "Delete", tooltipText = "Delete Store", prefixIcon = "e-expand", id = "deleteStore" });
+        toolbarItems.Add(new { text = "Create", tooltipText = "Create Store", prefixIcon = "e-expand", id = "createStore" });
+    }
+    
+
 
     var yesButton = new ButtonModel() { content = "Yes", cssClass = "e-flat" };
     var noButton = new ButtonModel() { content = "No", cssClass = "e-flat" };
