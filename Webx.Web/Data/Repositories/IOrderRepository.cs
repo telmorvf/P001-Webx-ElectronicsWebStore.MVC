@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Webx.Web.Data.Entities;
 using Webx.Web.Helpers;
 using Webx.Web.Models;
+using Webx.Web.Models.AdminPanel;
 
 namespace Webx.Web.Data.Repositories
 {
@@ -24,5 +25,10 @@ namespace Webx.Web.Data.Repositories
         Task<List<Order>> CheckAndConvertOrdersStatusAsync();
         Task<List<Order>> GetAllOrdersWithAppointmentsAsync();
         Task<bool> CheckIfCanReviewAsync(User user, Product product);
+        Task<int> GetUnshippedOrdersCount();
+        Task<List<OrderChartViewModel>> GetUnshippedOrdersChartAsync(int month);
+        Task<List<ChartSalesViewModel>> GetMonthlySales(int month);
+        Task<List<ChartSalesViewModel>> GetYearSalesByMonthAsync(int year);
+
     }
 }

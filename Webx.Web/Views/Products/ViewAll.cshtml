@@ -11,15 +11,24 @@
     {
         toolbarItems.Add(new { text = "Show Products", tooltipText = "Show Products", prefixIcon = "e-expand", id = "showProducts", align = "Right" });
         toolbarItems.Add(new { text = "Info Service", tooltipText = "Service Details", prefixIcon = "e-expand", id = "infoProduct" });
-        toolbarItems.Add(new { text = "Edit Service", tooltipText = "Edit Service", prefixIcon = "e-expand", id = "editService" });
-        toolbarItems.Add(new { text = "Create Service", tooltipText = "Create Service", prefixIcon = "e-expand", id = "createService" });
+
+        @if ((this.User.Identity.IsAuthenticated) && (this.User.IsInRole("Admin")))
+        {
+            toolbarItems.Add(new { text = "Edit Service", tooltipText = "Edit Service", prefixIcon = "e-expand", id = "editService" });
+            toolbarItems.Add(new { text = "Create Service", tooltipText = "Create Service", prefixIcon = "e-expand", id = "createService" });
+        }
+
     }
     else
     {
         toolbarItems.Add(new { text = "Show Services", tooltipText = "Show Services", prefixIcon = "e-expand", id = "showServices", align = "Right" });
         toolbarItems.Add(new { text = "Info Product", tooltipText = "Product Details", prefixIcon = "e-expand", id = "infoProduct" });
-        toolbarItems.Add(new { text = "Edit Product", tooltipText = "Edit Product", prefixIcon = "e-expand", id = "editProduct" });
-        toolbarItems.Add(new { text = "Create Product", tooltipText = "Create Product", prefixIcon = "e-expand", id = "createProduct" });
+
+        @if ((this.User.Identity.IsAuthenticated) && ((this.User.IsInRole("Admin")) || (this.User.IsInRole("Product Manager"))))
+        {
+            toolbarItems.Add(new { text = "Edit Product", tooltipText = "Edit Product", prefixIcon = "e-expand", id = "editProduct" });
+            toolbarItems.Add(new { text = "Create Product", tooltipText = "Create Product", prefixIcon = "e-expand", id = "createProduct" });
+        }
     }
     toolbarItems.Add("Search");
 

@@ -1,16 +1,17 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Syncfusion.EJ2.Linq;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Policy;
 using System.Threading.Tasks;
 using Webx.Web.Data.Entities;
 using Webx.Web.Helpers;
 using Webx.Web.Models;
-
+using Webx.Web.Models.AdminPanel;
 
 namespace Webx.Web.Data.Repositories
 {
@@ -118,6 +119,15 @@ namespace Webx.Web.Data.Repositories
             return comboList.OrderBy(l => l.Text);
         }
 
+        public async Task<int> GetUnshippedOrdersCount()
+        {
+            var unshippedOrders = await _context.Orders
+                .Include(o => o.Status)
+                .Where(o => o.Status.Name != "Order Closed" && o.Status.Name != "Order Shipped" && o.Status.Name != "Pending Appointment" && o.Status.Name != "Ongoing")
+                .ToListAsync();
+
+            return unshippedOrders.Count;
+        }
 
         public async Task<List<OrderWithDetailsViewModel>> GetAllCustomerOrdersAsync(string customerId)
         {
@@ -233,6 +243,7 @@ namespace Webx.Web.Data.Repositories
             return await _context.Orders.Include(o => o.Appointment).Include(o => o.Status).Include(o => o.Store).Where(o => o.Appointment != null).ToListAsync();
         }
 
+
         public async Task<bool> CheckIfCanReviewAsync(User user, Product product)
         {
             var userOrders = await _context.Orders.Include(o => o.Status).Where(o => o.Customer.Id == user.Id && o.Status.Name == "Order Closed" || o.Customer.Id == user.Id && o.Status.Name == "Appointment Done").ToListAsync();
@@ -251,6 +262,94 @@ namespace Webx.Web.Data.Repositories
             }
 
             return false;
+        }
+
+
+        public async Task<List<OrderChartViewModel>> GetUnshippedOrdersChartAsync(int month)
+        {
+            List<OrderChartViewModel> list = new List<OrderChartViewModel>();
+            
+            string[] status = new string[4] { "Order Created", "Appointment Created", "Order Shipped", "Order Closed" };
+
+            string[] color = new string[4] { "#990000", "#FFA500", "#9C3BB0", "#9EB23B" };
+            int id = 0;
+            
+            foreach (string statusItem in status)
+            {
+                var unshippedOrders = await _context.Orders
+                    .Include(o => o.Status)
+                    .Where(o => o.Status.Name == statusItem && o.OrderDate.Month == month && o.OrderDate.Year == DateTime.UtcNow.Year)
+                    .ToListAsync();
+
+                var newStatusItem = "";
+
+                if (statusItem != "Pending Appointment" || statusItem != "Ongoing")
+                {
+                    if (statusItem == "Appointment Done") newStatusItem = "Order Closed";
+                    else if (statusItem == "Appointment Created") newStatusItem = "Appoint. Created";
+                    else newStatusItem = statusItem;
+
+                    list.Add(new OrderChartViewModel
+                    {
+                        Status = newStatusItem,
+                        Quantity = unshippedOrders.Count(),
+                        Color = color[id]
+                    });
+                    id++;
+                }
+ 
+            }
+
+            return list;
+        }
+
+        public async Task<List<ChartSalesViewModel>> GetMonthlySales(int month)
+        {
+            DateTime requestedDate = new DateTime(DateTime.UtcNow.Year, month, DateTime.UtcNow.Day);
+            List<ChartSalesViewModel> list = new List<ChartSalesViewModel>();
+
+            double value;
+            CultureInfo ci = new CultureInfo("en-Us");
+            int days = DateTime.DaysInMonth(DateTime.UtcNow.Year, month);
+
+            for (int day = 1; day <= days; day++)
+            {
+                value = (double)await _context.Orders.Where(i => i.OrderDate.Day == day && i.OrderDate.Month == requestedDate.Month).SumAsync(i => i.TotalPrice);
+
+                list.Add(new ChartSalesViewModel
+                {
+                    Month = requestedDate.ToString("MMMM", ci).ToUpper(),
+                    Day = day,
+                    Sales = value
+                });
+            }
+
+            return list;
+        }
+
+        public async Task<List<ChartSalesViewModel>> GetYearSalesByMonthAsync(int year)
+        {
+            DateTime requestedYearDate = new DateTime(year, DateTime.UtcNow.Month, DateTime.UtcNow.Day);
+
+            List<ChartSalesViewModel> list = new List<ChartSalesViewModel>();
+
+            double value;
+            CultureInfo ci = new CultureInfo("en-Us");
+
+
+            for (int month = 1; month <= 12; month++)
+            {
+                value = (double)await _context.Orders.Where(i => i.OrderDate.Month == month && i.OrderDate.Year == requestedYearDate.Year).SumAsync(i => i.TotalPrice);
+
+                list.Add(new ChartSalesViewModel
+                {
+                    Year = year.ToString(),
+                    Month = new DateTime(year, month, DateTime.UtcNow.Day).ToString("MMMM", ci),
+                    Sales = value,
+                });
+            }
+
+            return list;
         }
     }
 }

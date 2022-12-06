@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Webx.Web.Data.Entities;
 using Webx.Web.Models;
+using Webx.Web.Models.AdminPanel;
 
 namespace Webx.Web.Helpers
 {
@@ -77,7 +78,10 @@ namespace Webx.Web.Helpers
         Task<IdentityRole> GetRoleByNameAsync(string roleName);
         Task<IdentityResult> RemoveFromCurrentRoleAsync(User user,string currentRole);
         Task <SignInResult>FirstLoginAsync(User user);
-        Task<User> GetUserByEmailWithCheckoutTempsAsync(string email);
-      
+        Task<User> GetUserByEmailWithCheckoutTempsAsync(string email);        
+        Task<int> GetTotalUsersAsync();
+        Task<int> GetTotalUsersEmployeeAsync();
+        Task<List<UserDataChartViewModel>> GetUsersChartDataAsync();
+
     }
 }

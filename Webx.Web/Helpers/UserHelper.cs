@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Webx.Web.Data.Entities;
 using Webx.Web.Models;
+using Webx.Web.Models.AdminPanel;
 
 namespace Webx.Web.Helpers
 {
@@ -41,9 +42,61 @@ namespace Webx.Web.Helpers
             }
         }
 
+        public async Task<int> GetTotalUsersAsync()
+        {
+            var users = await _userManager.Users.ToListAsync();
+
+            return users.Count;
+        }
+
+        public async Task<int> GetTotalUsersEmployeeAsync()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            var employees = new List<User>();
+
+            foreach (var user in users)
+            {
+                if (await CheckUserInRoleAsync(user, "Admin"))
+                {
+                    employees.Add(user);
+                }
+                else if (await CheckUserInRoleAsync(user, "Product Manager"))
+                {
+                    employees.Add(user);
+                }
+                else if (await CheckUserInRoleAsync(user, "Technician"))
+                {
+                    employees.Add(user);
+                }
+            }
+            return employees.Count;
+        }
+
+        public async Task<List<UserDataChartViewModel>> GetUsersChartDataAsync()
+        {
+            List<UserDataChartViewModel> list = new List<UserDataChartViewModel>();
+            string[] roles = new string[4] { "Customer", "Admin", "Technician", "Product Manager" };
+            string[] colors = new string[4] { "#181818", "#8758FF", "#5CB8E4", "#F2F2F2" };
+            int identer = 0;
+
+            foreach (string role in roles)
+            {
+                var users = await _userManager.GetUsersInRoleAsync(role);
+                list.Add(new UserDataChartViewModel
+                {
+                    UserRoleName = role,
+                    Quantity = users.Count(),
+                    Color = colors[identer]
+                });
+                identer++;
+            }
+
+            return list.OrderBy(l => l.UserRoleName).ToList();
+        }
+
         public async Task<IdentityResult> AddUserToRoleAsync(User user, string roleName)
         {
-            return await _userManager.AddToRoleAsync(user, roleName);            
+            return await _userManager.AddToRoleAsync(user, roleName);
         }
 
         public async Task<bool> CheckUserInRoleAsync(User user, string roleName)
@@ -53,7 +106,7 @@ namespace Webx.Web.Helpers
 
         public async Task<User> GetUserByEmailAsync(string email)
         {
-            return await _userManager.FindByEmailAsync(email);        
+            return await _userManager.FindByEmailAsync(email);
         }
 
         public async Task<User> GetUserByIdAsync(string userId)
@@ -72,7 +125,7 @@ namespace Webx.Web.Helpers
             var users = await _userManager.Users.ToListAsync();
             var customers = new List<User>();
 
-            foreach(var user in users)
+            foreach (var user in users)
             {
                 if (await CheckUserInRoleAsync(user, "Customer"))
                 {
@@ -113,7 +166,7 @@ namespace Webx.Web.Helpers
 
         public async Task<IdentityResult> ConfirmEmailAsync(User user, string token)
         {
-            return await _userManager.ConfirmEmailAsync(user, token);           
+            return await _userManager.ConfirmEmailAsync(user, token);
         }
 
         public async Task<List<User>> GetUsersInRoleAsync(string roleName)
@@ -122,7 +175,7 @@ namespace Webx.Web.Helpers
         }
 
         public async Task<SignInResult> LoginAsync(LoginViewModel model)
-        {            
+        {
             return await _signInManager.PasswordSignInAsync(
                 model.UserName,
                 model.Password,
@@ -226,9 +279,9 @@ namespace Webx.Web.Helpers
             var list = _roleManager.Roles;
             var comboRolesList = new List<SelectListItem>();
 
-            foreach(var role in list)
+            foreach (var role in list)
             {
-                if(role.Name != "Customer")
+                if (role.Name != "Customer")
                 {
                     comboRolesList.Add(new SelectListItem
                     {
@@ -245,7 +298,7 @@ namespace Webx.Web.Helpers
             });
 
             return comboRolesList.OrderBy(l => l.Text);
-            
+
         }
 
         public async Task<IdentityRole> GetUserRoleAsync(User user)
@@ -265,7 +318,7 @@ namespace Webx.Web.Helpers
             return await _roleManager.FindByNameAsync(roleName);
         }
 
-        public async Task<IdentityResult> RemoveFromCurrentRoleAsync(User user,string currentRole)
+        public async Task<IdentityResult> RemoveFromCurrentRoleAsync(User user, string currentRole)
         {
             return await _userManager.RemoveFromRoleAsync(user, currentRole);
         }
@@ -281,12 +334,12 @@ namespace Webx.Web.Helpers
             catch (System.Exception)
             {
                 return SignInResult.Failed;
-            }          
+            }
         }
 
         public async Task<User> GetUserByEmailWithCheckoutTempsAsync(string email)
         {
-            return await _userManager.Users.Include(u=> u.CheckoutTempData).Where(u => u.Email == email).FirstOrDefaultAsync();
+            return await _userManager.Users.Include(u => u.CheckoutTempData).Where(u => u.Email == email).FirstOrDefaultAsync();
         }
 
       

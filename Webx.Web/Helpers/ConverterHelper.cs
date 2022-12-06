@@ -161,6 +161,7 @@ namespace Webx.Web.Helpers
         {
             return new ProductViewModel()
             {
+                Id=product.Id,
                 Name = product.Name,
                 Description = product.Description,
                 Price = product.Price,

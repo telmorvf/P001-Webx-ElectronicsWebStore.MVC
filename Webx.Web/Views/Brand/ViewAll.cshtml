@@ -20,9 +20,13 @@
     toolbarItems.Add("Search");
 
     toolbarItems.Add(new { text = "Info", tooltipText = "Brand Details", prefixIcon = "e-expand", id = "infoBrand" });
-    toolbarItems.Add(new { text = "Edit", tooltipText = "Edit Brand", prefixIcon = "e-expand", id = "editBrand" });
-    //toolbarItems.Add(new { text = "Delete", tooltipText = "Delete Brand", prefixIcon = "e-expand", id = "deleteBrand" });
-    toolbarItems.Add(new { text = "Create", tooltipText = "Create Brand", prefixIcon = "e-expand", id = "createBrand" });
+
+    @if ((this.User.Identity.IsAuthenticated) && (this.User.IsInRole("Admin")))
+    {
+        toolbarItems.Add(new { text = "Edit", tooltipText = "Edit Brand", prefixIcon = "e-expand", id = "editBrand" });
+        //toolbarItems.Add(new { text = "Delete", tooltipText = "Delete Brand", prefixIcon = "e-expand", id = "deleteBrand" });
+        toolbarItems.Add(new { text = "Create", tooltipText = "Create Brand", prefixIcon = "e-expand", id = "createBrand" });
+    }
 
     var yesButton = new ButtonModel() { content = "Yes", cssClass = "e-flat" };
     var noButton = new ButtonModel() { content = "No", cssClass = "e-flat" };

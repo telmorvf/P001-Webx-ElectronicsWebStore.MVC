@@ -86,7 +86,16 @@ namespace Webx.Web.Controllers
             return View(model);
         }
 
-   
+        public IActionResult AboutUs()
+        {
+            return View();
+        }
+
+        public IActionResult ContactUs()
+        {
+            return View();
+        }
+
 
         public IActionResult Privacy()
         {

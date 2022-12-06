@@ -19,11 +19,16 @@
     //}
     toolbarItems.Add("Search");
     //toolbarItems.Add(new { text = "Info", tooltipText = "Stock Details", prefixIcon = "e-expand", id = "infoStock" });
-    toolbarItems.Add(new { text = "Edit", tooltipText = "Edit Stock", prefixIcon = "e-expand", id = "editStock" });
-    //toolbarItems.Add(new { text = "Update", tooltipText = "Update Stock", prefixIcon = "e-expand", id = "updateStock" });
-    //toolbarItems.Add(new { text = "Create", tooltipText = "Create Stock", prefixIcon = "e-expand", id = "createStock" });
-    //toolbarItems.Add(new { text = "Delete", tooltipText = "Delete Employee", prefixIcon = "e-expand", id = "deleteStock" });
-    //toolbarItems.Add(new { text = "Cancel", tooltipText = "Cancel", prefixIcon = "e-expand", id = "cancelStock" });
+    
+    @if ((this.User.Identity.IsAuthenticated) && ((this.User.IsInRole("Admin")) || (this.User.IsInRole("Product Manager"))))
+    {
+        toolbarItems.Add(new { text = "Edit", tooltipText = "Edit Stock", prefixIcon = "e-expand", id = "editStock" });
+        //toolbarItems.Add(new { text = "Update", tooltipText = "Update Stock", prefixIcon = "e-expand", id = "updateStock" });
+        //toolbarItems.Add(new { text = "Create", tooltipText = "Create Stock", prefixIcon = "e-expand", id = "createStock" });
+        //toolbarItems.Add(new { text = "Delete", tooltipText = "Delete Employee", prefixIcon = "e-expand", id = "deleteStock" });
+        //toolbarItems.Add(new { text = "Cancel", tooltipText = "Cancel", prefixIcon = "e-expand", id = "cancelStock" });
+
+    }
 
     var yesButton = new ButtonModel() { content = "Yes", cssClass = "e-flat" };
     var noButton = new ButtonModel() { content = "No", cssClass = "e-flat" };
