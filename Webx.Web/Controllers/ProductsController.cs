@@ -492,9 +492,12 @@ namespace Webx.Web.Controllers
             {
                 products = await _productRepository.GetServiceAllAsync();
                 ViewBag.IsService = true;
+                ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             }
             else
             {
+                int counter = await _productRepository.GetReviewsTempsCountAsync();
+                ViewBag.TempsCounter = counter;
                 products = await _productRepository.GetProductAllAsync();
                 ViewBag.IsService = false;
             }
@@ -504,19 +507,19 @@ namespace Webx.Web.Controllers
 
             var stores = _dataContext.Stores.ToListAsync();
             ViewBag.FilterStore = stores;
-
+            
             return View(products);
         }
         
 
         [Authorize(Roles = "Admin")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var model = new ProductAddViewModel();
 
             model.Categories = _productRepository.GetCategoriesCombo();
             model.Brands = _productRepository.GetBrandsCombo();
-
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             return View(model);
         }
 
@@ -527,6 +530,7 @@ namespace Webx.Web.Controllers
         {
             if (!this.ModelState.IsValid)
             {
+                ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                 model.Categories = _productRepository.GetCategoriesCombo();
                 model.Brands = _productRepository.GetBrandsCombo();
                 return View(model);
@@ -536,6 +540,7 @@ namespace Webx.Web.Controllers
                 var product = _productRepository.GetProductByNameAsync(model.Name);
                 if (product.Result != null)
                 {
+                    ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                     _toastNotification.Error("This Product Name Already Exists, Please try again...");
                     model.Categories = _productRepository.GetCategoriesCombo();
                     model.Brands = _productRepository.GetBrandsCombo();
@@ -612,7 +617,7 @@ namespace Webx.Web.Controllers
                         _toastNotification.Success("Product created successfully!!!");
                         //converterHelper - refresh the create view after create
                         model = _converterHelper.ProductAddToViewModel(newProduct);
-
+                        ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                         return View(model);
                     }
                     catch (Exception)
@@ -630,10 +635,10 @@ namespace Webx.Web.Controllers
 
 
         [Authorize(Roles = "Admin")]
-        public IActionResult CreateService()
+        public async Task<IActionResult> CreateService()
         {
             var model = new ServiceViewModel();
-
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             model.Categories = _productRepository.GetCategoriesCombo();
             //model.Brands = _productRepository.GetBrandsCombo();
             return View(model);
@@ -648,6 +653,7 @@ namespace Webx.Web.Controllers
             {
                 model.Categories = _productRepository.GetCategoriesCombo();
                 //model.Brands = _productRepository.GetBrandsCombo();
+                ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                 return View(model);
             }
             else
@@ -658,6 +664,7 @@ namespace Webx.Web.Controllers
                     _toastNotification.Error("This Service Name Already Exists, Please try again...");
                     model.Categories = _productRepository.GetCategoriesCombo();
                     //model.Brands = _productRepository.GetBrandsCombo();
+                    ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                     return View(model);
                 }
 
@@ -672,19 +679,20 @@ namespace Webx.Web.Controllers
                         _toastNotification.Success("Service created successfully!!!");
                         //converterHelper - refresh the create view after create
                         model = _converterHelper.ServiceToViewModel(newService);
-
+                        ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                         return View(model);
                     }
                     catch (Exception)
                     {
                         _toastNotification.Error("There was a problem, When try creating the product. Please try again");
-
+                        ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                         model.Categories = _productRepository.GetCategoriesCombo();
                         //model.Brands = _productRepository.GetBrandsCombo();
                         return View(model);
                     }
                 }
             };
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             return View(model);
         }
 
@@ -704,6 +712,7 @@ namespace Webx.Web.Controllers
                 _toastNotification.Error("Product could not be found.");
                 return RedirectToAction(nameof(ViewAll));
             }
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             return View(model);
         }
 
@@ -715,6 +724,7 @@ namespace Webx.Web.Controllers
             {
                 model.Categories = _productRepository.GetCategoriesCombo();
                 model.Brands = _productRepository.GetBrandsCombo();
+                ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                 return View(model);
             }
             else
@@ -725,6 +735,7 @@ namespace Webx.Web.Controllers
                     _toastNotification.Error("Error, the brand was not found");
                     model.Categories = _productRepository.GetCategoriesCombo();
                     model.Brands = _productRepository.GetBrandsCombo();
+                    ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                     return View(model);
                 };
 
@@ -804,6 +815,7 @@ namespace Webx.Web.Controllers
                     {
                         _toastNotification.Error($"There was a problem updating the product, try again later!");
                     }
+                    ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                     model.Categories = _productRepository.GetCategoriesCombo();
                     model.Brands = _productRepository.GetBrandsCombo();
                     return View(model);

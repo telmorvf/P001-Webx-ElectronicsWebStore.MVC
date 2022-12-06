@@ -473,6 +473,10 @@
                                 <p>
                                     Manage Reviews
                                 </p>
+                                @if(ViewBag.TempsCounter != null && ViewBag.TempsCounter > 0)
+                                {
+                                    <span class="badge badge-pill badge-info">@ViewBag.TempsCounter</span>
+                                }                                
                             </a>
                         </li>
 

@@ -14,6 +14,7 @@ namespace Webx.Web.Data.Repositories
         IEnumerable<SelectListItem> GetBrandsCombo();
         IEnumerable<SelectListItem> GetBrandsCombo(int brandId);
         IEnumerable<SelectListItem> GetCategoriesCombo();
+        Task<int> GetReviewsTempsCountAsync();
         IEnumerable<SelectListItem> GetCategoriesCombo(int categoryId);
         Task<Product> GetFullProduct(int id);      
         Task<List<Product>> GetAllProducts(string category);
@@ -45,5 +46,10 @@ namespace Webx.Web.Data.Repositories
         Task<ProductReview> GetProductReviewByIdAsync(int value);
         Task UpdateReviewAsync(ProductReview customerReview);
         Task<List<ProductReview>> GetAllReviewsAsync();
+        Task<ProductReview> GetRecentCreatedReviewAsync(ProductReview review);
+        Task CreateReviewTempAsync(ProductReview review);
+        Task RemoveReviewTempIfExistsAsync(ProductReview customerReview);
+        Task<List<ProductReviewTemps>> GetReviewsTempsAsync();
+        Task RemoveReviewTempsAsync(List<ProductReviewTemps> temps);
     }
 }

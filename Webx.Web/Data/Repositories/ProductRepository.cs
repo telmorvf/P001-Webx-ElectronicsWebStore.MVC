@@ -637,5 +637,55 @@ namespace Webx.Web.Data.Repositories
                 .Include(r => r.Product).ThenInclude(p => p.Category)
                 .ToListAsync();
         }
+
+        public Task<ProductReview> GetRecentCreatedReviewAsync(ProductReview review)
+        {
+            return _context.Reviews.Where(r => r.User == review.User && r.Product == review.Product && r.ReviewDate == review.ReviewDate).FirstOrDefaultAsync();
+        }
+
+        public async Task CreateReviewTempAsync(ProductReview review)
+        {
+            ProductReviewTemps temp = new ProductReviewTemps
+            {
+                ProductReview = review
+            };
+
+            await _context.ReviewsTemps.AddAsync(temp);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveReviewTempIfExistsAsync(ProductReview customerReview)
+        {
+            var reviewTemp = await _context.ReviewsTemps.Where(rt => rt.ProductReview == customerReview).FirstOrDefaultAsync();
+
+            if(reviewTemp != null)
+            {
+                _context.ReviewsTemps.Remove(reviewTemp);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<List<ProductReviewTemps>> GetReviewsTempsAsync()
+        {
+            return await _context.ReviewsTemps.Include(rt => rt.ProductReview).ToListAsync();
+        }
+
+        public async Task RemoveReviewTempsAsync(List<ProductReviewTemps> temps)
+        {
+            _context.ReviewsTemps.RemoveRange(temps);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> GetReviewsTempsCountAsync()
+        {
+            var temps = await _context.ReviewsTemps.AsNoTracking().ToListAsync();
+
+            if(temps != null && temps.Count > 0)
+            {
+                return temps.Count;
+            }
+
+            return 0;
+        }
     }
 }

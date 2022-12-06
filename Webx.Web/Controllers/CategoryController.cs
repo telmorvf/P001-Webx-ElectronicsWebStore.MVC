@@ -24,6 +24,7 @@ namespace Webx.Web.Controllers
         private readonly IConverterHelper _converterHelper;
         private readonly IImageHelper _imageHelper;
         private readonly IBlobHelper _blobHelper;
+        private readonly IProductRepository _productRepository;
 
         public CategoryController(
             ICategoryRepository categoryRepository,
@@ -31,7 +32,8 @@ namespace Webx.Web.Controllers
             DataContext dataContext,
             IConverterHelper converterHelper,
             IImageHelper imageHelper,
-            IBlobHelper blobHelper
+            IBlobHelper blobHelper,
+            IProductRepository productRepository
             )
         {
             _categoryRepository = categoryRepository;
@@ -40,6 +42,7 @@ namespace Webx.Web.Controllers
             _converterHelper = converterHelper;
             _imageHelper = imageHelper;
             _blobHelper = blobHelper;
+            _productRepository = productRepository;
         }
 
         public async Task<IActionResult> ViewAll()
@@ -51,6 +54,7 @@ namespace Webx.Web.Controllers
 
             //vai buscar as dataAnnotations da class Category para injectar na tabela do syncfusion
             ViewBag.Type = typeof(Brand);
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
 
             return View(categories);
         }
@@ -82,6 +86,7 @@ namespace Webx.Web.Controllers
             {
                 return null;
             }
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             return View(model);
         }
 
@@ -121,7 +126,7 @@ namespace Webx.Web.Controllers
                     model = _converterHelper.CategoryToViewModel(category);
 
                     _toastNotification.Success("Category changes saved successfully!!!");
-
+                    ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                     return View(model);
                 }
                 catch (Exception ex)
@@ -134,17 +139,20 @@ namespace Webx.Web.Controllers
                     {
                         _toastNotification.Error($"There was a problem updating the employee!");
                     }
+                    ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                     return View(model);
                 }
 
             };
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             return View(model);
         }
 
         [Authorize(Roles = "Admin")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var model = new CategoryViewModel();
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             return View(model);
         }
 
@@ -160,6 +168,7 @@ namespace Webx.Web.Controllers
                 if (category.Result != null)
                 {
                     _toastNotification.Error("This Category Already Exists, Please try again...");
+                    ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                     return View(model);
                 }
 
@@ -176,15 +185,18 @@ namespace Webx.Web.Controllers
 
                         await _categoryRepository.AddCategoryAsync(model);
                         _toastNotification.Success("Category created successfully!!!");
+                        ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                         return View(model);
                     }
                     catch (Exception)
                     {
                         _toastNotification.Error("There was a problem, When try creating the category. Please try again");
+                        ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                         return View(model);
                     }
                 }
             };
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             return View(model);
         }
 

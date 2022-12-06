@@ -11,8 +11,8 @@ using Microsoft.AspNetCore.Razor.Language.Intermediate;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using PayPalCheckoutSdk.Orders;
-using System.Net.Mail;
-using SmtpClient = MailKit.Net.Smtp.SmtpClient;
+//using System.Net.Mail;
+
 
 namespace Webx.Web.Helpers
 {
@@ -88,7 +88,7 @@ namespace Webx.Web.Helpers
 
             try
             {
-                using (var client = new SmtpClient())
+                using (var client = new MailKit.Net.Smtp.SmtpClient())
                 {
                     client.Connect(smtp, int.Parse(port), false);
                     client.Authenticate(from, password);
@@ -319,29 +319,29 @@ namespace Webx.Web.Helpers
             orderImage.ContentId = MimeUtils.GenerateMessageId();
             // {2} - customer name 
             string userFullname = customer.FirstName + " " + customer.LastName;
-            // {3} - link            
+            // {3} - link           
 
-            //{4} - images/fb.png
-            var fbImage = bodybuilder.LinkedResources.Add($"{_webHostEnvironment.WebRootPath}{Path.DirectorySeparatorChar}assets{Path.DirectorySeparatorChar}templates{Path.DirectorySeparatorChar}images{Path.DirectorySeparatorChar}fb.png");
-            fbImage.ContentId = MimeUtils.GenerateMessageId();
+            ////{4} - images/fb.png
+            //var fbImage = bodybuilder.LinkedResources.Add($"{_webHostEnvironment.WebRootPath}{Path.DirectorySeparatorChar}assets{Path.DirectorySeparatorChar}templates{Path.DirectorySeparatorChar}images{Path.DirectorySeparatorChar}fb.png");
+            //fbImage.ContentId = MimeUtils.GenerateMessageId();
 
-            //{5} - images/twitter.png
-            var twitterImage = bodybuilder.LinkedResources.Add($"{_webHostEnvironment.WebRootPath}{Path.DirectorySeparatorChar}assets{Path.DirectorySeparatorChar}templates{Path.DirectorySeparatorChar}images{Path.DirectorySeparatorChar}twitter.png");
-            twitterImage.ContentId = MimeUtils.GenerateMessageId();
+            ////{5} - images/twitter.png
+            //var twitterImage = bodybuilder.LinkedResources.Add($"{_webHostEnvironment.WebRootPath}{Path.DirectorySeparatorChar}assets{Path.DirectorySeparatorChar}templates{Path.DirectorySeparatorChar}images{Path.DirectorySeparatorChar}twitter.png");
+            //twitterImage.ContentId = MimeUtils.GenerateMessageId();
 
-            //{6} - images/insta.png
-            var instaImage = bodybuilder.LinkedResources.Add($"{_webHostEnvironment.WebRootPath}{Path.DirectorySeparatorChar}assets{Path.DirectorySeparatorChar}templates{Path.DirectorySeparatorChar}images{Path.DirectorySeparatorChar}insta.png");
-            instaImage.ContentId = MimeUtils.GenerateMessageId();
+            ////{6} - images/insta.png
+            //var instaImage = bodybuilder.LinkedResources.Add($"{_webHostEnvironment.WebRootPath}{Path.DirectorySeparatorChar}assets{Path.DirectorySeparatorChar}templates{Path.DirectorySeparatorChar}images{Path.DirectorySeparatorChar}insta.png");
+            //instaImage.ContentId = MimeUtils.GenerateMessageId();
 
 
             // -----------------------------------------------{0}------------------------{1}-------------{2}------------{3}-------------------{4}--------------------{5}--------------------{6}--------
-            string messageBody = string.Format(htmlBody, titleImage.ContentId, orderImage.ContentId, userFullname, tokenLink, fbImage.ContentId, twitterImage.ContentId, instaImage.ContentId);
+            string messageBody = string.Format(htmlBody, titleImage.ContentId, orderImage.ContentId, userFullname, tokenLink);
 
             bodybuilder.HtmlBody = messageBody;
                       
 
             message.Body = bodybuilder.ToMessageBody();
-
+            
             try
             {
                 using (var client = new SmtpClient())

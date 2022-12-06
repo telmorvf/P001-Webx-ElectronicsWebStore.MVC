@@ -67,9 +67,9 @@ namespace Webx.Web.Controllers
                 model.OngoingAppointmentsTotals = ordersWithappointments.Where(o => o.Status.Name == "Ongoing" && o.Store.Id == storeId.Value).Count();
 
                 events = await _appointmentRepository.GetSpecificStoreEvents(storeId.Value);
-            }           
+            }
 
-            
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             ViewData["Events"] = events;
 
             return View(model);
@@ -101,6 +101,7 @@ namespace Webx.Web.Controllers
             model.Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync();
 
             var events = await _appointmentRepository.GetAllEventsCustomerCanSeeAsync(order.Store.Id);
+            
             ViewData["Events"] = events;
 
             return View(model);

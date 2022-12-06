@@ -61,6 +61,10 @@
         content: '\e7de' !important;
     }
 
+     .e-grid .e-gridheader .e-sortfilter .e-headercelldiv, .e-grid .e-gridheader .e-stackedheadercelldiv {
+        padding: 0px !important;
+    }
+
 </style>
 
 <!--Div que permite dar espaçamento entre ejs grid e topo-->
@@ -80,7 +84,7 @@
             <e-grid-column field="IsService" headerText="IsServ.?" template="#templateCheckbox" textAlign="Center" width="65px"></e-grid-column>
             <e-grid-column field="IsPromotion" headerText="Highlighted?" template="#templateCheckbox1" textAlign="Center" width="100px"></e-grid-column>
             <e-grid-column field="Name" textAlign="Left" allowEditing="false" width="300px"></e-grid-column>        
-            <e-grid-column field="Price" format="# ###.00 '€'" textAlign="Right" width="60px"></e-grid-column>
+            <e-grid-column field="Price" format="# ###.00 '€'" textAlign="Left" width="60px"></e-grid-column>
             <e-grid-column field="Discount" format="# ###.00 '%'" textAlign="Right" width="60px"></e-grid-column>
             <e-grid-column field="PriceWithDiscount" format="# ###.00 '€'" textAlign="Right" width="100px"></e-grid-column>
             <e-grid-column field="" isPrimaryKey="true" width="20px"></e-grid-column>

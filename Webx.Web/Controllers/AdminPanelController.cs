@@ -1,17 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using Webx.Web.Data.Repositories;
 
 namespace Webx.Web.Controllers
 {
     public class AdminPanelController : Controller
     {
+        private readonly IProductRepository _productRepository;
 
-        public AdminPanelController()
+        public AdminPanelController(IProductRepository productRepository)
         {
-
+            _productRepository = productRepository;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
+
+            
+
             return View();
         }
     }

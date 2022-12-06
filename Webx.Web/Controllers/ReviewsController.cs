@@ -8,10 +8,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Webx.Web.Data.Entities;
+using Webx.Web.Data.Repositories;
 using Webx.Web.Helpers;
 using Webx.Web.Models;
 
-namespace Webx.Web.Data.Repositories
+namespace Webx.Web.Controllers
 {
     public class ReviewsController : Controller
     {
@@ -79,7 +80,7 @@ namespace Webx.Web.Data.Repositories
             }
 
 
-            if (this.ModelState.IsValid)
+            if (ModelState.IsValid)
             {
 
                 var review = new ProductReview
@@ -97,6 +98,8 @@ namespace Webx.Web.Data.Repositories
                 try
                 {
                     await _productRepository.CreateReviewAsync(review);
+                    review = await _productRepository.GetRecentCreatedReviewAsync(review);
+                    await _productRepository.CreateReviewTempAsync(review);
                     _toastNotification.Success($"Thank you for the review {user.FullName} !, your review will be analyzed by our staff and will be available as soon as possible.", 10);
                 }
                 catch (Exception ex)
@@ -122,7 +125,7 @@ namespace Webx.Web.Data.Repositories
             {
                 List<string> errors = new List<string>();
 
-                foreach (var item in this.ModelState.Values)
+                foreach (var item in ModelState.Values)
                 {
                     if (item.ValidationState == ModelValidationState.Invalid)
                     {
@@ -169,7 +172,7 @@ namespace Webx.Web.Data.Repositories
                 return NotFound();
             }
 
-            var thisUser = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+            var thisUser = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
 
             if (thisUser == null)
             {
@@ -214,6 +217,7 @@ namespace Webx.Web.Data.Repositories
         public async Task<IActionResult> Edit(ShopViewModel model)
         {
             var customerReview = await _productRepository.GetProductReviewByIdAsync(model.ProductReviewViewModel.Id);
+            await _productRepository.RemoveReviewTempIfExistsAsync(customerReview);
 
             if (customerReview == null)
             {
@@ -221,7 +225,7 @@ namespace Webx.Web.Data.Repositories
             }
 
 
-            if (this.ModelState.IsValid)
+            if (ModelState.IsValid)
             {
 
                 customerReview.WouldRecommend = model.ProductReviewViewModel.WouldRecommend;
@@ -235,6 +239,7 @@ namespace Webx.Web.Data.Repositories
                 try
                 {
                     await _productRepository.UpdateReviewAsync(customerReview);
+                    await _productRepository.CreateReviewTempAsync(customerReview);
                     _toastNotification.Success($"Your review as been updated {customerReview.User.FullName}!, it will be analyzed by our staff and will be available as soon as possible.", 10);
                 }
                 catch (Exception ex)
@@ -260,7 +265,7 @@ namespace Webx.Web.Data.Repositories
             {
                 List<string> errors = new List<string>();
 
-                foreach (var item in this.ModelState.Values)
+                foreach (var item in ModelState.Values)
                 {
                     if (item.ValidationState == ModelValidationState.Invalid)
                     {
@@ -293,15 +298,58 @@ namespace Webx.Web.Data.Repositories
         {
             List<ProductReview> reviews = await _productRepository.GetAllReviewsAsync();
             reviews = reviews.OrderByDescending(r => r.Id).ToList();
+            var reviewsTemps = await _productRepository.GetReviewsTempsAsync();
+            var reviewModelList = new List<ReviewModel>();
 
-            if (reviews == null)
+            if (reviews != null)
             {
-                reviews = new List<ProductReview>();
+               foreach(var review in reviews)
+               {
+
+                    bool highlighted = false;
+
+                    if(reviewsTemps != null && reviewsTemps.Count > 0)
+                    {
+                        foreach(var temp in reviewsTemps)
+                        {
+                            if(temp.ProductReview == review)
+                            {
+                                highlighted = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    reviewModelList.Add(new ReviewModel
+                    {
+                        Id = review.Id,
+                        Product = review.Product,
+                        Rating = review.Rating,
+                        ReviewDate = review.ReviewDate,
+                        ReviewText = review.ReviewText,
+                        ReviewTitle = review.ReviewTitle,
+                        Status = review.Status,
+                        User = review.User,
+                        WouldRecommend = review.WouldRecommend,
+                        IsHighlighted = highlighted,
+                    });
+               }
             }
+                       
+            var model = new ReviewsViewModel
+            {
+                Reviews = reviewModelList,                
+            };
 
             ViewBag.Type = typeof(ProductReview);
+            
 
-            return View(reviews);
+            if (reviewsTemps != null && reviewsTemps.Count > 0)
+            {
+                await _productRepository.RemoveReviewTempsAsync(reviewsTemps);
+            }                
+
+            return View(model);
 
         }
 
@@ -349,14 +397,14 @@ namespace Webx.Web.Data.Repositories
         [Route("Reviews/GetReview")]
         public async Task<JsonResult> GetReview(int id)
         {
-            if(id <= 0)
+            if (id <= 0)
             {
                 return Json(null);
             }
 
             var review = await _productRepository.GetProductReviewByIdAsync(id);
 
-            if(review == null)
+            if (review == null)
             {
                 return Json(null);
             }

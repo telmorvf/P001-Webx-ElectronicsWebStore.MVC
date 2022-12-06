@@ -1,4 +1,4 @@
-﻿@model List<Webx.Web.Data.Entities.ProductReview>
+﻿@model Webx.Web.Models.ReviewsViewModel
 
 @{
     ViewData["Title"] = "Validate Reviews";
@@ -103,6 +103,10 @@
         justify-content: center;
     }
 
+    .tableRow{
+        background-color:rgba(1, 98, 208,0.2);
+    }
+
 </style>
 
 <div class="container-fluid" style="min-height:25px;background-color: #f4f6f9;">
@@ -112,7 +116,7 @@
 <div id='container' class="container-fluid">
 
     <!-- Tabela/Grid do syncfusion  -->
-    <ejs-grid id="grid" TValue="@ViewBag.Type" dataSource="Model" rowSelected="rowSelected" allowSelection="true" allowPaging="true" allowSorting="true" allowFiltering="false" toolbar="toolbarItems" >
+    <ejs-grid id="grid" TValue="@ViewBag.Type" dataSource="Model.Reviews" rowSelected="rowSelected" allowSelection="true" allowPaging="true" allowSorting="true" allowFiltering="false" toolbar="toolbarItems" rowDataBound="rowDataBound">
         <e-grid-selectionsettings type="Single" mode="Row"></e-grid-selectionsettings>
         <e-grid-pagesettings pageSize="6"></e-grid-pagesettings>        
         <e-grid-columns>            
@@ -141,6 +145,7 @@
 <div class="container-fluid" style="min-height:25px;background-color: #f4f6f9;">
    
 </div>
+
 
 
 <script id="template" type="text/x-template"> 
@@ -213,6 +218,13 @@
        records = selectedrecords;
        // atribui à variàvel id o valor do user id selecionado na tabela
        id = selectedrecords[0].Id;   
+    }
+
+    function rowDataBound(e) {
+       
+        if (e.data.IsHighlighted == true) {
+            e.row.classList.add("tableRow");
+        }
     }
 
     function onOverlayClick() {
