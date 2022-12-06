@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Webx.Web.Data.Repositories;
 using Webx.Web.Helpers;
 
+
 namespace Webx.Web.Controllers
 {
     [Authorize(Roles = "Admin, Technician, Product Manager")]
@@ -16,22 +17,29 @@ namespace Webx.Web.Controllers
         private readonly IOrderRepository _orderRepository;
         private readonly IBrandRepository _brandRepository;
         private readonly ICategoryRepository _categoryRepository;
-
+        private readonly IProductRepository _productRepository;
+        
         public AdminPanelController(
             IUserHelper userHelper,
             IOrderRepository orderRepository,
             IBrandRepository brandRepository,
-            ICategoryRepository categoryRepository
+            ICategoryRepository categoryRepository,
+            IProductRepository productRepository
             )
         {
             _userHelper = userHelper;
             _orderRepository = orderRepository;
             _brandRepository = brandRepository;
             _categoryRepository = categoryRepository;
+            _productRepository = productRepository;
+
         }
 
         public async Task<IActionResult> Index()
         {
+
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
+            
             //this month sales graphic data
             var thisMonthsales = await _orderRepository.GetMonthlySales(DateTime.UtcNow.Month);
 

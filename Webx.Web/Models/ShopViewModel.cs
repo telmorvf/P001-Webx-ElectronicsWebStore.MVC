@@ -8,7 +8,8 @@ namespace Webx.Web.Models
 {
     public class ShopViewModel
     {
-        public IPagedList<Product> PagedListProduct { get; set; }
+        //public IPagedList<Product> PagedListProduct { get; set; }
+        public IPagedList<ProductWithReviewsViewModel> PagedListProduct { get; set; }
 
         public string SelectedCategory { get; set; }
 
@@ -30,8 +31,8 @@ namespace Webx.Web.Models
 
         public int TotalProductsInCart => Cart.Sum(p => p.Quantity);
 
-        public string CartGrandTotal => Cart.Sum(p => p.Product.PriceWithDiscount * p.Quantity).ToString("C2");  
-        
+        public string CartGrandTotal => Cart.Sum(p => p.Product.PriceWithDiscount * p.Quantity).ToString("C2");
+
         public string CartGrandTotalWithNoDiscount => Cart.Sum(p => p.Product.Price * p.Quantity).ToString("C2");
 
         public bool CookieConsent { get; set; }
@@ -56,7 +57,7 @@ namespace Webx.Web.Models
 
         public List<Product> SuggestedProducts { get; set; }
 
-        public List<Product> HighlightedProducts { get; set; }
+        public List<ProductWithReviewsViewModel> HighlightedProducts { get; set; }
 
         public int CompletedOrders
         {
@@ -108,5 +109,16 @@ namespace Webx.Web.Models
 
         public bool GoToWishList { get; set; } = false;
 
+        public List<ProductReview> Reviews { get; set; }
+
+        public int OveralRating { get; set; }
+
+        public ProductReview CustomerReview { get; set; }
+
+        public bool CanReview { get; set; }
+
+        public ProductReviewViewModel ProductReviewViewModel { get; set; }
+
+        public User Customer { get; set; }
     }
 }

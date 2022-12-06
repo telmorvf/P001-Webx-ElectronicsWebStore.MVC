@@ -25,6 +25,7 @@ namespace Webx.Web.Controllers
         private readonly IProductRepository _productRepository;
         private readonly IBrandRepository _brandRepositoty;
         private readonly IStockRepository _stockRepository;
+        private readonly IConverterHelper _converterHelper;
 
         public HomeController(
             ILogger<HomeController> logger,
@@ -33,7 +34,8 @@ namespace Webx.Web.Controllers
             INotyfService toastNotification,
             IProductRepository productRepository,
             IBrandRepository brandRepositoty,
-            IStockRepository stockRepository)
+            IStockRepository stockRepository,
+            IConverterHelper converterHelper)
         {
             _logger = logger;
             _blobHelper = blobHelper;
@@ -43,6 +45,7 @@ namespace Webx.Web.Controllers
             _productRepository = productRepository;
             _brandRepositoty = brandRepositoty;
             _stockRepository = stockRepository;
+            _converterHelper = converterHelper;
         }
 
         public async Task<IActionResult> Index()
@@ -65,7 +68,8 @@ namespace Webx.Web.Controllers
 
             model.SuggestedProducts = sugestedProducts;
             model.Product = await _productRepository.GetProductByNameAsync("Intel Core i9-11900K 8-Core 3.5GHz W/Turbo 5.3GHz 16MB Skt1200 Processor");
-            model.HighlightedProducts = await _productRepository.GetHighlightedProductsAsync();
+            var products = await _productRepository.GetHighlightedProductsAsync();
+            model.HighlightedProducts = await _converterHelper.ToProductsWithReviewsViewModelList(products);
             model.Stocks = await _stockRepository.GetAllStockWithStoresAsync();
 
             if (User.Identity.IsAuthenticated)

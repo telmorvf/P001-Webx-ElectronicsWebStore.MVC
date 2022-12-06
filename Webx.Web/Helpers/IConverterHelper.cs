@@ -25,6 +25,6 @@ namespace Webx.Web.Helpers
         Task<Product> ServiceFromViewModel(ServiceViewModel model, bool isNew);          
         Task<List<CartViewModel>> ToCartViewModelAsync(List<CookieItemModel> cookieItemList);
         OrderViewModel ToOrderViewModel(Order order);
-
+        Task<List<ProductWithReviewsViewModel>> ToProductsWithReviewsViewModelList(List<Product> products);
     }
 }

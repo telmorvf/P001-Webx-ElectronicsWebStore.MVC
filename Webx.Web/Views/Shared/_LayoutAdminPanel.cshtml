@@ -340,6 +340,7 @@
                                 </p>
                             </a>
                         </li>
+
                         @if ((this.User.Identity.IsAuthenticated) && ((this.User.IsInRole("Admin")) || (this.User.IsInRole("Product Manager")) || (this.User.IsInRole("Technician"))))
                         {
                             <li class="nav-item">
@@ -399,6 +400,7 @@
                                     </p>
                                 </a>
                             </li>
+
 
                         <li class="nav-header">
                                 UTILITIES
@@ -479,6 +481,7 @@
                         {
                             <li class="nav-item">
                                 <!--           Stock Alerts            -->
+
                                 <a asp-area="" asp-action="" asp-controller="" class="nav-link">
                                     <i class="nav-icon fas fa-cubes nav-icon"></i>
                                     <p>Manage Stock </p>
@@ -504,6 +507,22 @@
 
                                 </ul>
                             </li>
+                        }
+                        @if ((this.User.Identity.IsAuthenticated) && ((this.User.IsInRole("Admin")) || (this.User.IsInRole("Product Manager"))))
+                        {
+                           <!--       Reviews          -->
+                           <li class="nav-item">
+                              <a asp-area="" asp-action="Validate" asp-controller="Reviews" class="nav-link">
+                                  <i class="nav-icon fas fa-comment-alt-check"></i>
+                                  <p>
+                                      Manage Reviews
+                                  </p>
+                                  @if(ViewBag.TempsCounter != null && ViewBag.TempsCounter > 0)
+                                  {
+                                      <span class="badge badge-pill badge-info">@ViewBag.TempsCounter</span>
+                                  }                                
+                              </a>
+                          </li>
                         }
                         @if ((this.User.Identity.IsAuthenticated) && ((this.User.IsInRole("Admin")) || (this.User.IsInRole("Product Manager")) || (this.User.IsInRole("Technician"))))
                         {
@@ -542,6 +561,7 @@
                                 </ul>
                             </li>
                         }
+
                     </ul>
                     <div class="user-panel"></div>
                     <ul class="nav nav-pills nav-sidebar flex-column">

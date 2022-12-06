@@ -22,11 +22,13 @@ namespace Webx.Web.Data.Repositories
         Task AddOrderAsync(OrderViewModel orderVm,int storeId);
         Task<Order> GetCompleteOrderByIdAsync(int orderId);        
         Task<List<OrderWithDetailsViewModel>> GetAllCustomerOrdersAsync(string customerId);
-        Task CheckAndConvertOrdersStatusAsync();
+        Task<List<Order>> CheckAndConvertOrdersStatusAsync();
         Task<List<Order>> GetAllOrdersWithAppointmentsAsync();
+        Task<bool> CheckIfCanReviewAsync(User user, Product product);
         Task<int> GetUnshippedOrdersCount();
         Task<List<OrderChartViewModel>> GetUnshippedOrdersChartAsync(int month);
         Task<List<ChartSalesViewModel>> GetMonthlySales(int month);
         Task<List<ChartSalesViewModel>> GetYearSalesByMonthAsync(int year);
+
     }
 }

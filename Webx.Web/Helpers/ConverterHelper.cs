@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
 using System;
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Webx.Web.Data.Entities;
 using Webx.Web.Data.Repositories;
@@ -319,5 +320,43 @@ namespace Webx.Web.Helpers
             };
         }
 
+        public async Task<List<ProductWithReviewsViewModel>> ToProductsWithReviewsViewModelList(List<Product> products)
+        {
+            List<ProductWithReviewsViewModel> list = new List<ProductWithReviewsViewModel>();
+
+            foreach(var product in products)
+            {
+                List<ProductReview> reviewsList = await _productRepository.GetProductReviewsAsync(product.Id);
+                int overallRate = 0;
+
+                if(reviewsList != null && reviewsList.Count > 0)
+                {
+                    overallRate = GetProductOveralRating(reviewsList);
+                }               
+
+                list.Add(new ProductWithReviewsViewModel
+                {
+                    Product = product,
+                    ProductOverallRating = overallRate
+                });
+            }
+
+            return list;
+        }
+
+        private int GetProductOveralRating(List<ProductReview> reviews)
+        {
+            int rating = 0;
+            int reviewsCount = reviews.Count();
+
+            foreach (var review in reviews)
+            {
+                rating += review.Rating;
+            }
+
+            rating = rating / reviewsCount;
+
+            return rating;
+        }
     }
 }

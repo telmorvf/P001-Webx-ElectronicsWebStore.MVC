@@ -1,8 +1,11 @@
-﻿@model Webx.Web.Models.ShopViewModel
+﻿@using System.Globalization
+@model Webx.Web.Models.ShopViewModel
 
 @{
-    ViewData["Title"] = "ProductInfo";
+    ViewData["Title"] = "WebX";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    CultureInfo ci = new CultureInfo("en-gb");
 }
 
 <style>
@@ -31,6 +34,25 @@
         -webkit-box-pack: center;
         -ms-flex-pack: center;
         justify-content: center;
+    }
+
+    ul li a{
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+    }
+
+    .review i{
+        color: var(--theme-color);
+        transition: all 0.3s;
+    }
+
+    .review:hover i{
+        color: #FFCD3C;
+    }
+
+    .hide{
+        display:none;
     }
 
 </style>
@@ -116,17 +138,42 @@
                                     </h3>
                                    
                                     <ul class="product-count shipping-order" style="margin-top:25px;background-color: #EFF2F7;margin-bottom: 10px;">
-                                        <li>                                                                                                                                  
-                                            <span class="lang" style="padding: 10px 10px 10px 15px;font-weight: 400;"> Free shipping for all orders!</span>    
-                                            <img src="~/assets/images/gif/truck.png" class="img-fluid blur-up lazyload" alt="image">  
+                                        <li> 
+                                             <img style="padding: 10px 10px 10px 15px;" src="~/assets/images/gif/truck.png" class="img-fluid blur-up lazyload" alt="image">  
+                                             <span class="lang" style="font-weight: 400;"> Free shipping for all orders!</span>   
                                         </li>                                       
-                                    </ul>                                   
+                                    </ul> 
+                                    @if (Model.CanReview)
+                                    {
+                                        @if(Model.CustomerReview == null)
+                                        {
+                                            <ul class="product-count shipping-order" style="margin-top:10px;background-color: #EFF2F7;margin-bottom: 10px;height: 44px;">                                               
+                                                <li style="width:100%">                                                                                                                                  
+                                                    <a asp-action="Create" asp-controller="Reviews"
+                                                    asp-route-productId="@Model.Product.Id" asp-route-userId="@Model.Customer.Id"
+                                                    class="review" style="font-weight: 400;text-decoration: none;color:black">
+                                                    <i style="font-size:18px;padding: 13px 14px 13px 17px;" class="fas fa-star"></i>
+                                                    Give us your opinion now!
+                                                </a>    
+                                                </li>                                       
+                                            </ul>
+                                        }
+                                        else
+                                        {
+                                            <ul class="product-count shipping-order" style="margin-top:10px;background-color: #EFF2F7;margin-bottom: 10px;height: 44px;">                                               
+                                                <li style="width:100%">                                                                                                                                  
+                                                    <a asp-action="Edit" asp-controller="Reviews" asp-route-id="@Model.CustomerReview.Id" class="review" style="font-weight: 400;text-decoration: none;color:black"><i style="font-size:18px;padding: 13px 14px 13px 17px;" class="fas fa-star"></i> Edit your review</a>    
+                                                </li>                                       
+                                            </ul>
+                                        }
+
+                                }                                
                                     <ul class="product-count shipping-order" style="padding: 20px 0;border-top: 1px dashed #ddd;border-bottom: 1px dashed #ddd;">
                                         <li>  
                                             <img src="@Model.Product.Brand.ImageFullPath" class="img-fluid blur-up lazyload" alt="image">                                            
                                         </li>                                       
                                     </ul>
-                                     <ul class="product-count shipping-order" style="background-color: #EFF2F7; margin-top: 10px;">
+                                    <ul class="product-count shipping-order" style="background-color: #EFF2F7; margin-top: 10px;">
                                         <li>                                                                                                                                  
                                             <span class="lang" style="padding: 10px 10px 10px 15px;font-weight: 400;">@Model.Product.Category.Name</span>   
                                         </li>                                       
@@ -140,9 +187,10 @@
                                         </ul>
 
                                         @foreach(var item in Model.Stocks)
-                                        {
+                                        {                                            
                                             if(item.Product.Id == Model.Product.Id)
                                             {
+                                               
                                                 var color = "";
                                                 var textColor = "";
                                                 @if(item.Quantity == 0)
@@ -169,7 +217,7 @@
                                                     textColor = "#fff";
                                                 } 
 
-                                               <ul class="product-count shipping-order" style="background-color:@color; margin-top: 10px;text-align: center;">
+                                               <ul  class="product-count shipping-order" style="background-color:@color; margin-top: 10px;text-align: center;">
                                                     <li>
                                                         <h6 style="font-weight:400;padding: 10px 10px 10px 15px;color: @textColor;text-shadow: #919191 2px 0px 5px;">@item.Store.Name</h6>                                                         
                                                     </li>
@@ -208,7 +256,7 @@
                                     data-bs-target="#desc" type="button">Description</button>                             
 
                                 <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab"
-                                    data-bs-target="#review" type="button">Review</button>
+                                    data-bs-target="#review" type="button">Reviews</button>
                             </div>
                         </nav>
 
@@ -225,287 +273,198 @@
 
                             <div class="tab-pane fade" id="review">
                                 <div class="row g-4">
-                                    <div class="col-lg-4">
-                                        <div class="customer-rating">
-                                            <h2>Customer reviews</h2>
-                                            <ul class="rating my-2 d-inline-block">
-                                                <li>
-                                                    <i class="fas fa-star theme-color"></i>
-                                                </li>
-                                                <li>
-                                                    <i class="fas fa-star theme-color"></i>
-                                                </li>
-                                                <li>
-                                                    <i class="fas fa-star theme-color"></i>
-                                                </li>
-                                                <li>
-                                                    <i class="fas fa-star"></i>
-                                                </li>
-                                                <li>
-                                                    <i class="fas fa-star"></i>
-                                                </li>
-                                            </ul>
-
-                                            <div class="global-rating">
-                                                <h5 class="font-light">82 Ratings</h5>
+                                    @if(Model.Reviews != null && Model.Reviews.Count > 0)
+                                    {
+                                       
+                                       <div class="col-lg-4">
+                                            <div class="customer-rating">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <h2>Customer reviews</h2>
+                                                    </div>                                                    
+                                                </div>
+                                                <div class="row">
+                                                    <h5>Overall Rating</h5>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <ul class="rating my-2 d-inline-block">
+                                                            @for(int i = 1; i < 6; i++)
+                                                            {
+                                                                @if(i <= Model.OveralRating)
+                                                                {
+                                                                     <li>
+                                                                        <i class="fas fa-star theme-color"></i>
+                                                                     </li>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <li>
+                                                                        <i class="fas fa-star"></i>
+                                                                    </li>
+                                                                }
+                                                            }                                                
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="global-rating">
+                                                            <h5 class="font-light" style="line-height: 37px;">(@Model.Reviews.Count Ratings)</h5>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6"></div>
+                                                </div>                                              
                                             </div>
+                                       </div> 
 
-                                            <ul class="rating-progess">
-                                                <li>
-                                                    <h5 class="me-3">5 Star</h5>
-                                                    <div class="progress">
-                                                        <div class="progress-bar" role="progressbar" style="width: 78%"
-                                                            aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-                                                        </div>
+                                        <div class="col-12 mt-4">
+                                            <div class="customer-review-box">  
+                                                
+                                                @if(Model.CustomerReview != null)
+                                                {
+                                                    <div class="customer-section" style="margin-top: 20px;margin-bottom: 20px;padding-bottom: 20px; border-bottom: 1px solid rgba(211, 211, 222,0.5);">   
+                                                            <div class="customer-details">
+                                                                <div class="row">
+                                                                    <div class="col-md-1">
+                                                                        <div class="customer-profile">
+                                                                            <img style="max-width: 75px;" src="@Model.CustomerReview.User.ImageFullPath" class="img-fluid blur-up lazyload" alt="">                                                                
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-11">
+
+                                                                        <h5 style="font-weight: 500;">@Model.CustomerReview.User.FullName
+                                                                            <span style="font-size: 12px;font-weight: 400;line-height: 19px;" class="font-light">
+                                                                                - @Model.CustomerReview.ReviewDate.ToString("MMM dd, yyyy",ci)
+                                                                                - (@Model.CustomerReview.Status)                                                                               
+                                                                            </span>
+                                                                        </h5>    
+                                                                        <ul class="rating my-2 d-inline-block">
+                                                                            @for(int i = 1; i < 6; i++)
+                                                                            {
+                                                                                @if(i <= Model.CustomerReview.Rating)
+                                                                                {
+                                                                                     <li>
+                                                                                        <i class="fas fa-star theme-color"></i>
+                                                                                     </li>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <li>
+                                                                                        <i class="fas fa-star"></i>
+                                                                                    </li>
+                                                                                }
+                                                                            }               
+                                                                        </ul>
+                                                                        <h6 style="font-weight: 500;">@Model.CustomerReview.ReviewTitle</h6>
+                                                                        <p class="font-light">@Model.CustomerReview.ReviewText</p>
+
+                                                                        <p class="font-light" style="font-weight:500">
+                                                                            Would you recommend 
+                                                                            @if(Model.CustomerReview.WouldRecommend == true)
+                                                                            {
+                                                                                <span style="margin-left:10px"><i class="fas fa-check theme-color" style="margin-right:4px"></i>Yes</span>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <span style="margin-left:10px;"><i class="fas fa-times font-light" style="margin-right:4px"></i>No</span>
+                                                                            }
+                                                                        </p>
+
+                                                                        @*<p class="date-custo font-light">- Sep 08, 2021</p>*@
+
+                                                                    </div>                                                                     
+                                                                </div>                                                         
+                                                            </div>
                                                     </div>
-                                                    <h5 class="ms-3">78%</h5>
-                                                </li>
-                                                <li>
-                                                    <h5 class="me-3">4 Star</h5>
-                                                    <div class="progress">
-                                                        <div class="progress-bar" role="progressbar" style="width: 62%"
-                                                            aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-                                                        </div>
-                                                    </div>
-                                                    <h5 class="ms-3">62%</h5>
-                                                </li>
-                                                <li>
-                                                    <h5 class="me-3">3 Star</h5>
-                                                    <div class="progress">
-                                                        <div class="progress-bar" role="progressbar" style="width: 44%"
-                                                            aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-                                                        </div>
-                                                    </div>
-                                                    <h5 class="ms-3">44%</h5>
-                                                </li>
-                                                <li>
-                                                    <h5 class="me-3">2 Star</h5>
-                                                    <div class="progress">
-                                                        <div class="progress-bar" role="progressbar" style="width: 30%"
-                                                            aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-                                                        </div>
-                                                    </div>
-                                                    <h5 class="ms-3">30%</h5>
-                                                </li>
-                                                <li>
-                                                    <h5 class="me-3">1 Star</h5>
-                                                    <div class="progress">
-                                                        <div class="progress-bar" role="progressbar" style="width: 18%"
-                                                            aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-                                                        </div>
-                                                    </div>
-                                                    <h5 class="ms-3">18%</h5>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                                }
+
+
+                                                @foreach(var review in Model.Reviews)
+                                                {  
+                                                    if(review.Status == "Authorized")
+                                                    {
+                                                        @if(review != Model.CustomerReview)
+                                                        {
+                                                            <div class="customer-section" style="margin-top: 20px;margin-bottom: 20px;padding-bottom: 20px; border-bottom: 1px solid rgba(211, 211, 222,0.5);">   
+                                                                <div class="customer-details">
+                                                                    <div class="row">
+                                                                        <div class="col-md-1">
+                                                                            <div class="customer-profile">
+                                                                                <img style="max-width: 75px;" src="@review.User.ImageFullPath" class="img-fluid blur-up lazyload" alt="">                                                                
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-11">
+
+                                                                            <h5 style="font-weight: 500;">@review.User.FullName <span style="font-size: 12px;font-weight: 400;line-height: 19px;" class="font-light"> - @review.ReviewDate.ToString("MMM dd, yyyy",ci)</span> </h5>
+    
+                                                                            <ul class="rating my-2 d-inline-block">
+                                                                                @for(int i = 1; i < 6; i++)
+                                                                                {
+                                                                                    @if(i <= review.Rating)
+                                                                                    {
+                                                                                         <li>
+                                                                                            <i class="fas fa-star theme-color"></i>
+                                                                                         </li>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <li>
+                                                                                            <i class="fas fa-star"></i>
+                                                                                        </li>
+                                                                                    }
+                                                                                }               
+                                                                            </ul>
+                                                                            <h6 style="font-weight: 500;">@review.ReviewTitle</h6>
+                                                                            <p class="font-light">@review.ReviewText</p>
+
+                                                                            <p class="font-light" style="font-weight:500">
+                                                                                Would you recommend 
+                                                                                @if(review.WouldRecommend == true)
+                                                                                {
+                                                                                    <span style="margin-left:10px"><i class="fas fa-check theme-color" style="margin-right:4px"></i>Yes</span>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <span style="margin-left:10px;"><i class="fas fa-times font-light" style="margin-right:4px"></i>No</span>
+                                                                                }
+                                                                            </p>
+
+                                                                            @*<p class="date-custo font-light">- Sep 08, 2021</p>*@
+
+                                                                        </div>                                                                     
+                                                                    </div>                                                         
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                  
+                                                    }
+
+                                                    
+                                                }
+
+                                            </div>
                                     </div>
 
-                                    <div class="col-lg-8">
-                                        <p class="d-inline-block me-2">Rating</p>
-                                        <ul class="rating mb-3 d-inline-block">
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star theme-color"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star"></i>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-star"></i>
-                                            </li>
-                                        </ul>
-                                        <div class="review-box">
-                                            <form class="row g-4">
-                                                <div class="col-12 col-md-6">
-                                                    <label class="mb-1" for="name">Name</label>
-                                                    <input type="text" class="form-control" id="name"
-                                                        placeholder="Enter your name" required>
-                                                </div>
-
-                                                <div class="col-12 col-md-6">
-                                                    <label class="mb-1" for="id">Email Address</label>
-                                                    <input type="email" class="form-control" id="id"
-                                                        placeholder="Email Address" required>
-                                                </div>
-
-                                                <div class="col-12">
-                                                    <label class="mb-1" for="comments">Comments</label>
-                                                    <textarea class="form-control" placeholder="Leave a comment here"
-                                                        id="comments" style="height: 100px" required></textarea>
-                                                </div>
-
-                                                <div class="col-12">
-                                                    <button type="submit"
-                                                        class="btn default-light-theme default-theme default-theme-2">Submit</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-12 mt-4">
-                                        <div class="customer-review-box">
-                                            <h4>Customer Reviews</h4>
-
-                                            <div class="customer-section">
-                                                <div class="customer-profile">
-                                                    <img src="~/assets/images/inner-page/review-image/1.jpg"
-                                                        class="img-fluid blur-up lazyload" alt="">
-                                                </div>
-
-                                                <div class="customer-details">
-                                                    <h5>Mike K</h5>
-                                                    <ul class="rating my-2 d-inline-block">
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star"></i>
-                                                        </li>
-                                                    </ul>
-                                                    <p class="font-light">I purchased my Tab S2 at Best Buy but I
-                                                        wanted
-                                                        to
-                                                        share my thoughts on Amazon. I'm not going to go over specs
-                                                        and
-                                                        such
-                                                        since you can read those in a hundred other places. Though I
-                                                        will
-                                                        say that the "new" version is preloaded with Marshmallow and
-                                                        now
-                                                        uses a Qualcomm octacore processor in place of the Exynos
-                                                        that
-                                                        shipped with the first gen.</p>
-
-                                                    <p class="date-custo font-light">- Sep 08, 2021</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="customer-section">
-                                                <div class="customer-profile">
-                                                    <img src="~/assets/images/inner-page/review-image/2.jpg"
-                                                        class="img-fluid blur-up lazyload" alt="">
-                                                </div>
-
-                                                <div class="customer-details">
-                                                    <h5>Norwalker</h5>
-                                                    <ul class="rating my-2 d-inline-block">
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star"></i>
-                                                        </li>
-                                                    </ul>
-                                                    <p class="font-light">Pros: Nice large(9.7") screen. Bright
-                                                        colors.
-                                                        Easy
-                                                        to setup and get started. Arrived on time. Cons: a bit slow
-                                                        on
-                                                        response, but expected as tablet is 2 generations old. But
-                                                        works
-                                                        fine and good value for the money.</p>
-
-                                                    <p class="date-custo font-light">- Sep 08, 2021</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="customer-section">
-                                                <div class="customer-profile">
-                                                    <img src="~/assets/images/inner-page/review-image/3.jpg"
-                                                        class="img-fluid blur-up lazyload" alt="">
-                                                </div>
-
-                                                <div class="customer-details">
-                                                    <h5>B. Perdue</h5>
-                                                    <ul class="rating my-2 d-inline-block">
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star"></i>
-                                                        </li>
-                                                    </ul>
-                                                    <p class="font-light">Love the processor speed and the
-                                                        sensitivity
-                                                        of
-                                                        the touch screen.</p>
-
-                                                    <p class="date-custo font-light">- Sep 08, 2021</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="customer-section">
-                                                <div class="customer-profile">
-                                                    <img src="~/assets/images/inner-page/review-image/4.jpg"
-                                                        class="img-fluid blur-up lazyload" alt="">
-                                                </div>
-
-                                                <div class="customer-details">
-                                                    <h5>MSL</h5>
-                                                    <ul class="rating my-2 d-inline-block">
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star"></i>
-                                                        </li>
-                                                    </ul>
-                                                    <p class="font-light">I purchased the Tablet May 2017 and now
-                                                        April
-                                                        2019
-                                                        I have to charge it everyday. I don't watch movies on
-                                                        it..just
-                                                        play
-                                                        a game or two while on lunch. I guess now I need to power it
-                                                        down
-                                                        for future use.</p>
-
-                                                    <p class="date-custo font-light">- Sep 08, 2021</p>
+                                }
+                                else
+                                {
+                                        <div class="customer-section" style="margin-top: 50px;margin-bottom: 50px;padding-bottom: 20px; border-bottom: 1px solid rgba(211, 211, 222,0.5);">   
+                                            <div class="customer-details">
+                                                <div class="row">
+                                                    <div class="col-md-12" style="justify-content:center;align-items:center;">
+                                                        @if (Model.CanReview)
+                                                        {
+                                                            <h5>There are no reviews for this product yet.</h5><br />
+                                                            <a class="btn btn-primary btn-sm">Give us your opinion now!</a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <h5>There are no reviews for this product yet.</h5>
+                                                        }                                                    
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                }
                                 </div>
                             </div>
                         </div>

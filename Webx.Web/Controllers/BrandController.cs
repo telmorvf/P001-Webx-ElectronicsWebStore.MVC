@@ -21,13 +21,15 @@ namespace Webx.Web.Controllers
         private readonly DataContext _dataContext;
         private readonly IConverterHelper _converterHelper;
         private readonly IImageHelper _imageHelper;
+        private readonly IProductRepository _productRepository;
 
         public BrandController(
             IBrandRepository brandRepository,
             INotyfService toastNotification,
             DataContext dataContext,  
             IConverterHelper converterHelper,
-            IImageHelper imageHelper
+            IImageHelper imageHelper,
+            IProductRepository productRepository
             )
         {
             _brandRepository = brandRepository;
@@ -35,6 +37,7 @@ namespace Webx.Web.Controllers
             _dataContext = dataContext;
             _converterHelper = converterHelper;
             _imageHelper = imageHelper;
+            _productRepository = productRepository;
         }
 
         [Authorize(Roles = "Admin, Product Manager, Technician")]
@@ -45,6 +48,7 @@ namespace Webx.Web.Controllers
             // Get all Brands from the company:
             brands = await _brandRepository.GetAllBrandsAsync();
 
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             //vai buscar as dataAnnotations da class Brand para injectar na tabela do syncfusion
             ViewBag.Type = typeof(Brand);
 
@@ -78,6 +82,9 @@ namespace Webx.Web.Controllers
             {
                 return null;
             }
+
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
+
             return View(model);
         }
 
@@ -91,6 +98,7 @@ namespace Webx.Web.Controllers
                 if (brand == null)
                 {
                     _toastNotification.Error("Error, the brand was not found");
+                    ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                     return View(model);
                 };
 
@@ -130,16 +138,23 @@ namespace Webx.Web.Controllers
                         _toastNotification.Error($"There was a problem updating the brand, try again later!");
                     }
 
+                    ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
+
                     return View(model);
                 }
             };
+
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
+
             return View(model);
         }
 
         [Authorize(Roles = "Admin")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var model = new BrandViewModel();
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
+
             return View(model);
         }
 
@@ -154,6 +169,7 @@ namespace Webx.Web.Controllers
                 if (brand.Result != null)
                 {
                     _toastNotification.Error("This Brand Already Exists, Please try again...");
+                    ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                     return View(model);
                 }
 

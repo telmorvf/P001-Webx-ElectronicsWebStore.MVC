@@ -10,5 +10,6 @@ namespace Webx.Web.Helpers
         Task<Response> SendResetPasswordEmail(string to, string link, User customer, string returnLink);
         Task<Response> SendEmployeeConfirmationEmail(string email, string tokenLink, User user, string returnLink);
         Task<Response> SendEmailWithInvoicesAsync(string to, List<string> attachments,User user,string paymentId);
+        Task<Response> SendRequestReviewEmail(string tokenLink, User customer,string to);
     }
 }

@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Razor.Language.Intermediate;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using PayPalCheckoutSdk.Orders;
+//using System.Net.Mail;
+
 
 namespace Webx.Web.Helpers
 {
@@ -86,7 +88,7 @@ namespace Webx.Web.Helpers
 
             try
             {
-                using (var client = new SmtpClient())
+                using (var client = new MailKit.Net.Smtp.SmtpClient())
                 {
                     client.Connect(smtp, int.Parse(port), false);
                     client.Authenticate(from, password);
@@ -280,6 +282,91 @@ namespace Webx.Web.Helpers
             {
                 IsSuccess = true
             };
+        }
+
+        public async Task<Response> SendRequestReviewEmail(string tokenLink, User customer,string to)
+        {
+            var nameFrom = _configuration["OnlineStoreMail:NameFrom"];
+            var from = _configuration["OnlineStoreMail:From"];
+            var smtp = _configuration["OnlineStoreMail:Smtp"];
+            var port = _configuration["OnlineStoreMail:Port"];
+            var password = _configuration["OnlineStoreMail:Password"];
+
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress(nameFrom, from));
+            message.To.Add(new MailboxAddress(to, to));
+            message.Subject = "WebX Review Request";
+
+            var pathToTemplate = _webHostEnvironment.WebRootPath + Path.DirectorySeparatorChar.ToString() +
+                "assets" + Path.DirectorySeparatorChar.ToString() +
+                "templates" + Path.DirectorySeparatorChar.ToString() +
+                "reviewTemplate.html";
+
+            string htmlBody = "";
+
+            using (StreamReader streamreader = File.OpenText(pathToTemplate))
+            {
+                htmlBody = streamreader.ReadToEnd();
+            }
+            var bodybuilder = new BodyBuilder();
+
+            //{0} - images/favicon.png           
+            var titleImage = bodybuilder.LinkedResources.Add($"{_webHostEnvironment.WebRootPath}{Path.DirectorySeparatorChar}assets{Path.DirectorySeparatorChar}templates{Path.DirectorySeparatorChar}images{Path.DirectorySeparatorChar}favicon.png");
+            titleImage.ContentId = MimeUtils.GenerateMessageId();
+
+            //{1} - images/Order.jpg
+            var orderImage = bodybuilder.LinkedResources.Add($"{_webHostEnvironment.WebRootPath}{Path.DirectorySeparatorChar}assets{Path.DirectorySeparatorChar}templates{Path.DirectorySeparatorChar}images{Path.DirectorySeparatorChar}review.jpg");
+            orderImage.ContentId = MimeUtils.GenerateMessageId();
+            // {2} - customer name 
+            string userFullname = customer.FirstName + " " + customer.LastName;
+            // {3} - link           
+
+            ////{4} - images/fb.png
+            //var fbImage = bodybuilder.LinkedResources.Add($"{_webHostEnvironment.WebRootPath}{Path.DirectorySeparatorChar}assets{Path.DirectorySeparatorChar}templates{Path.DirectorySeparatorChar}images{Path.DirectorySeparatorChar}fb.png");
+            //fbImage.ContentId = MimeUtils.GenerateMessageId();
+
+            ////{5} - images/twitter.png
+            //var twitterImage = bodybuilder.LinkedResources.Add($"{_webHostEnvironment.WebRootPath}{Path.DirectorySeparatorChar}assets{Path.DirectorySeparatorChar}templates{Path.DirectorySeparatorChar}images{Path.DirectorySeparatorChar}twitter.png");
+            //twitterImage.ContentId = MimeUtils.GenerateMessageId();
+
+            ////{6} - images/insta.png
+            //var instaImage = bodybuilder.LinkedResources.Add($"{_webHostEnvironment.WebRootPath}{Path.DirectorySeparatorChar}assets{Path.DirectorySeparatorChar}templates{Path.DirectorySeparatorChar}images{Path.DirectorySeparatorChar}insta.png");
+            //instaImage.ContentId = MimeUtils.GenerateMessageId();
+
+
+            // -----------------------------------------------{0}------------------------{1}-------------{2}------------{3}-------------------{4}--------------------{5}--------------------{6}--------
+            string messageBody = string.Format(htmlBody, titleImage.ContentId, orderImage.ContentId, userFullname, tokenLink);
+
+            bodybuilder.HtmlBody = messageBody;
+                      
+
+            message.Body = bodybuilder.ToMessageBody();
+            
+            try
+            {
+                using (var client = new SmtpClient())
+                {
+                    client.Connect(smtp, int.Parse(port), false);
+                    client.Authenticate(from, password);
+                    await client.SendAsync(message);
+                    client.Disconnect(true);
+                }
+            }
+            catch (System.Exception ex)
+            {
+
+                return new Response
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+
+            return new Response
+            {
+                IsSuccess = true
+            };
+
         }
 
         public async Task<Response> SendResetPasswordEmail(string to, string link, User customer, string returnLink)

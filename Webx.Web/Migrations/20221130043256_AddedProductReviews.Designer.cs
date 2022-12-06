@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Webx.Web.Data;
 
 namespace Webx.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20221130043256_AddedProductReviews")]
+    partial class AddedProductReviews
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -465,23 +467,6 @@ namespace Webx.Web.Migrations
                     b.ToTable("Reviews");
                 });
 
-            modelBuilder.Entity("Webx.Web.Data.Entities.ProductReviewTemps", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("ProductReviewId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductReviewId");
-
-                    b.ToTable("ReviewsTemps");
-                });
-
             modelBuilder.Entity("Webx.Web.Data.Entities.Status", b =>
                 {
                     b.Property<int>("Id")
@@ -846,15 +831,6 @@ namespace Webx.Web.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Webx.Web.Data.Entities.ProductReviewTemps", b =>
-                {
-                    b.HasOne("Webx.Web.Data.Entities.ProductReview", "ProductReview")
-                        .WithMany()
-                        .HasForeignKey("ProductReviewId");
-
-                    b.Navigation("ProductReview");
                 });
 
             modelBuilder.Entity("Webx.Web.Data.Entities.Stock", b =>

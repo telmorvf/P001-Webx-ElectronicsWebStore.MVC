@@ -19,18 +19,21 @@ namespace Webx.Web.Controllers
         private readonly INotyfService _toastNotification;
         private readonly DataContext _dataContext;
         private readonly IConverterHelper _converterHelper;
+        private readonly IProductRepository _productRepository;
 
         public StoreController(
             IStoreRepository storeRepository,
             INotyfService toastNotification,
             DataContext dataContext,
-            IConverterHelper converterHelper
+            IConverterHelper converterHelper,
+            IProductRepository productRepository
             )
         {
             _storeRepository = storeRepository;
             _toastNotification = toastNotification;
             _dataContext = dataContext;
             _converterHelper = converterHelper;
+            _productRepository = productRepository;
         }
 
         [Authorize(Roles = "Admin, Product Manager, Technician")]
@@ -48,7 +51,7 @@ namespace Webx.Web.Controllers
             {
                 stores = await _storeRepository.GetAllStoresAsync();
             }
-
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             ViewBag.IsActive = isActive;
             //vai buscar as dataAnnotations da class User para injectar na tabela do syncfusion
             ViewBag.Type = typeof(Store);
@@ -83,6 +86,7 @@ namespace Webx.Web.Controllers
             {
                 return null;
             }
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             return View(model);
         }
 
@@ -115,17 +119,20 @@ namespace Webx.Web.Controllers
                     {
                         _toastNotification.Error($"There was a problem updating the employee!");
                     }
+                    ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                     return View(model);
                 }
 
             };
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             return View(model);
         }
 
         [Authorize(Roles = "Admin")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var model = new StoreViewModel();
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             return View(model);
         }
 
@@ -140,6 +147,7 @@ namespace Webx.Web.Controllers
                 if (storeName.Result != null)
                 {
                     _toastNotification.Error("This Store Name Already Exists, Please try again...");
+                    ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                     return View(model);
                 }
                 else
@@ -149,16 +157,18 @@ namespace Webx.Web.Controllers
                         Store newBrand = _converterHelper.StoreFromViewModel(model, true);
                         await _storeRepository.CreateAsync(model);
                         _toastNotification.Success("Store created successfully!!!");
+                        ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                         return View(model);
                     }
                     catch (Exception)
                     {
                         _toastNotification.Error("There was a problem, When try creating the store. Please try again");
+                        ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                         return View(model);
                     }   
                 }
             };
-
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             return View(model);
         }
 

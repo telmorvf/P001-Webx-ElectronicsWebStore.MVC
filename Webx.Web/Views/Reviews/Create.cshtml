@@ -1,0 +1,470 @@
+﻿@model Webx.Web.Models.ShopViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script>
+    
+    function wouldYouRecommend(value) {
+       
+        debugger;
+
+        let checkboxYes = document.getElementById("checkboxYes");
+        let checkboxNo = document.getElementById("checkboxNo");
+
+        if (checkboxNo.checked === false && checkboxYes.checked === false) {
+            if (value === 'Yes') {
+                checkboxYes.checked = true
+            }
+            else {
+                checkboxNo.checked = true;
+            }
+        }
+        else {
+            if (value === 'Yes') {
+            
+                if (checkboxYes.checked === true) {
+                    checkboxYes.checked = true;
+                    checkboxNo.checked = false;
+                }
+
+            }
+            else {
+                if (checkboxNo.checked === true) {
+                    checkboxNo.checked = true;
+                    checkboxYes.checked = false;
+                }
+            }
+        }
+    }
+
+
+    function changeStar(value) {
+        for (let i = 1; i <= value; i++) {
+            let starId = "star" + i;
+            let star = document.getElementById(starId);
+            star.classList.add("starColor");
+        }
+    }
+
+    function RemoveColor(value) {
+        for (let i = 1; i <= value; i++) {
+            let starId = "star" + i;
+            let star = document.getElementById(starId);
+            star.classList.remove("starColor");
+        }
+    }
+
+    function MaintainValue(value) {
+       
+        let selectElement = document.getElementById("selectedRate");
+        selectElement.selectedIndex = value-1;
+
+        console.log(selectElement.value);
+
+        for (let i = 1; i <= 5; i++) {
+             
+            let starId = "star" + i;
+            let star = document.getElementById(starId);
+
+            if (i <= value) {
+                star.classList.add("starColorPersistent");
+            }
+            else {
+                star.classList.remove("starColorPersistent");
+            }                      
+        }
+
+    }
+
+</script>
+
+<style>
+    .ck-button {
+    /*margin:4px;*/
+    background-color:#EFEFEF;
+    border-radius:4px;
+    border:1px solid #D0D0D0;
+    overflow:auto;
+    width:40%;
+    justify-content:center;
+    align-items:center;
+    display:inline-flex;
+
+    /*float:left;*/
+    }
+
+    .ck-button label {
+        float:left;
+        width: 100%;
+    }
+    
+    .ck-button label span {
+        text-align:center;
+        padding:3px 0px;
+        display:block;
+    }
+    
+    .ck-button label input {
+        position:absolute;
+        top:-20px;
+    }
+    
+    .ck-button input:checked + span {
+        background-color:var(--theme-color);
+        -webkit-box-shadow: inset 0px 0px 7px #3f3f3f;
+        -moz-box-shadow: inset 0px 0px 7px #3f3f3f;
+        box-shadow: inset 0px 0px 7px #3f3f3f;
+        color:#fff;
+    }
+
+    .star{
+        font-size: 18px;
+        margin-right: 5px;
+    }
+
+    .starColor{        
+        color: #FFB703 !important;
+    }
+
+    .starColorPersistent{
+        color: #FFB703 !important;
+    }
+
+    .rating li i{
+        color: #c3c3c3;
+        transition:ease-in-out 0.5s;
+    }
+
+</style>
+
+
+<div class="container" style="max-width: 1500px !important;">
+    <div class="row" style="margin-top:50px;margin-bottom:50px;">
+        <div class="col-md-1"></div>
+        <div class="col-md-4">
+             <div class="table-dashboard dashboard wish-list-section">
+                 
+                @if(ViewBag.IsEdit != true)
+                {
+                    <form enctype="multipart/form-data" asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="ProductReviewViewModel.ProductId" />
+                        <input type="hidden" asp-for="ProductReviewViewModel.UserId" />
+                        <input type="hidden" asp-for="CartGrandTotal" />
+                        <input type="hidden" asp-for="TotalProductsInCart" />
+                        <input type="hidden" asp-for="CartGrandTotalWithNoDiscount" />
+                        <input type="hidden" asp-for="Cart" />
+                        <input type="hidden" asp-for="ProductReviewViewModel.Id" />
+                        
+                       <div class="table-responsive" style="box-shadow:rgba(149, 157, 165, 0.2) 0px 8px 24px">
+                           <table class="table cart-table">
+                               <thead>
+                                   <tr class="table-head">
+                                      <th scope="col">Rating</th>
+                                  </tr>
+                               </thead> 
+                               <tr>
+                                   <td>
+                                       <div class="form-check ps-0 custome-form-check" style="justify-content: center;">                                                                                                         
+                                          
+                                               <select id="selectedRate" asp-for="ProductReviewViewModel.Rating" style="display:none">
+                                                   <option value="1"></option>
+                                                   <option value="2"></option>
+                                                   <option value="3"></option>
+                                                   <option value="4"></option>
+                                                   <option value="5"></option>
+                                               </select>
+
+                                               <ul class="rating mt-0">                                                
+                                                   <li class="rating-list" onmouseover="changeStar(1)" onmouseout="RemoveColor(1)" onclick="MaintainValue(1)">                                                   
+                                                       <i id="star1" class="fas fa-star star"></i>
+                                                   </li>                                                
+                                                   <li class="rating-list" onmouseover="changeStar(2)" onmouseout="RemoveColor(2)" onclick="MaintainValue(2)">
+                                                       <i id="star2" class="fas fa-star star"></i>
+                                                   </li>
+                                                   <li class="rating-list" onmouseover="changeStar(3)" onmouseout="RemoveColor(3)" onclick="MaintainValue(3)">
+                                                       <i id="star3" class="fas fa-star star"></i>
+                                                   </li>
+                                                   <li class="rating-list" onmouseover="changeStar(4)" onmouseout="RemoveColor(4)" onclick="MaintainValue(4)">
+                                                       <i id="star4" class="fas fa-star star"></i>
+                                                   </li>
+                                                   <li class="rating-list" onmouseover="changeStar(5)" onmouseout="RemoveColor(5)" onclick="MaintainValue(5)">
+                                                       <i id="star5" class="fas fa-star star"></i>
+                                                   </li>
+                                               </ul>
+                                          
+                                       </div>
+                                   </td>
+                               </tr>   
+                               
+                               <thead>
+                                   <tr class="table-head">
+                                      <th scope="col">Message Title</th>
+                                  </tr>
+                               </thead>
+                               <tr>
+                                   <td>
+                                      <input asp-for="ProductReviewViewModel.ReviewTitle" style="width: 90%;"/>
+                                   </td>
+                               </tr>                        
+
+                              <thead>
+                                   <tr class="table-head">
+                                      <th scope="col">Message</th>
+                                  </tr>
+                               </thead>
+                              <tr>
+                                  <td>
+                                     <textarea rows="5" asp-for="ProductReviewViewModel.ReviewText" style="width: 90%;"></textarea>
+                                  </td>
+                              </tr>
+
+                             <thead>
+                                   <tr class="table-head">
+                                      <th scope="col">Would you recommend?</th>
+                                  </tr>
+                               </thead>
+                              <tr>
+                                  <td>
+                                     <div class="ck-button" style="margin-right:10%;">
+                                       <label>
+                                           <input id="checkboxYes" type="checkbox" asp-for="ProductReviewViewModel.WouldRecommend" value="true" onclick="wouldYouRecommend('Yes')"><span>Yes</span> 
+                                       </label>
+                                     </div>
+                                     <div class="ck-button">
+                                         <label>                                 
+                                            <input id="checkboxNo" type="checkbox" onclick="wouldYouRecommend('No')"><span>No</span> 
+                                         </label>
+                                     </div>
+                                  </td>
+                              </tr>
+
+                              <thead>
+                                  <tr class="table-head">
+                                      <th scope="col">
+                                          <div class="form-group">  
+                                                   <input style="width: 90%; border-radius: 4px;" id="submit" type="submit" value="Submit Review" class="btn btn-primary btn-sm" /> 
+                                           </div>
+                                      </th>
+                                  </tr>
+                              </thead>
+
+                           </table>
+                       </div>
+                    </form>
+                }
+                else
+                {
+                    <form enctype="multipart/form-data" asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="ProductReviewViewModel.ProductId" />
+                        <input type="hidden" asp-for="ProductReviewViewModel.UserId" />
+                        <input type="hidden" asp-for="CartGrandTotal" />
+                        <input type="hidden" asp-for="TotalProductsInCart" />
+                        <input type="hidden" asp-for="CartGrandTotalWithNoDiscount" />
+                        <input type="hidden" asp-for="Cart" />
+                        <input type="hidden" asp-for="ProductReviewViewModel.Id" />
+                        
+                       <div class="table-responsive" style="box-shadow:rgba(149, 157, 165, 0.2) 0px 8px 24px">
+                           <table class="table cart-table">
+                               <thead>
+                                   <tr class="table-head">
+                                      <th scope="col">Rating</th>
+                                  </tr>
+                               </thead> 
+                               <tr>
+                                   <td>
+                                       <div class="form-check ps-0 custome-form-check" style="justify-content: center;">                                                                                                         
+                                          
+                                               <select id="selectedRate" asp-for="ProductReviewViewModel.Rating" style="display:none">
+                                                   <option value="1"></option>
+                                                   <option value="2"></option>
+                                                   <option value="3"></option>
+                                                   <option value="4"></option>
+                                                   <option value="5"></option>
+                                               </select>
+
+                                               <ul class="rating mt-0">                                                
+                                                   <li class="rating-list" onmouseover="changeStar(1)" onmouseout="RemoveColor(1)" onclick="MaintainValue(1)">                                                   
+                                                       <i id="star1" class="fas fa-star star"></i>
+                                                   </li>                                                
+                                                   <li class="rating-list" onmouseover="changeStar(2)" onmouseout="RemoveColor(2)" onclick="MaintainValue(2)">
+                                                       <i id="star2" class="fas fa-star star"></i>
+                                                   </li>
+                                                   <li class="rating-list" onmouseover="changeStar(3)" onmouseout="RemoveColor(3)" onclick="MaintainValue(3)">
+                                                       <i id="star3" class="fas fa-star star"></i>
+                                                   </li>
+                                                   <li class="rating-list" onmouseover="changeStar(4)" onmouseout="RemoveColor(4)" onclick="MaintainValue(4)">
+                                                       <i id="star4" class="fas fa-star star"></i>
+                                                   </li>
+                                                   <li class="rating-list" onmouseover="changeStar(5)" onmouseout="RemoveColor(5)" onclick="MaintainValue(5)">
+                                                       <i id="star5" class="fas fa-star star"></i>
+                                                   </li>
+                                               </ul>
+                                          
+                                       </div>
+                                   </td>
+                               </tr>   
+                               
+                               <thead>
+                                   <tr class="table-head">
+                                      <th scope="col">Message Title</th>
+                                  </tr>
+                               </thead>
+                               <tr>
+                                   <td>
+                                      <input asp-for="ProductReviewViewModel.ReviewTitle" style="width: 90%;"/>
+                                   </td>
+                               </tr>                        
+
+                              <thead>
+                                   <tr class="table-head">
+                                      <th scope="col">Message</th>
+                                  </tr>
+                               </thead>
+                              <tr>
+                                  <td>
+                                     <textarea rows="5" asp-for="ProductReviewViewModel.ReviewText" style="width: 90%;"></textarea>
+                                  </td>
+                              </tr>
+
+                             <thead>
+                                   <tr class="table-head">
+                                      <th scope="col">Would you recommend?</th>
+                                  </tr>
+                               </thead>
+                              <tr>
+                                  <td>
+                                     <div class="ck-button" style="margin-right:10%;">
+                                       <label>
+                                           <input id="checkboxYes" type="checkbox" asp-for="ProductReviewViewModel.WouldRecommend" value="true" onclick="wouldYouRecommend('Yes')"><span>Yes</span> 
+                                       </label>
+                                     </div>
+                                     <div class="ck-button">
+                                         <label>                                 
+                                            <input id="checkboxNo" type="checkbox" onclick="wouldYouRecommend('No')"><span>No</span> 
+                                         </label>
+                                     </div>
+                                  </td>
+                              </tr>
+
+                              <thead>
+                                  <tr class="table-head">
+                                      <th scope="col">
+                                          <div class="form-group">   
+                                                   <input style="width: 90%; border-radius: 4px;" id="submit" type="submit" value="Save Review" class="btn btn-primary btn-sm" /> 
+                                           </div>
+                                      </th>
+                                  </tr>
+                              </thead>
+
+                           </table>
+                       </div>
+                    </form>
+                }
+             </div>
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-5">
+            <div class="degree-section">
+                <div class="details-image ratio_asos">
+                    @if(Model.ProductReviewViewModel.Product.Images.Count() > 0)
+                    {
+                       <div>
+                           <div class="product-image-tag">
+                               <img src="@Model.ProductReviewViewModel.Product.ImageFirst" class="img-fluid w-100 image_zoom_cls-0 blur-up lazyload" alt="">
+                               @*<div class="label-tag">
+                                   <h6><i class="fas fa-star"></i> 4.8 <span class="font-light">120</span></h6>
+                               </div>*@
+                           </div>
+                       </div>
+                    }
+                    else
+                    {
+                            <div>
+                                <div class="product-image-tag">
+                                    <img src="@Model.ProductReviewViewModel.Product.ImageFirst" id="zoom_01" data-zoom-image="@Model.ProductReviewViewModel.Product.ImageFirst" class="img-fluid w-100 image_zoom_cls-0 blur-up lazyload" alt="">
+                                   @* <div class="label-tag">
+                                        <h6><i class="fas fa-star"></i> 4.8 <span class="font-light">120</span></h6>
+                                    </div>*@
+                                </div>
+                            </div>
+                    }                                       
+                   
+                </div>
+            </div>                        
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        let wouldRecommend = '@(ViewBag.WouldRecommed)';
+        let rating = '@(ViewBag.Rating)';
+
+        $(document).ready(function() {
+            
+            let checkboxYes = document.getElementById("checkboxYes");
+            let checkboxNo = document.getElementById("checkboxNo");
+
+            if (wouldRecommend === 'False') {
+                checkboxNo.checked = true;
+                checkboxYes.checked = false;
+            }
+            else {
+                checkboxYes.checked = true;
+                checkboxNo.checked = false;
+            }
+
+            let value = 1;
+
+            if (rating !== null && rating !== "") {
+                value = parseInt(rating);
+
+                let selectElement = document.getElementById("selectedRate");
+                selectElement.selectedIndex = value - 1;
+
+                console.log(selectElement.value);
+
+                for (let i = 1; i <= 5; i++) {
+
+                    let starId = "star" + i;
+                    let star = document.getElementById(starId);
+
+                    if (i <= value) {
+                        star.classList.add("starColorPersistent");
+                    }
+                    else {
+                        star.classList.remove("starColorPersistent");
+                    }
+                }
+
+            }
+            else {
+
+                for (let i = 1; i <= 5; i++) {
+
+                    let starId = "star" + i;
+                    let star = document.getElementById(starId);
+
+                    if (i <= value) {
+                        star.classList.add("starColorPersistent");
+                    }
+                    else {
+                        star.classList.remove("starColorPersistent");
+                    }
+                }
+
+            }
+
+
+        }) 
+
+
+    </script>
+}

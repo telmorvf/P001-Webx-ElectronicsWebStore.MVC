@@ -29,6 +29,7 @@ namespace Webx.Web.Controllers
         private readonly IUserHelper _userHelper;
         private readonly IXMLHelper _xMLHelper;
         private readonly IStockRepository _stockRepository;
+        private readonly IProductRepository _productRepository;
 
         public StockController(
             INotyfService toastNotification,
@@ -37,7 +38,8 @@ namespace Webx.Web.Controllers
             IImageHelper imageHelper,
             IUserHelper userHelper,
             IXMLHelper xMLHelper,
-            IStockRepository stockRepository
+            IStockRepository stockRepository,
+            IProductRepository productRepository
             )
         {
             _toastNotification = toastNotification;
@@ -47,6 +49,7 @@ namespace Webx.Web.Controllers
             _userHelper = userHelper;
             _xMLHelper = xMLHelper;
             _stockRepository = stockRepository;
+            _productRepository = productRepository;
         }
 
 
@@ -60,7 +63,7 @@ namespace Webx.Web.Controllers
 
             //vai buscar as dataAnnotations da class User para injectar na tabela do syncfusion
             //ViewData["Title"] = "View All Stock";
-
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             //ViewBag.Type = typeof(Brand);
             return View("ViewAll", stocks);
         }
@@ -75,7 +78,7 @@ namespace Webx.Web.Controllers
 
             //vai buscar as dataAnnotations da class User para injectar na tabela do syncfusion
             ViewBag.Type = typeof(Brand);
-
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             //ViewData["Title"] = "View All Stock Alerts";
             return View("ViewAllAlert",stocksAlerts);
         }
@@ -170,6 +173,7 @@ namespace Webx.Web.Controllers
             {
                 return null;
             }
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             return View(model);
         }
 
@@ -200,6 +204,7 @@ namespace Webx.Web.Controllers
                     _toastNotification.Success("Stock changes saved successfully!!!");
 
                     model = _converterHelper.StockToViewModel(stock);
+                    ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                     return View(model);
                 }
                 catch (Exception ex)
@@ -213,10 +218,12 @@ namespace Webx.Web.Controllers
                         _toastNotification.Error($"There was a problem updating the Stock Quantities!");
                     }
                     model = _converterHelper.StockToViewModel(stock);
+                    ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                     return View(model);
                 }
             };
             model = _converterHelper.StockToViewModel(stock);
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             return View(model);
         }
 

@@ -225,7 +225,6 @@ namespace Webx.Web.Controllers
                 return NotFound();
             }
 
-
             var model = new AddUserPasswordViewModel
             {
                 UserId = userId,
@@ -821,6 +820,73 @@ namespace Webx.Web.Controllers
             model.WishList = await _productRepository.GetOrStartWishListAsync();
 
             return View(model);
+        }
+
+        public async Task<IActionResult> OrderDetailsByEmail(int? id,string userId,string returnUrl)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return NotFound();
+            }
+
+            var user = await _userHelper.GetUserByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if(this.User.Identity.Name != user.UserName)
+            {
+                await _userHelper.LogoutAsync();
+                return RedirectToAction("Login", new { returnUrl = returnUrl });
+            }
+
+            if (!this.User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", new { returnUrl = returnUrl });
+            }                     
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var order = await _orderRepository.GetCompleteOrderByIdAsync(id.Value);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            if (order.Customer.Id != user.Id)
+            {
+                return RedirectToAction("NotAuthorized");
+            }
+
+            var orderDetails = await _orderRepository.GetOrderDetailsAsync(order.Id);
+
+            if (orderDetails == null)
+            {
+                return NotFound();
+            }
+
+            List<OrderWithDetailsViewModel> customerOrders = new List<OrderWithDetailsViewModel>();
+            customerOrders.Add(new OrderWithDetailsViewModel
+            {
+                Order = order,
+                OrderDetails = orderDetails
+            });
+
+            var model = await _productRepository.GetInitialShopViewModelAsync();
+            model.CustomerOrders = customerOrders;
+            model.Brands = (List<Brand>)await _brandRepository.GetAllBrandsAsync();
+            model.WishList = await _productRepository.GetOrStartWishListAsync();
+
+            ViewBag.UserFullName = user.FullName;
+            ViewBag.IsActive = user.Active;
+
+            return View("OrderDetails",model);
         }
     }
 }

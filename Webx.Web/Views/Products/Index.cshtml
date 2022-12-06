@@ -1,7 +1,7 @@
 ﻿@model Webx.Web.Models.ShopViewModel
 
 @{
-    ViewData["Title"] = "ProductsAll";
+    ViewData["Title"] = "WebX";
 
     var max = (int)Model.MostExpensiveProductPrice + 10;         
 
@@ -210,8 +210,7 @@
                                                 <li>
                                                     <div class="form-check ps-0 custome-form-check">
                                                         <input class="checkbox_animated check-it" type="checkbox" onchange="filterBrand(@brand.HtmlId)" id="@brand.HtmlId">                                                           
-                                                        <label class="form-check-label" for="@brand.HtmlId">@brand.Name</label>
-                                                        <p class="font-light">(25)</p>
+                                                        <label class="form-check-label" for="@brand.HtmlId">@brand.Name</label>                                                        
                                                     </div>
                                                 </li>
                                             }                                      
@@ -262,8 +261,7 @@
                                         <ul class="category-list">
                                             <li>
                                                 <div class="form-check ps-0 custome-form-check">
-                                                    <input class="checkbox_animated check-it" type="checkbox"
-                                                           id="flexCheckDefault10">
+                                                    <input class="checkbox_animated check-it" type="checkbox" onclick="filterRate(5)" id="flexCheckDefault5">                                                           
                                                     <ul class="rating mt-0">
                                                         <li class="rating-list">
                                                             <i class="fas fa-star theme-color"></i>
@@ -280,15 +278,13 @@
                                                         <li class="rating-list">
                                                             <i class="fas fa-star theme-color"></i>
                                                         </li>
-                                                    </ul>
-                                                    <p class="font-light">(25)</p>
+                                                    </ul>                                                    
                                                 </div>
                                             </li>
 
                                             <li>
                                                 <div class="form-check ps-0 custome-form-check">
-                                                    <input class="checkbox_animated check-it" type="checkbox"
-                                                           id="flexCheckDefault11">
+                                                    <input class="checkbox_animated check-it" type="checkbox" onclick="filterRate(4)" id="flexCheckDefault4">                                                           
                                                     <ul class="rating mt-0">
                                                         <li class="rating-list">
                                                             <i class="fas fa-star theme-color"></i>
@@ -305,15 +301,13 @@
                                                         <li class="rating-list">
                                                             <i class="fas fa-star"></i>
                                                         </li>
-                                                    </ul>
-                                                    <p class="font-light">(25)</p>
+                                                    </ul>                                                   
                                                 </div>
                                             </li>
 
                                             <li>
                                                 <div class="form-check ps-0 custome-form-check">
-                                                    <input class="checkbox_animated check-it" type="checkbox"
-                                                           id="flexCheckDefault12">
+                                                    <input class="checkbox_animated check-it" type="checkbox" onclick="filterRate(3)" id="flexCheckDefault3">                                                           
                                                     <ul class="rating mt-0">
                                                         <li class="rating-list">
                                                             <i class="fas fa-star theme-color"></i>
@@ -330,15 +324,13 @@
                                                         <li class="rating-list">
                                                             <i class="fas fa-star"></i>
                                                         </li>
-                                                    </ul>
-                                                    <p class="font-light">(25)</p>
+                                                    </ul>                                                  
                                                 </div>
                                             </li>
 
                                             <li>
                                                 <div class="form-check ps-0 custome-form-check">
-                                                    <input class="checkbox_animated check-it" type="checkbox"
-                                                           id="flexCheckDefault13">
+                                                    <input class="checkbox_animated check-it" type="checkbox" onclick="filterRate(2)" id="flexCheckDefault2">                                                           
                                                     <ul class="rating mt-0">
                                                         <li class="rating-list">
                                                             <i class="fas fa-star theme-color"></i>
@@ -355,15 +347,13 @@
                                                         <li class="rating-list">
                                                             <i class="fas fa-star"></i>
                                                         </li>
-                                                    </ul>
-                                                    <p class="font-light">(25)</p>
+                                                    </ul>                                                    
                                                 </div>
                                             </li>
 
                                             <li>
                                                 <div class="form-check ps-0 custome-form-check">
-                                                    <input class="checkbox_animated check-it" type="checkbox"
-                                                           id="flexCheckDefault14">
+                                                    <input class="checkbox_animated check-it" type="checkbox" onclick="filterRate(1)" id="flexCheckDefault1">                                                           
                                                     <ul class="rating mt-0">
                                                         <li class="rating-list">
                                                             <i class="fas fa-star theme-color"></i>
@@ -380,11 +370,36 @@
                                                         <li class="rating-list">
                                                             <i class="fas fa-star"></i>
                                                         </li>
-                                                    </ul>
-                                                    <p class="font-light">(25)</p>
+                                                    </ul>                                                
                                                 </div>
                                             </li>
+
+                                            <li>
+                                                <div class="form-check ps-0 custome-form-check">
+                                                    <input class="checkbox_animated check-it" type="checkbox" onclick="filterRate(0)" id="flexCheckDefault0">                                                           
+                                                    <ul class="rating mt-0">
+                                                        <li class="rating-list">
+                                                            <i class="fas fa-star"></i>
+                                                        </li>
+                                                        <li class="rating-list">
+                                                            <i class="fas fa-star"></i>
+                                                        </li>
+                                                        <li class="rating-list">
+                                                            <i class="fas fa-star"></i>
+                                                        </li>
+                                                        <li class="rating-list">
+                                                            <i class="fas fa-star"></i>
+                                                        </li>
+                                                        <li class="rating-list">
+                                                            <i class="fas fa-star"></i>
+                                                        </li>
+                                                    </ul>                                                    
+                                                </div>
+                                            </li>
+
+
                                         </ul>
+
                                     </div>
                                 </div>
                             </div>                                                    

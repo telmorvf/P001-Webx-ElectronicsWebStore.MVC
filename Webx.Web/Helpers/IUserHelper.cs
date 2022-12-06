@@ -78,11 +78,10 @@ namespace Webx.Web.Helpers
         Task<IdentityRole> GetRoleByNameAsync(string roleName);
         Task<IdentityResult> RemoveFromCurrentRoleAsync(User user,string currentRole);
         Task <SignInResult>FirstLoginAsync(User user);
-        Task<User> GetUserByEmailWithCheckoutTempsAsync(string email);
-        
+        Task<User> GetUserByEmailWithCheckoutTempsAsync(string email);        
         Task<int> GetTotalUsersAsync();
-
         Task<int> GetTotalUsersEmployeeAsync();
         Task<List<UserDataChartViewModel>> GetUsersChartDataAsync();
+
     }
 }

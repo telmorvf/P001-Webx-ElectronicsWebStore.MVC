@@ -53,6 +53,10 @@
         content: '\e7de' !important;
     }
 
+    .e-grid .e-gridheader .e-sortfilter .e-headercelldiv, .e-grid .e-gridheader .e-stackedheadercelldiv {
+        padding: 0px !important;
+    }
+
     
 
 </style>
@@ -72,12 +76,12 @@
             <e-grid-column headerText="Profile Picture" template="#template" width="160" textAlign="Center" allowEditing="false"></e-grid-column>
             <e-grid-column field="Id" isPrimaryKey="true" width="0px"></e-grid-column>
             <e-grid-column headerText="Active" template="#templateCheckbox" textAlign="Center" width="80px"></e-grid-column>
-            <e-grid-column field="" textAlign="Left" allowEditing="false" width="20px"></e-grid-column>
-            <e-grid-column field="FullName" textAlign="Left" allowEditing="false" width="200px"></e-grid-column>
-            <e-grid-column field="Email" textAlign="Left" width="250px"></e-grid-column>
-            <e-grid-column field="PhoneNumber" textAlign="Left" width="150px"></e-grid-column>
-            <e-grid-column field="NIF" headerText="Tax Id. Number (NIF)" textAlign="Left" width="150px"></e-grid-column>
-            <e-grid-column field="Address" textAlign="Left" width="400px"></e-grid-column>
+            <e-grid-column field="" textAlign="Center" allowEditing="false" width="20px"></e-grid-column>
+            <e-grid-column field="FullName" textAlign="Left"  allowEditing="false" width="200px"></e-grid-column>
+            <e-grid-column field="Email" textAlign="Left"  width="250px"></e-grid-column>
+            <e-grid-column field="PhoneNumber" textAlign="Center"  width="150px"></e-grid-column>
+            <e-grid-column field="NIF" headerText="Tax Id. Number (NIF)" textAlign="Center"  width="150px"></e-grid-column>
+            <e-grid-column field="Address" textAlign="Left"  width="400px"></e-grid-column>
         </e-grid-columns>
     </ejs-grid>
 
