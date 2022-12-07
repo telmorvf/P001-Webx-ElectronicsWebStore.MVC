@@ -70,6 +70,13 @@
 
 </head>
 
+<style>
+    .listaUl > li{
+        height: 34px;
+       
+    }
+</style>
+
 <body class="theme-color1 light ltr">
 
     <!-- header start -->
@@ -224,17 +231,18 @@
         <div class="main-footer" style="background-color: #f0f3f8;position: relative;padding:20px 0 !important">
             <div class="container">
                 <div class="row gy-4" style="justify-content: center;display: flex;align-items: center;">
-                   
-                    <div class="col-xl-3 col-lg-4 col-md-6" style="display: flex;justify-content: center;align-items: center;">
-                        <div class="footer-contact">
+
+                    <div class="col-xl-2 col-lg-2 col-md-2" style="display: flex;justify-content: center;align-items: center">
+                        <div class="footer-contact" style="padding:0px"> 
                             <div class="brand-logo">
                                 <a asp-action="Index" asp-controller="Home" class="footer-logo" style="margin-bottom:0px !important">                                    
                                     <img src="~/assets/images/logofooter.png" class="img-fluid blur-up lazyload" alt="logo">
                                 </a>
                             </div>                           
                         </div>
-                    </div>                   
-                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6" style="text-align:center">
+                    </div>    
+                    <div class="col-xl-10"></div>    
+                    @*<div class="col-xl-3 col-lg-3 col-md-4 col-sm-6" style="text-align:center">
                         <div class="footer-links">
                             <div class="footer-title">
                                 <a asp-action="Index" asp-controller="Products"> 
@@ -242,25 +250,7 @@
                                 </a>
                             </div>                            
                         </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6" style="text-align:center">
-                        <div class="footer-links">
-                            <div class="footer-title">
-                                <a asp-action="AboutUs" asp-controller="Home">
-                                    <h3>About Us</h3>
-                                </a>
-                            </div>                            
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4 col-sm-6 d-none d-sm-block" style="text-align:center">
-                        <div class="footer-links">
-                            <div class="footer-title">
-                                <a asp-action="ContactUs" asp-controller="Home">
-                                    <h3>Contact Us</h3>
-                                </a>
-                            </div>
-                        </div>                        
-                    </div>
+                    </div>*@                    
                     
                 </div>
             </div>
@@ -268,18 +258,62 @@
         <div class="sub-footer">
             <div class="container">
                 <div class="row gy-3">
-                    <div class="col-md-6">
-                        <ul>
-                            <li class="font-dark">We accept:</li>                           
+                    <div class="col-md-2" style="justify-content: center;display: flex;">
+    
+                       <div>
+                           <p class="font-dark" style="margin-bottom:2.1rem">Follow us on social media</p>
+                           <div class="row">
+                               <div class="col-3">
+                                   <a href="https://www.facebook.com/profile.php?id=100088391940410" target="_blank" class="font-dark" style="text-decoration:none">
+                                       <i class="fab fa-facebook font-dark" style="font-size: 24px;"></i>
+                                   </a>
+                               </div>
+                               <div class="col-3"><a href="#" class="font-dark30" style="text-decoration:none"><i class="fab fa-instagram font-dark" style="font-size: 24px;"></i></a></div>
+                               <div class="col-3"><a href="#" class="font-dark" style="text-decoration:none"><i class="fab fa-twitter font-dark" style="font-size: 24px;"></i></a></div>
+                               <div class="col-3"><a href="#" class="font-dark" style="text-decoration:none"><i class="fab fa-linkedin-in font-dark" style="font-size: 24px;"></i></a></div>
+                           </div>
+                           
+                       </div>
+                    </div>
+                    <div class="col-md-4"></div>
+                    <div class="col-md-3">
+                       <ul style="display: grid;" class="listaUl">
+                           <li>
+                               <p class="font-dark" style="text-decoration:underline">Information</p>
+                           </li>
+                           <li>                               
+                               <p>
+                                    <a asp-action="AboutUs" asp-controller="Home">
+                                        About Us
+                                    </a>
+                               </p>
+                           </li>
+                           <li>
+                               <p>
+                                   <a asp-action="ContactUs" asp-controller="Home">
+                                        Contact Us
+                                   </a>
+                               </p>
+                           </li>
+                       </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <ul style="display: grid;" class="listaUl">                                                    
                             <li>
-                                <a href="javascript:void(0)">
-                                    <img src="~/assets/images/payment-icon/4.jpg" class="img-fluid blur-up lazyload"
-                                        alt="payment icon"></a>
+                                <p class="font-dark" style="justify-content: end; display: flex; align-items: end;">Payment Method:   
+                                    <a href="javascript:void(0)">
+                                        <img src="~/assets/images/payment-icon/4.jpg" class="img-fluid blur-up lazyload" style="margin-left: 10px;" alt="payment icon">
+                                    </a>   
+                                </p>
+                            </li>
+                            <li style="margin:0px;">
+                                <p class="mb-0 font-dark">WebX © 2022 All Rights Reserved</p>
+                            </li>
+                            <li>
+
                             </li>
                         </ul>
-                    </div>
-                    <div class="col-md-6">
-                        <p class="mb-0 font-dark">WebX © 2022 All Rights Reserved</p>
+                        
                     </div>
                 </div>
             </div>
