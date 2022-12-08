@@ -326,7 +326,7 @@
 
 <script type="text/javascript">
 
-    
+    let oldEmail;
 
     function onThisOverlayClick() {
       debugger;
@@ -345,7 +345,7 @@
                     
         var currentEmail = document.getElementById("email");
         currentEmail.Value = model.Email;
-
+        oldEmail = currentEmail.value;
         var currentNif = document.getElementById("nif");
         currentNif.Value = model.NIF;
 
@@ -359,7 +359,8 @@
     };
 
     function ondlgUpdateClick() {
-       
+        debugger;
+
         var dialogObj = document.getElementById("dialog").ej2_instances[0];        
         var isOk = true;
 
@@ -367,7 +368,7 @@
         document.getElementById("spanNif").innerHTML = "";
         document.getElementById("spanEmail").innerHTML = "";
 
-        var oldEmail = document.getElementById("dialog").querySelector('#email').Value;
+        //var oldEmail = document.getElementById("dialog").querySelector('#email').Value;
         var email = document.getElementById("dialog").querySelector('#email').value;      
         var phone = document.getElementById("dialog").querySelector('#phone').value;        
         var nif = document.getElementById("dialog").querySelector('#nif').value;
@@ -432,6 +433,7 @@
            dataType: 'json',
            data: { email: email, phoneNumber: phoneNum, nif: nif},
            success: function(data) {
+               debugger;
                if (data) {
                    if (oldEmail == email) {
                        window.location.reload();

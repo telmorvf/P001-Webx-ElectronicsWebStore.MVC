@@ -74,6 +74,10 @@
         content: '\e7de' !important;
     }
 
+    .e-grid .e-gridheader .e-sortfilter .e-headercelldiv, .e-grid .e-gridheader .e-stackedheadercelldiv {
+        padding: 0px !important;
+    }
+
 </style>
 
 <!--Div que permite dar espaçamento entre ejs grid e topo-->
@@ -93,13 +97,13 @@
             <e-grid-column field="Product.Name" headerText="Product Description" allowEditing="false" textAlign="Left" width="360px"></e-grid-column>
             <e-grid-column field="Store.IsOnlineStore" headerText="Online Store?" template="#templateCheckbox2" textAlign="Center" width="100px"></e-grid-column>
             <e-grid-column field="Store.Name" headerText="Store Name" textAlign=" Left" allowEditing="false" width="120px"></e-grid-column>
-            <e-grid-column field="Product.Price" headerText="Price" allowEditing="false" format="# ###.00 '€'" textAlign="Right" width="80px"></e-grid-column>
-            <e-grid-column field="" isPrimaryKey="false" width="30px"></e-grid-column>
-            <e-grid-column field="Product.Category.Name" headerText="Category"  allowEditing="false" textAlign="Left" width="100px"></e-grid-column>
-            <e-grid-column field="Product.Brand.Name" headerText="Brand" headerText="Brand" allowEditing="false" textAlign="Left" width="100px"></e-grid-column>
-            <e-grid-column field="MinimumQuantity" headerText="Min. Quantity" textAlign="Right" allowEditing="true" width="80px"></e-grid-column>
-            <e-grid-column field="Quantity" headerText="Quantity" textAlign="Right" allowEditing="true" width="80px"></e-grid-column>
-            <e-grid-column field="" isPrimaryKey="false" width="30px"></e-grid-column>
+            <e-grid-column field="Product.Price" headerText="Price" allowEditing="false" format="# ###.00 '€'" textAlign="Center" width="80px"></e-grid-column>
+            @*<e-grid-column field="" isPrimaryKey="false" width="30px"></e-grid-column>*@
+            <e-grid-column field="Product.Category.Name" headerText="Category"  allowEditing="false" textAlign="Center" width="100px"></e-grid-column>
+            <e-grid-column field="Product.Brand.Name" headerText="Brand" headerText="Brand" allowEditing="false" textAlign="Center" width="100px"></e-grid-column>
+            <e-grid-column field="MinimumQuantity" headerText="Min. Quantity" textAlign="Center" allowEditing="true" width="80px"></e-grid-column>
+            <e-grid-column field="Quantity" headerText="Quantity" textAlign="Center" allowEditing="true" width="80px"></e-grid-column>
+           @* <e-grid-column field="" isPrimaryKey="false" width="30px"></e-grid-column>*@
         </e-grid-columns>
     </ejs-grid>
 

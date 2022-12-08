@@ -1,9 +1,146 @@
 ﻿@model Webx.Web.Models.ShopViewModel
 
 @{
-    ViewData["Title"] = "ContactUs";
+    ViewData["Title"] = "WebX";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>ContactUs</h1>
+<div class="row">
+   <div class="col-1"></div>
+   <div  class="col-10" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); margin-bottom:25px;margin-top:25px; background-color:#f0f3f8;;padding:0">
+            
+            <div class="row">
+                <div class="col-12" style="margin-top: 40px; margin-left: 38px;">   
+                    <h3>CONTACT US</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-5">
 
+                    <div class="text">
+                        <h4 style="margin-bottom: 10px; color: var(--theme-color);">WebX Lisbon</h4><br />   
+                        <h6 style="padding-left: 10px;"><span class="font-dark">Email:</span><a href="mailto:webxLisbon@gmail.com"> webxLisbon@gmail.com </a> </h6><br />
+                        <h6 style="margin-top:10px;padding-left: 10px;"><span class="font-dark">Phone:</span> 213645895 </h6>
+                        <h6 style="margin-top:10px;padding-left: 10px;"><span class="font-dark">Address:</span></h6>
+                        <p style="margin-bottom: 10px;padding-left: 10px;" >Zona Industrial de Alfragide - Estrada Nacional 117, 2614-520 Amadora</p><br />                    
+                        <h6 style="padding-left: 10px;"><span class="font-dark">Hours:</span></h6><br />
+                        <p style=" margin-bottom: 0px;padding-left: 10px;">M-F: 9:00H - 18:00H</p><br />   
+                        <p style="padding-left: 10px;">Sat/Sun: 9:00H - 13:00H</p>                    
+                    </div>
+
+                    <div class="text" style="border-top: 1px dashed #c3c3c3; padding-top: 20px; border-bottom: 1px dashed #c3c3c3; padding-bottom: 20px; margin-top: 20px;">   
+                        <h4 style="margin-bottom: 10px; color: var(--theme-color);">WebX Porto</h4><br />
+                        <h6 style="padding-left: 10px;"><span class="font-dark">Email:</span><a href="mailto:webxPorto@gmail.com"> webxPorto@gmail.com </a></h6><br />
+                        <h6 style="margin-top:10px;padding-left: 10px;"><span class="font-dark">Phone:</span> 229448521 </h6>
+                        <h6 style="margin-top:10px;padding-left: 10px;"><span class="font-dark">Address:</span></h6>
+                        <p style="margin-bottom: 10px;padding-left: 10px;">Rua da Igreja, 4440-452 Maia</p><br />                    
+                        <h6 style="padding-left: 10px;"><span class="font-dark">Hours:</span></h6><br />
+                        <p style=" margin-bottom: 0px;padding-left: 10px;">M-F: 9:00H - 18:00H</p><br />
+                        <p style="padding-left: 10px; margin-bottom: 0px;">Sat/Sun: 9:00H - 13:00H</p>       
+                    </div>
+
+                    <div class="text" style="margin-bottom: 5%; margin-top: 20px;">
+                        <h4 style="margin-bottom: 10px; color: var(--theme-color);">WebX Leiria Warehouse</h4><br />
+                        <h6 style="padding-left: 10px;"><span class="font-dark">Email:</span><a href="mailto:webxOnline@gmail.com"> webxOnline@gmail.com </a></h6><br />
+                        <h6 style="margin-top:10px;padding-left: 10px;"><span class="font-dark">Phone:</span> 244835530 </h6>
+                        <h6 style="margin-top:10px;padding-left: 10px;"><span class="font-dark">Address:</span></h6>
+                        <p style="margin-bottom: 10px;padding-left: 10px;">Avenida Nossa Senhora de Fatima, Armazem 23, 2410-140 Leiria</p><br />                    
+                        <h6 style="padding-left: 10px;"><span class="font-dark">Hours:</span></h6><br />
+                        <p style=" margin-bottom: 0px;padding-left: 10px;">M-F: 9:00H - 18:00H</p><br />
+                        <p style="padding-left: 10px;">Sat/Sun: Closed </p>       
+                    </div>
+                         
+                </div>
+                <div class="col-7">
+                    <div id="map">
+
+                    </div>
+                </div>
+            </div>
+     
+   </div>
+   <div class="col-1"></div>
+</div>
+
+<script type="text/javascript">
+    let map;
+    const WebXLisbon = { lat: 38.732, lng: -9.216 };
+    const WebXPorto = { lat: 41.267, lng: -8.607 };
+    const WebXWarehouse = { lat: 39.738, lng: -8.801 };
+
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: WebXWarehouse,
+        zoom: 7,
+      });
+
+      const marker = new google.maps.Marker({
+          position: WebXLisbon,
+          map: map,
+      });
+        Marker = marker;
+
+      const markerPorto = new google.maps.Marker({
+          position: WebXPorto,
+          map: map,
+      });
+      
+
+      const markerWarehouse = new google.maps.Marker({
+          position: WebXWarehouse,
+          map: map,
+      });   
+      
+
+    }
+
+    window.initMap = initMap;
+    
+
+   
+</script>
+
+ <style>
+    #map {
+        height: 70%;
+        width:90%;
+        margin: auto;
+        top: 50%;
+        transform: translateY(-50%);
+        border: solid 2px black;
+        box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+    } 
+
+
+    .text{
+        line-height: 1px;
+        margin-left: 6%;
+        margin-top: 5%;
+        letter-spacing: 1px;
+        width: 100%;
+        color:black; 
+    }
+
+    p{
+        font-size:14px;
+    }
+
+    
+    input.sharp{
+        border-radius:0;
+        box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+    }
+
+    .textarea{
+        border-radius:0;
+        box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+        max-height:78px;
+    }
+
+
+    .spans{
+        font-size:12px;
+    }
+
+</style>
