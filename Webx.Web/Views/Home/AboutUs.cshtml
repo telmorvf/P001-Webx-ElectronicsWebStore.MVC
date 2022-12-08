@@ -1,27 +1,45 @@
-﻿@{
+﻿@model Webx.Web.Models.ShopViewModel
+
+@{
     ViewData["Title"] = "About Us";
 }
 
-<h1>@ViewData["Title"]</h1>
-
+@{
+    
+    if (Model == null){
+        { Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml"; }
+    <br />
+    }else{
+                Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+}
 
 <div class="row" style="height:80vh">
     <div class="col-1"></div>
-    <div class="col-10" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); margin-bottom:25px;margin-top:25px; background-color:#f4f3ee;padding:0;display:flex">
+    <div class="col-10" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); margin-bottom:25px;margin-top:25px; background-color:#F0F3F8;padding:0;display:flex">
 
-        <!--my-auto-->
+        <!-- About Us -->
         <div class="col-7 imageBox">
-            <img src="~/images/siteContent/nissan.jpg" />
+            <img src="~/assets/images/electronics/slider/1.jpg" />
         </div>
-        <div class="col-5 content">
-            <h1>About Us</h1>
-            <p>
-                Contrary to
-            </p>
-            <div class="contentImage">
-                <img src="~/images/siteContent/shop.jpg" />
-            </div>
 
+        
+        <div class="col-5 content">
+            <h1 style="padding-top: 15px;">About Us</h1>
+            <ul class="list-unstyled">
+                
+                <li style="padding-top: 20px; padding-bottom: 20px;"><b>Web site criado por:  </b>  Filipe Ferreira,  Stanislav Govera, Telmo Fernandes.</li>
+
+                <li style="padding-bottom: 20px;"><b>Alunos dos Professores:  </b>  Susana Pimentel,  Cristina Batista,  Nuno Carvalho e Rafael Santos.</li>
+
+                <li style="padding-bottom: 20px;">Este trabalho destina-se à avaliação da <b>ufcd5425 Projecto de tecnologias e programação de sistemas de informação.</b></li>
+
+                <li style="padding-bottom: 35px;">No <b>Centro de Formação CINEL</b> e alunos do <b>curso TPSI69.</b></li>
+            </ul>
+
+            <div class="contentImage">
+                <img src="~/assets/images/electronics/slider/setup_1.png" />
+            </div>
         </div>
 
     </div>
