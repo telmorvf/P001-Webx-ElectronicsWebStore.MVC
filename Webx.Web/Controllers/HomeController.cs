@@ -126,12 +126,22 @@ namespace Webx.Web.Controllers
             }
             else
             { return View(); }
-            
-        }
+       }
 
-        public IActionResult ContactUs()
+        public async Task<IActionResult> ContactUs()
         {
-            return View();
+            var model = await _productRepository.GetInitialShopViewModelAsync();
+            model.WishList = await _productRepository.GetOrStartWishListAsync();
+            model.Brands = (List<Brand>)await _brandRepositoty.GetAllBrandsAsync();
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+                ViewBag.UserFullName = user.FullName;
+                ViewBag.IsActive = user.Active;
+            }
+
+
+            return View(model);
         }
 
 

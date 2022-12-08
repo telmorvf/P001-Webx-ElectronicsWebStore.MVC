@@ -17,7 +17,12 @@
 
     .increase-size {
             font-size: .95em;
-        }
+    }
+
+    
+    .e-grid .e-gridheader .e-sortfilter .e-headercelldiv, .e-grid .e-gridheader .e-stackedheadercelldiv {
+        padding: 0px !important;
+    }
    
 </style>
 
@@ -33,7 +38,7 @@
         <e-grid-selectionsettings type="Single" mode="Row"></e-grid-selectionsettings>
         <e-grid-pagesettings pageSize="13"></e-grid-pagesettings>        
         <e-grid-columns>            
-            <e-grid-column field="Id" headertext="Order #" textAlign="Center" isPrimaryKey="true" width="100px"></e-grid-column>
+            <e-grid-column field="Id" headertext="Order #" textAlign="Center" isPrimaryKey="true" width="60px"></e-grid-column>
             <e-grid-column field="Customer.FullName" headertext="Customer" textAlign="Left" width="150px"></e-grid-column>
             <e-grid-column field="Store.Name" headertext="Store" textAlign="Left" allowEditing="false" width="150px"></e-grid-column>
             <e-grid-column field="OrderDate" headertext="Created"  type='dateTime' format='dd/MM/yyyy hh:mm' textAlign="Left" width="150px"></e-grid-column>

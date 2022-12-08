@@ -58,6 +58,10 @@
         content: '\e7de' !important;
     }
 
+    .e-grid .e-gridheader .e-sortfilter .e-headercelldiv, .e-grid .e-gridheader .e-stackedheadercelldiv {
+        padding: 0px !important;
+    }
+
 </style>
 
 
@@ -72,18 +76,18 @@
         <e-grid-selectionsettings type="Single" mode="Row"></e-grid-selectionsettings>
         <e-grid-pagesettings pageSize="7"></e-grid-pagesettings>
         <e-grid-columns>
-            <e-grid-column headerText="Id" isPrimaryKey="true" width="0px"></e-grid-column>
+            @*<e-grid-column headerText="Id" isPrimaryKey="true" width="0px"></e-grid-column>*@
             <e-grid-column headerText="Store Picture" template="#template" width="160" textAlign="Center" allowEditing="false"></e-grid-column>
-            <e-grid-column field="Name" textAlign="Left" allowEditing="false" width="165px"></e-grid-column>
+            <e-grid-column field="Name" textAlign="Center" allowEditing="false" width="165px"></e-grid-column>
             <e-grid-column field="IsActive" template="#templateCheckbox1" textAlign="Center" width="130px"></e-grid-column>
             <e-grid-column field="IsOnlineStore" template="#templateCheckbox2" textAlign="Center" width="130px"></e-grid-column>
-            <e-grid-column field="" textAlign="Left" allowEditing="false" width="20px"></e-grid-column>
+            @*<e-grid-column field="" textAlign="Left" allowEditing="false" width="20px"></e-grid-column>*@
             <e-grid-column field="Address" textAlign="Left" width="400px"></e-grid-column>
-            <e-grid-column field="City" textAlign="Left" width="120px"></e-grid-column>
-            <e-grid-column field="ZipCode" textAlign="Left" width="120px"></e-grid-column>
-            <e-grid-column field="Email" textAlign="Left" width="250px"></e-grid-column>
-            <e-grid-column field="PhoneNumber" textAlign="Left" width="130px"></e-grid-column>
-            <e-grid-column field="" textAlign="Left" allowEditing="false" width="30px"></e-grid-column>
+            <e-grid-column field="City" textAlign="Center" width="120px"></e-grid-column>
+            <e-grid-column field="ZipCode" textAlign="Center" width="120px"></e-grid-column>
+            <e-grid-column field="Email" textAlign="Center" width="250px"></e-grid-column>
+            <e-grid-column field="PhoneNumber" textAlign="Center" width="130px"></e-grid-column>
+            @*<e-grid-column field="" textAlign="Left" allowEditing="false" width="30px"></e-grid-column>*@
         </e-grid-columns>
     </ejs-grid>
 
