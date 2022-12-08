@@ -226,9 +226,11 @@
                             </li>
                         }
                         @if ((this.User.Identity.IsAuthenticated) && ((this.User.IsInRole("Admin")) || (this.User.IsInRole("Product Manager")) || (this.User.IsInRole("Technician"))))
-                        {                          
+
+                        {
 
                             <li class="nav-header">
+
                                 UTILITIES
                             </li>
 
@@ -387,6 +389,17 @@
                                 </ul>
                             </li>
                         }
+
+                        <li class="nav-item">
+                            <a asp-area="" asp-action="AboutUs" asp-controller="Home" asp-route-isLayoutAdmin=true class="nav-link">
+                                <i class="nav-icon fas fa-at"></i>
+                                <p>
+                                    About Us
+                                </p>
+                            </a>
+                        </li>
+
+
 
                     </ul>
                     <div class="user-panel"></div>

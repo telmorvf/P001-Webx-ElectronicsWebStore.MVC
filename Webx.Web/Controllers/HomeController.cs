@@ -86,22 +86,47 @@ namespace Webx.Web.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> AboutUs()
+        public async Task<IActionResult> AboutUs(bool isLayoutAdmin)
         {
-
-            var model = await _productRepository.GetInitialShopViewModelAsync();
-            model.WishList = await _productRepository.GetOrStartWishListAsync();
-            model.Brands = (List<Brand>)await _brandRepositoty.GetAllBrandsAsync();
-            if (User.Identity.IsAuthenticated)
+            if (isLayoutAdmin == false)
             {
-                var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
-                ViewBag.UserFullName = user.FullName;
-                ViewBag.IsActive = user.Active;
+
+
+
+                var model = await _productRepository.GetInitialShopViewModelAsync();
+                model.WishList = await _productRepository.GetOrStartWishListAsync();
+
+
+                if (model == null)
+                {
+                    return NotFound();
+                }
+
+                List<Product> sugestedProducts = new List<Product>();
+                sugestedProducts.Add(await _productRepository.GetProductByNameAsync("Motherboard ATX Asus Prime B550-Plus"));
+                sugestedProducts.Add(await _productRepository.GetProductByNameAsync("RAM Memory Corsair Vengeance RGB 32GB (2x16GB) DDR5-6000MHz CL36 White"));
+
+                model.SuggestedProducts = sugestedProducts;
+                model.Product = await _productRepository.GetProductByNameAsync("Intel Core i9-11900K 8-Core 3.5GHz W/Turbo 5.3GHz 16MB Skt1200 Processor");
+                var products = await _productRepository.GetHighlightedProductsAsync();
+                model.HighlightedProducts = await _converterHelper.ToProductsWithReviewsViewModelList(products);
+                model.Stocks = await _stockRepository.GetAllStockWithStoresAsync();
+
+                if (User.Identity.IsAuthenticated)
+                {
+                    var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+                    ViewBag.UserFullName = user.FullName;
+                    ViewBag.IsActive = user.Active;
+                }
+
+                var cookiesConsent = _productRepository.CheckCookieConsentStatus();
+                model.CookieConsent = cookiesConsent;
+                model.Brands = (List<Brand>)await _brandRepositoty.GetAllBrandsAsync();
+                return View(model);
             }
-
-
-            return View(model);
-        }
+            else
+            { return View(); }
+       }
 
         public async Task<IActionResult> ContactUs()
         {
