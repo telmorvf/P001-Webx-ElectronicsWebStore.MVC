@@ -5,147 +5,187 @@
 }
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>WebX - Invoice</title>
+
+		<style>
+			.invoice-box {
+				max-width: 800px;
+				margin: auto;
+				padding: 30px;
+				border: 1px solid #eee;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+				font-size: 16px;
+				line-height: 24px;
+				font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+				color: #555;
+			}
+
+			.invoice-box table {
+				width: 100%;
+				line-height: inherit;
+				text-align: left;
+			}
+
+			.invoice-box table td {
+				padding: 5px;
+				vertical-align: top;
+			}
+
+			.invoice-box table tr td:nth-child(2) {
+				text-align: right;
+			}
+
+			.invoice-box table tr.top table td {
+				padding-bottom: 20px;
+			}
+
+			.invoice-box table tr.top table td.title {
+				font-size: 45px;
+				line-height: 45px;
+				color: #333;
+			}
+
+			.invoice-box table tr.information table td {
+				padding-bottom: 40px;
+			}
+
+			.invoice-box table tr.heading td {
+				background: #eee;
+				border-bottom: 1px solid #ddd;
+				font-weight: bold;
+			}
+
+			.invoice-box table tr.details td {
+				padding-bottom: 20px;
+			}
+
+			.invoice-box table tr.item td {
+				border-bottom: 1px solid #eee;
+			}
+
+			.invoice-box table tr.item.last td {
+				border-bottom: none;
+			}
+
+			.invoice-box table tr.total td:nth-child(2) {
+				border-top: 2px solid #eee;
+				font-weight: bold;
+			}
+
+			@@media only screen and (max-width: 600px) {
+				.invoice-box table tr.top table td {
+					width: 100%;
+					display: block;
+					text-align: center;
+				}
+
+				.invoice-box table tr.information table td {
+					width: 100%;
+					display: block;
+					text-align: center;
+				}
+			}
+
+			/** RTL **/
+			.invoice-box.rtl {
+				direction: rtl;
+				font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+			}
+
+			.invoice-box.rtl table {
+				text-align: right;
+			}
+
+			.invoice-box.rtl table tr td:nth-child(2) {
+				text-align: left;
+			}
+
+/*		table, th, td {
+			border: 1px solid black;
+		}*/
+		</style>
+	</head>
+
+	<body>
+		<div class="invoice-box">
+			
+			<table cellpadding="0" cellspacing="0">
+				
+				<tr class="information">
+							
+					<td style="text-align:left;">
+						Store: @Model.Order.Store.Name<br />
+						@Model.Order.Store.Address<br />
+						Email: @Model.Order.Store.Email
+					</td>
+					<td colspan="3" style="text-align:center; width: 150px;">
+						<br/><br/>
+						<img src="https://webx2022.blob.core.windows.net/images/logofooter.png" style="width: 100%; max-width: 150px" />
+					</td>
+				</tr>
+					
+
+				<tr>
+					<td colspan="4"><br /></td>
+				</tr>
+
+				<tr class="information">
+					<td style="text-align:right; width: 425px;"></td>
+					<td colspan="3">
+						<table>
+							<tr>
+								<td style="text-align:left">
+									Invoice #: @Model.Order.InvoiceId<br />
+									Create Date: @DateTime.UtcNow.ToString("dd MMMM, yyyy")<br />
+									Issue Date: @Model.Order.OrderDate.ToString("dd MMMM, yyyy")<br /><br />
+
+									Name: @Model.Order.Customer.FullName<br />
+									Email: @Model.Order.Customer.Email<br />
+									NIF: @Model.Order.Customer.NIF
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
 
 
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="description" content="multikart">
-    <meta name="keywords" content="multikart">
-    <meta name="author" content="multikart">
-    
-    <link rel="icon" href="~/assets/images/favicon/1.png" type="image/x-icon">
-    <title>WebX | Invoice </title>
 
-    <!--Google font-->
-    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.gstatic.com/">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&amp;display=swap"
-        rel="stylesheet">
-
-    <!-- Icons -->
-    <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@4cac1a6/css/all.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css">
-
-    <!-- Bootstrap css -->
-    <link id="rtl-link" rel="stylesheet" type="text/css" href="~/assets/css/vendors/bootstrap.css">
-
-    <!-- Theme css -->
-    <link id="color-link" rel="stylesheet" type="text/css" href="~/assets/css/demo1.css">
-
-
-</head>
-
-<body class="theme-color2 bg-light">
-
-    <!-- invoice start -->
-    <section class="theme-invoice-4 section-b-space">
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-9 m-auto">
-                    <div class="invoice-wrapper">
-                        <div class="invoice-header">              
-                            <img src="~/assets/images/logofooter.png" class="img-fluid" alt="logo">
-                        </div>
-                        <div class="invoice-body">
-                            <div class="top-sec">
-                                <div class="row">
-                                    <div class="col-xxl-8 col-md-7">
-                                        <div class="address-detail">
-                                            <div class="mt-2">
-                                                <h4 class="mb-2">@Model.Order.Customer.Address</h4>                                                
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-xxl-4 col-md-5">
-                                        <div class="address-detail">
-                                            <div class="mt-2">
-                                                <h4 class="mb-2 theme-color">Issue Date : <span class="text-contact">@Model.Order.OrderDate.ToString("dd MMMM, yyyy")</span></h4>
-                                                <h4 class="mb-2 theme-color">Invoice no : <span class="text-contact">@Model.Order.InvoiceId</span></h4>                                                       
-                                                <h4 class="mb-0 theme-color">Email : <span  class="text-contact">@Model.Order.Customer.Email</span></h4>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="title-sec">
-                                <h2 class="title">invoice</h2>
-                                <div class="row">
-                                    <div class="col-6">
-                                        
-                                    </div>
-                                    <div class="col-6 text-end">
-                                        <a href="#" class="btn btn-solid-dark rounded-2"
-                                            onclick="window.print();">print</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="table-sec">
-                                <div class="table-responsive-md">
-                                    <table class="table table-borderless table-striped mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Product</th>
-                                                <th scope="col">Price</th>
-                                                <th scope="col">Qty.</th>
-                                                <th scope="col">Total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach(var item in Model.orderDetails)
-                                            {
-                                                <tr>
-                                                    <td>@item.Product.Name</td>
-                                                    <td>@item.Product.PriceWithDiscount.ToString("C2")</td>
-                                                    <td>@item.Quantity</td>
-                                                    <td>@item.Price.ToString("C2")</td>
-                                                </tr>
-                                            }                                       
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="text-end">
-                                    <div class="table-footer">
-                                        <span class="me-5 font-bold">Grand Total</span>
-                                        <span class="font-bold">@Model.Order.TotalPrice.ToString("C2")</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="invoice-footer">
-                            <!-- <img src="assets/images/invoice/shape.png" class="img-fluid design-shape" alt=""> -->
-                            <ul>
-                                <li>
-                                    <i class="fa fa-map"></i>
-                                    <div>
-                                        <h4>@Model.Order.Store.Name</h4>
-                                        <h4>@Model.Order.Store.Address</h4>
-                                    </div>
-                                </li>
-                                <li>
-                                    <i class="fa fa-phone" aria-hidden="true"></i>
-                                    <div>
-                                        <h4>@Model.Order.Store.PhoneNumber</h4>                                     
-                                    </div>
-                                </li>
-                                <li>
-                                    <i class="fa fa-envelope" aria-hidden="true"></i>
-                                    <div>
-                                        <h4>@Model.Order.Store.Email</h4>                                        
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- invoice end -->
-</body>
+				<tr class="heading" style="text-align:center; background-color: #e9e9e9">
+					<th style="width: 425px">Product</th>
+					<th>Price</th>
+					<th>Quantity</th>
+					<th>Total</th>
+				</tr>
 
 
 
+
+
+			@foreach (var item in Model.orderDetails)
+			{
+			<tr class="item">
+				<td style="text-align:left;">@item.Product.Name</td>
+				<td style="text-align:center;">@item.Product.PriceWithDiscount.ToString("C2")</td>
+				<td style="text-align:center;">@item.Quantity</td>
+				<td style="text-align:center;">@item.Price.ToString("C2")</td>
+			</tr>
+			}
+
+
+			<tr>
+				<td colspan="4"><br /></td>
+			</tr>
+			<tr class="total">
+				<td></td>
+				<th></th>
+				<th style="text-align:center; background-color: #e9e9e9">Grand Total</th>
+				<th style="text-align:center; background-color: #e9e9e9"> @Model.Order.TotalPrice.ToString("C2") </th>
+			</tr>
+
+			</table>
+		</div>
+	</body>
 </html>

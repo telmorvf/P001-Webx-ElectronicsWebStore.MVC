@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCoreHero.ToastNotification" Version="1.1.0" />
+    <PackageReference Include="IronPdf" Version="2022.11.10347" />
     <PackageReference Include="MailKit" Version="3.4.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="5.0.17" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.17" />
@@ -37,6 +38,18 @@
     <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="20.3.0.47" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
     <PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="itextsharp">
+      <HintPath>wwwroot\iTextSharp\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.pdfa">
+      <HintPath>wwwroot\iTextSharp\itextsharp.pdfa.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.xtra">
+      <HintPath>wwwroot\iTextSharp\itextsharp.xtra.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
