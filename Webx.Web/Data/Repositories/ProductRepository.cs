@@ -480,6 +480,34 @@ namespace Webx.Web.Data.Repositories
 
         }
 
+        public async Task<List<APIProductsModel>> GetProductsAsync()
+        {
+
+            List<APIProductsModel> list = new List<APIProductsModel>();
+
+            var products = await _context.Products
+                 .Include(p => p.Brand)
+                 .Include(p => p.Images)
+                 .Include(p => p.Category).Where(p => p.IsService== false).ToListAsync();
+
+            foreach (var product in products)
+            {
+                list.Add(new APIProductsModel
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Brand = product.Brand.Name,
+                    Category = product.Category.Name,
+                    Description = product.Description,
+                    Price = product.Price,
+                    ImageId = product.Images.ElementAt(0).ImageId,
+                });
+            }
+
+            return list;
+        }
+
+
         public async Task<Product> GetProductByNameAsync(string productName)
         {
             return await _context.Products
@@ -686,6 +714,7 @@ namespace Webx.Web.Data.Repositories
             }
 
             return 0;
-        }
+
+       
     }
 }

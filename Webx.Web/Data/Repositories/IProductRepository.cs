@@ -34,6 +34,7 @@ namespace Webx.Web.Data.Repositories
         bool CheckCookieConsentStatus();
         Response UpdateCartCookie(List<CartViewModel> cart);
         Response ClearCart();
+        Task<List<APIProductsModel>> GetProductsAsync();
         Task<Product> GetProductByNameAsync(string productName);
         Task<List<Product>> GetAllProductsAsync();
         Task<List<Product>> GetHighlightedProductsAsync();
@@ -51,5 +52,6 @@ namespace Webx.Web.Data.Repositories
         Task RemoveReviewTempIfExistsAsync(ProductReview customerReview);
         Task<List<ProductReviewTemps>> GetReviewsTempsAsync();
         Task RemoveReviewTempsAsync(List<ProductReviewTemps> temps);
+
     }
 }
