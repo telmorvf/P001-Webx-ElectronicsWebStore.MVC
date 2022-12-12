@@ -51,7 +51,7 @@ namespace Webx.Web
 
             services.Configure<RequestLocalizationOptions>(options =>
             {
-                //    // define the list of cultures your app will support  
+                // define the list of cultures your app will support  
                 var supportedCultures = new List<CultureInfo>()
                 {
                   new CultureInfo("en-US"),
