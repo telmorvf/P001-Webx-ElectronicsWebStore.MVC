@@ -14,5 +14,7 @@ namespace Webx.Web.Helpers
         List<SelectListItem> Destinations();
         Task<Response> SendAnnouncement(string to, string subject, string body, string attachment);
         Task<Response> SendAnnouncementAsync(int to, string subject, string body, string path);
+        Task<Response> SendRequestReviewEmail(string tokenLink, User customer,string to);
+
     }
 }

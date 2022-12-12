@@ -20,9 +20,13 @@
     toolbarItems.Add("Search");
 
     toolbarItems.Add(new { text = "Info", tooltipText = "Brand Details", prefixIcon = "e-expand", id = "infoBrand" });
-    toolbarItems.Add(new { text = "Edit", tooltipText = "Edit Brand", prefixIcon = "e-expand", id = "editBrand" });
-    //toolbarItems.Add(new { text = "Delete", tooltipText = "Delete Brand", prefixIcon = "e-expand", id = "deleteBrand" });
-    toolbarItems.Add(new { text = "Create", tooltipText = "Create Brand", prefixIcon = "e-expand", id = "createBrand" });
+
+    @if ((this.User.Identity.IsAuthenticated) && (this.User.IsInRole("Admin")))
+    {
+        toolbarItems.Add(new { text = "Edit", tooltipText = "Edit Brand", prefixIcon = "e-expand", id = "editBrand" });
+        //toolbarItems.Add(new { text = "Delete", tooltipText = "Delete Brand", prefixIcon = "e-expand", id = "deleteBrand" });
+        toolbarItems.Add(new { text = "Create", tooltipText = "Create Brand", prefixIcon = "e-expand", id = "createBrand" });
+    }
 
     var yesButton = new ButtonModel() { content = "Yes", cssClass = "e-flat" };
     var noButton = new ButtonModel() { content = "No", cssClass = "e-flat" };
@@ -32,6 +36,7 @@
     .image img {
         height: 75px;
         width: 75px;
+        object-fit:cover;
         border-radius: 50px;
         box-shadow: inset 0 0 1px #e0e0e0, inset 0 0 14px rgba(0, 0, 0, 0.2);
     }
@@ -71,22 +76,21 @@
         <e-grid-pagesettings pageSize="7"></e-grid-pagesettings>
         <e-grid-columns>
             <e-grid-column headerText="Id" isPrimaryKey="true" width="0px"></e-grid-column>
-            <e-grid-column field="" textAlign="Left" allowEditing="false" width="30px"></e-grid-column>
-            <e-grid-column headerText="Id" isPrimaryKey="true" width="0px"></e-grid-column>
-            
+            <e-grid-column headerText="Product Picture" template="#template" width="160" textAlign="Center" allowEditing="false"></e-grid-column>
+            <e-grid-column field="Id" textAlign="Left" allowEditing="false" width="50px"></e-grid-column>
             <e-grid-column field="Name" textAlign="Left" allowEditing="false" width="165px"></e-grid-column>
-            <e-grid-column field="" textAlign="Left" allowEditing="false" width="30px"></e-grid-column>
+            <e-grid-column field="" textAlign="Left" allowEditing="false" width="650px"></e-grid-column>
         </e-grid-columns>
     </ejs-grid>
 
 
     <!-- Caixa de Dialogo do syncfusion / Surge ao clicar no detalhes da Brand -->
-    <ejs-dialog id='dialog' visible="false" isModal="true" width="470px" height="280px" showCloseIcon="true" allowDragging="true" overlayClick="onOverlayClick" target="#container">
+    <ejs-dialog id='dialog' visible="false" isModal="true" width="400px" height="450px" showCloseIcon="true" allowDragging="true" overlayClick="onOverlayClick" target="#container">
         <e-dialog-animationsettings effect="Fade" duration="400" delay="0"></e-dialog-animationsettings>
     </ejs-dialog>
 
     <!-- Caixa de Dialogo do syncfusion / Surge ao clicar no delete da Brand -->
-    <ejs-dialog id='deleteDialog' visible="false" isModal="true" width="300px" showCloseIcon="true" allowDragging="true" overlayClick="onDeleteOverlayClick" target="#container"
+    <ejs-dialog id='deleteDialog' visible="false" isModal="true" width="300px" height="450" showCloseIcon="true" allowDragging="true" overlayClick="onDeleteOverlayClick" target="#container"
                 header="Delete Brand">
         <e-dialog-animationsettings effect="Fade" duration="400" delay="0"></e-dialog-animationsettings>
 
@@ -98,6 +102,13 @@
 
 </div>
 
+
+<!-- Script template para a grid do syncfusion, este template permite colocar a imagem do user numa determinada coluna -->
+<script id="template" type="text/x-template">
+    <div class="image">
+        <img src="${ImageFullPath}" />
+    </div>
+</script>
 
 
 <!-- Script com as funçoes dos botoes da grid do syncfusion -->
@@ -187,11 +198,11 @@
 
                     var dialog = document.getElementById("dialog").ej2_instances[0];  //obtem o objecto dialog do syncfusion
 
-                    dialog.header = "Brand:  " + brandData.name; // define o titúlo do dialog e apresenta-o no Header
-
+                    dialog.header = "Category: " + brandData.name; // define o titúlo do dialog e apresenta-o no Header
                     dialog.content =
-                        "<b>Type: </b>" + brandData.id + "<br/>" + //Define a mensagem/conteudo do dialog
-                        "<b>Email: </b>" + brandData.name + "<br/>";
+                        "<div>" + //Define a mensagem/conteudo do dialog
+                        "<img src=" + brandData.imageFullPath + " display='block' margin-left='auto' margin-right='auto' width='100%' > " +
+                        "</div>";
 
                     dialog.show(); // faz popup do dialog
                 },

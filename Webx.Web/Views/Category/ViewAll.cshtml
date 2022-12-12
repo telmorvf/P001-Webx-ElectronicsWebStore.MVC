@@ -20,10 +20,13 @@
     toolbarItems.Add("Search");
 
     toolbarItems.Add(new { text = "Info", tooltipText = "Category Details", prefixIcon = "e-expand", id = "infoCategory" });
-    toolbarItems.Add(new { text = "Edit", tooltipText = "Edit Category", prefixIcon = "e-expand", id = "editCategory" });
-    //toolbarItems.Add(new { text = "Delete", tooltipText = "Delete Category", prefixIcon = "e-expand", id = "deleteCategory" });
-    toolbarItems.Add(new { text = "Create", tooltipText = "Create Category", prefixIcon = "e-expand", id = "createCategory" });
 
+        @if ((this.User.Identity.IsAuthenticated) && (this.User.IsInRole("Admin")))
+        {
+            toolbarItems.Add(new { text = "Edit", tooltipText = "Edit Category", prefixIcon = "e-expand", id = "editCategory" });
+            //toolbarItems.Add(new { text = "Delete", tooltipText = "Delete Category", prefixIcon = "e-expand", id = "deleteCategory" });
+            toolbarItems.Add(new { text = "Create", tooltipText = "Create Category", prefixIcon = "e-expand", id = "createCategory" });
+        }
     var yesButton = new ButtonModel() { content = "Yes", cssClass = "e-flat" };
     var noButton = new ButtonModel() { content = "No", cssClass = "e-flat" };
 }
@@ -71,15 +74,16 @@
         <e-grid-pagesettings pageSize="7"></e-grid-pagesettings>
         <e-grid-columns>
             <e-grid-column headerText="Id" isPrimaryKey="true" width="0px"></e-grid-column>
-            <e-grid-column headerText="Profile Picture" template="#template" width="160" textAlign="Center" allowEditing="false"></e-grid-column>
+            <e-grid-column headerText="Category Picture" template="#template" width="160" textAlign="Center" allowEditing="false"></e-grid-column>
+            <e-grid-column field="Id" textAlign="Left" allowEditing="false" width="50px"></e-grid-column>
             <e-grid-column field="Name" textAlign="Left" allowEditing="false" width="165px"></e-grid-column>
-            <e-grid-column field="" textAlign="Left" allowEditing="false" width="700px"></e-grid-column>
+            <e-grid-column field="" textAlign="Left" allowEditing="false" width="650px"></e-grid-column>
         </e-grid-columns>
     </ejs-grid>
 
 
     <!-- Caixa de Dialogo do syncfusion / Surge ao clicar no detalhes da Category -->
-    <ejs-dialog id='dialog' visible="false" isModal="true" width="400" height="450" showCloseIcon="true" allowDragging="true" overlayClick="onOverlayClick" target="#container">
+    <ejs-dialog id='dialog' visible="false" isModal="true" width="400" height="auto" showCloseIcon="true" allowDragging="true" overlayClick="onOverlayClick" target="#container">
         <e-dialog-animationsettings effect="Fade" duration="400" delay="0"></e-dialog-animationsettings>
     </ejs-dialog>
 

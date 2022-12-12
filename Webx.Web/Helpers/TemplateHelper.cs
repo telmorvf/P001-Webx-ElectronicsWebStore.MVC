@@ -57,8 +57,8 @@ namespace Webx.Web.Helpers
             {
                 var viewContext = new ViewContext(actionContext, viewResult.View, viewDictionary,
                     tempDataDictionary, outputWriter, new HtmlHelperOptions());
-
                 await viewResult.View.RenderAsync(viewContext);
+
                 return outputWriter.ToString();
             }
             catch (Exception ex)

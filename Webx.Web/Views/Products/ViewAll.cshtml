@@ -1,0 +1,473 @@
+﻿@* VIEW ALL PRODUCTS *@
+@using Webx.Web.Models
+@model IEnumerable<Webx.Web.Data.Entities.Product>
+
+@{
+    ViewData["Title"] = "View All Products";
+    ViewData["Breadcrumb"] = null;
+    Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
+    List<Object> toolbarItems = new List<Object>();
+    if (ViewBag.IsService == true)
+    {
+        toolbarItems.Add(new { text = "Show Products", tooltipText = "Show Products", prefixIcon = "e-expand", id = "showProducts", align = "Right" });
+        toolbarItems.Add(new { text = "Info Service", tooltipText = "Service Details", prefixIcon = "e-expand", id = "infoProduct" });
+
+        @if ((this.User.Identity.IsAuthenticated) && (this.User.IsInRole("Admin")))
+        {
+            toolbarItems.Add(new { text = "Edit Service", tooltipText = "Edit Service", prefixIcon = "e-expand", id = "editService" });
+            toolbarItems.Add(new { text = "Create Service", tooltipText = "Create Service", prefixIcon = "e-expand", id = "createService" });
+        }
+
+    }
+    else
+    {
+        toolbarItems.Add(new { text = "Show Services", tooltipText = "Show Services", prefixIcon = "e-expand", id = "showServices", align = "Right" });
+        toolbarItems.Add(new { text = "Info Product", tooltipText = "Product Details", prefixIcon = "e-expand", id = "infoProduct" });
+
+        @if ((this.User.Identity.IsAuthenticated) && ((this.User.IsInRole("Admin")) || (this.User.IsInRole("Product Manager"))))
+        {
+            toolbarItems.Add(new { text = "Edit Product", tooltipText = "Edit Product", prefixIcon = "e-expand", id = "editProduct" });
+            toolbarItems.Add(new { text = "Create Product", tooltipText = "Create Product", prefixIcon = "e-expand", id = "createProduct" });
+        }
+    }
+    toolbarItems.Add("Search");
+
+    //toolbarItems.Add(new { text = "Delete", tooltipText = "Delete Employee", prefixIcon = "e-expand", id = "deleteProduct" });
+
+    var yesButton = new ButtonModel() { content = "Yes", cssClass = "e-flat" };
+    var noButton = new ButtonModel() { content = "No", cssClass = "e-flat" };
+}
+
+<style>
+    .image img {
+        height: 75px;
+        width: 75px;
+        border-radius: 50px;
+        box-shadow: inset 0 0 1px #e0e0e0, inset 0 0 14px rgba(0, 0, 0, 0.2);
+    }
+
+    #editProduct > .e-expand::before {
+        content: '\e730' !important;
+    }
+
+    #editService > .e-expand::before {
+        content: '\e730' !important;
+    }
+
+    #infoProduct > .e-expand::before {
+        content: '\e800' !important;
+    }
+
+    #deleteProduct > .e-expand::before {
+        content: '\e820' !important;
+    }
+
+    #showServices > .e-expand::before {
+        content: '\e887' !important;
+    }
+
+    #showProducts > .e-expand::before {
+        content: '\e7de' !important;
+    }
+
+     .e-grid .e-gridheader .e-sortfilter .e-headercelldiv, .e-grid .e-gridheader .e-stackedheadercelldiv {
+        padding: 0px !important;
+    }
+
+</style>
+
+<!--Div que permite dar espaçamento entre ejs grid e topo-->
+<div class="container-fluid" style="min-height:25px;background-color: #f4f6f9;">
+</div>
+
+<div id='container' class="container-fluid">
+
+
+    <!-- Tabela/Grid do syncfusion  -->
+    <ejs-grid id="grid" TValue="@ViewBag.Type" dataSource="Model" rowSelected="rowSelected" allowSelection="true" allowPaging="true" allowSorting="true" allowFiltering="false" toolbarClick="toolbarClick" toolbar="toolbarItems">
+        <e-grid-selectionsettings type="Single" mode="Row"></e-grid-selectionsettings>
+        <e-grid-pagesettings pageSize="7"></e-grid-pagesettings>
+        <e-grid-columns>
+            <e-grid-column headerText="Product Picture" template="#template" width="100" textAlign="Center" allowEditing="false"></e-grid-column>
+            <e-grid-column field="Id" isPrimaryKey="true" width="0px"></e-grid-column>
+            <e-grid-column field="IsService" headerText="IsServ.?" template="#templateCheckbox" textAlign="Center" width="65px"></e-grid-column>
+            <e-grid-column field="IsPromotion" headerText="Highlighted?" template="#templateCheckbox1" textAlign="Center" width="100px"></e-grid-column>
+            <e-grid-column field="Name" textAlign="Left" allowEditing="false" width="400px"></e-grid-column>        
+            <e-grid-column field="Price" format="# ###.00 '€'" textAlign="Center" width="100px"></e-grid-column>
+            <e-grid-column field="Discount" format="# ###.00 '%'" textAlign="Center" width="100px"></e-grid-column>
+            <e-grid-column field="PriceWithDiscount" format="# ###.00 '€'" textAlign="Center" width="100px"></e-grid-column>
+           @* <e-grid-column field="" isPrimaryKey="true" width="0px"></e-grid-column>*@
+            <e-grid-column field="Category.Name" headerText="Category" textAlign="Center" width="100px"></e-grid-column>
+            <e-grid-column field="Brand.Name" headerText="Brand" textAlign="Center" width="100px"></e-grid-column>
+            @*<e-grid-column field="Description" textAlign="Left" allowEditing="false" width="220px"></e-grid-column>*@
+        </e-grid-columns>
+    </ejs-grid>
+
+
+    <!-- Caixa de Dialogo do syncfusion / Surge ao clicar no detalhes do  Product -->
+    <ejs-dialog id='dialog' visible="false" isModal="true" width="850px" showCloseIcon="true" allowDragging="true" overlayClick="onOverlayClick" target="#container">
+        <e-dialog-animationsettings effect="Fade" duration="400" delay="0"></e-dialog-animationsettings>
+
+    </ejs-dialog>
+
+
+
+    <!-- Caixa de Dialogo do syncfusion / Surge ao clicar no delete do  Product -->
+    <ejs-dialog id='deleteDialog' visible="false" isModal="true" width="300px" showCloseIcon="true" allowDragging="true" overlayClick="onDeleteOverlayClick" target="#container"
+                header="Delete  Product">
+        <e-dialog-animationsettings effect="Fade" duration="400" delay="0"></e-dialog-animationsettings>
+
+        <e-dialog-buttons>
+            <e-dialog-dialogbutton buttonModel="@yesButton" click="ondlgYesClick"></e-dialog-dialogbutton>
+            <e-dialog-dialogbutton buttonModel="@noButton" click="ondlgNoClick"></e-dialog-dialogbutton>
+        </e-dialog-buttons>
+    </ejs-dialog>
+
+</div>
+
+
+<!-- Script template para a grid do syncfusion, este template permite colocar a imagem do user numa determinada coluna -->
+
+<script>
+    function onChange() {
+        var gridObj = document.getElementById("Grid").ej2_instances[0], dropdpwnObj = document.getElementById("filtertype").ej2_instances[0];
+        gridObj.filterSettings.type = dropdpwnObj.value;
+    }
+</script>
+
+<script id="template" type="text/x-template"> 
+    <div class="image">
+            @*${if(IsService)}*@
+               @* <img src="${ImageFullPath}" />*@
+            @*${else}*@
+                @*<img src="$(function(){Images.map(i => images[0]).ImageFullPath})" />*@
+                <img src="${ImageFirst}" />
+            @*${/if}*@
+    </div>
+</script>
+
+
+<script src="jquery-3.6.0.min.js"></script>
+
+<!-- Script template para a grid do syncfusion, este template permite colocar a checkbox numa determinada coluna -->
+<script id="templateCheckbox" type="text/x-template">
+    <div class="template_checkbox">
+        ${if(IsService)}
+            <input type="checkbox" checked disabled="disabled" > ${else}
+            <input type="checkbox" disabled="disabled">
+        ${/if}
+    </div>
+</script>
+
+<script id="templateCheckbox1" type="text/x-template">
+    <div class="template_checkbox1">
+        ${if(IsPromotion)}
+            <input type="checkbox" checked disabled="disabled" > ${else}
+            <input type="checkbox" disabled="disabled">
+        ${/if}
+    </div>
+</script>
+
+<!-- Script com as funçoes dos botoes da grid do syncfusion -->
+<script>
+
+    let id;
+
+    let isService;
+
+    function rowSelected(args) {
+        // obtem a linha da tabela selecionada
+        var selectedrecords = this.getSelectedRecords();
+
+        // atribui à variàvel id o valor do user id selecionado na tabela
+        id = selectedrecords[0].Id;
+        //isService = ViewBag.IsService;
+    }
+
+    function toolbarClick(args) {
+
+        //determina se o botão da tabela clicado foi o de editar store, o editStore é o id do botão definido na linha 21
+        if (args.item.id === 'createProduct') {
+            window.location.href = '/Products/Create/';
+        }
+
+        //determina se o botão da tabela clicado foi o de editar store, o editStore é o id do botão definido na linha 21
+        if (args.item.id === 'createService') {
+            window.location.href = '/Products/CreateService/';
+        }
+
+
+
+        //determina se o botão da tabela clicado foi o de editar  Product, o edit Product é o id do botão definido na linha 17
+        if (args.item.id === 'editProduct') {
+
+            //se o id for nulo, vazio ou indefenido entra neste bloco de código e faz um pedido por ajax ao servidor, mais especifico,
+            //ao método ToastNotification do controlador  Product que vai fazer surgir uma toast message com a mensagem/tipo desejado
+            //os tipos de mensagem possiveis são warning,success,information e error.
+            if (id === "" || id === null || id === undefined) {
+
+                let message = "You must select a product!";
+                let type = "warning";
+
+                $.ajax({
+                    url: '@Url.Action("ToastNotification","Products")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { message: message, type: type },
+                    success: function (result) {
+                        console.log(result);
+                    },
+                    error: function (ex) {
+                        console.log(ex);
+                    }
+                });
+
+                return;
+            }
+
+            //se o id não for nulo,vazio ou indefinido chama o url seguinte (método update do controlador Product) e passa-lhe o id
+            window.location.href = '/Products/Update/' + id;
+        }
+
+        //determina se o botão da tabela clicado foi o de editar  Product, o edit Product é o id do botão definido na linha 17
+        if (args.item.id === 'editService') {
+
+            //se o id for nulo, vazio ou indefenido entra neste bloco de código e faz um pedido por ajax ao servidor, mais especifico,
+            //ao método ToastNotification do controlador  Product que vai fazer surgir uma toast message com a mensagem/tipo desejado
+            //os tipos de mensagem possiveis são warning,success,information e error.
+            if (id === "" || id === null || id === undefined) {
+
+                let message = "You must select a service!";
+                let type = "warning";
+
+                $.ajax({
+                    url: '@Url.Action("ToastNotification","Products")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { message: message, type: type },
+                    success: function (result) {
+                        console.log(result);
+                    },
+                    error: function (ex) {
+                        console.log(ex);
+                    }
+                });
+
+                return;
+            }
+
+            //se o id não for nulo,vazio ou indefinido chama o url seguinte (método update do controlador Product) e passa-lhe o id
+            window.location.href = '/Products/UpdateService/' + id;
+        }
+
+
+
+        //determina se o botão da tabela clicado foi o de info do Product, o info Product é o id do botão definido na linha 18
+        if (args.item.id === 'infoProduct') {
+            //ler linhas 140 a 142, faz exatamente o mesmo.
+            if (id === "" || id === null || id === undefined) {
+
+                let message = "You must select a product!";
+                let type = "warning";
+
+                $.ajax({
+                    url: '@Url.Action("ToastNotification","Products")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { message: message, type: type },
+                    success: function (result) {
+                        console.log(result);
+                    },
+                    error: function (ex) {
+                        console.log(ex);
+                    }
+                });
+
+                return;
+            }
+
+            //se o id não for vazio,nulo ou indefinido, procede a pedido ajax ao método ProductDetails no controlador  Product para obter os dados do empregado
+            $.ajax({
+                url: '@Url.Action("ProductDetails","Products")',
+                type: 'POST',
+                dataType: 'json',
+                data: { Id: id },
+                success: function (productData) {
+                    //se conseguir obter os dados (productData), vai apresentar os mesmos no dialog do syncfusion
+                    var dialog = document.getElementById("dialog").ej2_instances[0];  //obtem o objecto dialog do syncfusion
+                    dialog.header = productData.name + " Details"; // defini o titolo do dialog e apresenta-o no Header
+                    
+                    let isServiceStatus;
+                    let isPromotionStatus;
+
+                    if (productData.isService === true) 
+                    {
+                        isServiceStatus = "Service";
+                    }
+                    else {
+                        isServiceStatus = "Product";
+                    }
+
+                    if (productData.isPromotion === true) {
+                        isPromotionStatus = "Yes";
+                    }
+                    else {
+                        isPromotionStatus = "No";
+                    }
+
+                    let price = parseFloat(productData.price).toFixed(2);
+                    let priceWithDiscount = parseFloat(productData.priceWithDiscount).toFixed(2);
+
+                    dialog.content = "<b>Price: </b>" + price + " €uros <br/>" + //Define a mensagem/conteudo do dialog
+                        "<b>Discount: </b>" + productData.discount + " % <br/>" +
+                        "<b>Price w/Discount: </b>" + priceWithDiscount + " €uros <br/>" +
+                        "<b>Brand: </b>" + productData.brandName + "<br/>" +
+                        "<b>Category: </b>" + productData.categoryName + "<br/>" +
+                        "<b>Is Service?: </b>" + isServiceStatus + "<br/>" +
+                        "<b>Highlighted?: </b>" + isPromotionStatus + "<br/><br/>" +
+                        "<b>Description: </b>" + productData.description + "<br/>";
+
+                    dialog.show(); // faz popup do dialog
+                },
+                error: function (ex) //se não obter dados do servidor apresentar a mensagem de erro no log do browser
+                {
+                    console.log("failed " + ex.message);
+                }
+            });
+        }
+
+
+        //determina se o botão da tabela clicado foi o de delete do product, o delete Product é o id do botão definido na linha 19
+        if (args.item.id === 'deleteProduct') {
+            //ler linhas 140 a 142, faz exatamente o mesmo.e
+            if (id === "" || id === null || id === undefined) {
+
+                let message = "You must select a product!";
+                let type = "warning";
+
+                $.ajax({
+                    url: '@Url.Action("ToastNotification","Products")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { message: message, type: type },
+                    success: function (result) {
+                        console.log(result);
+                    },
+                    error: function (ex) {
+                        console.log(ex);
+                    }
+                });
+
+                return;
+            }
+            //se o id não for vazio,nulo ou indefinido, apresenta a caixa de dialogo (deleteDialog) do syncfusion que está defenida entre as linhas
+            //91 e 99
+            var dialog = document.getElementById("deleteDialog").ej2_instances[0];
+            dialog.content = "Are you sure you want to delete the product?"; // insere o conteudo da caixa de dialogo
+            dialog.show(); //faz popup do dialog
+        }
+
+
+
+        //determina se o botão da tabela clicada foi o de mostrar product inactivo
+        if (args.item.id === 'showProducts') {
+            //caso tenha sido, chama a partir de url, o método ViewAll do contralador employee e passa-lhe a variavel isActive a falso
+            //para que possa mostrar todos os empregados, activos e inactivos
+            window.location.href = '/Products/ViewAll?isService=false';
+        }
+
+        //determina se o botão da tabela clicada foi o de esconder product inactivo
+        if (args.item.id === 'showServices') {
+            //caso tenha sido, chama a partir de url, o método ViewAll do contralador employee e passa-lhe a variavel isActive a true
+            //para que possa mostrar somente os empregados activos
+            window.location.href = '/Products/ViewAll?isService=true';
+        }
+
+    }
+
+    //on OverlayClick é função que permite fechar as janelas dialog do syncfusion quando utilizador clica numa outra zona do ecrã sem ser
+    //na caixa de dialog própriamente dita.
+    function onOverlayClick() {
+        var dialog = document.getElementById("dialog").ej2_instances[0];
+        dialog.hide();
+    };
+
+    //faz o mesmo da função acima, mas para caixa de dialogo diferente (deleteDialog)
+    function onDeleteOverlayClick() {
+        var dialog = document.getElementById("deleteDialog").ej2_instances[0];
+        dialog.hide();
+    }
+
+
+    //função que é chamada quando se clica no botão "NO" da caixa de dialogo Delete empregado, função limita-se a fechar caixa de diálogo
+    function ondlgNoClick() {
+        var dialog = document.getElementById("deleteDialog").ej2_instances[0];
+        dialog.hide();
+    }
+
+    //função que é chamada quando se clica no botão "YES" da caixa de dialogo Delete empregado
+    function ondlgYesClick() {
+
+        //procede a pedido ajax para correr metodo Delete do controlador Employee, método esse que devolve um booleano(true/false)
+        $.ajax({
+            url: '@Url.Action("Delete","Products")',
+            type: 'POST',
+            dataType: 'json',
+            data: { id: id },
+            success: function (result) {
+                //se resultado for true, procede a pedido ajax para chamar o método ToastNotification do controlador employee e
+                // mostrar uma toast message, neste caso de sucesso.
+                if (result === true) {
+
+                    let message = " Product deleted with success!";
+                    let type = "success";
+
+                    $.ajax({
+                        url: '@Url.Action("ToastNotification","Products")',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { message: message, type: type },
+                        success: function (result) {
+
+                        },
+                        error: function (ex) {
+                            console.log(ex);
+                        }
+                    });
+
+                    var dialog = document.getElementById("deleteDialog").ej2_instances[0];
+                    dialog.hide();
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 3000);
+                }
+                else {
+
+                    //se o resultado for falso, faz pedido ajax ao mesmo método de toastNotification para mostrar toast message de erro/warning
+                    let message = "There was a problem deleting the product";
+                    let type = "Warning";
+
+                    $.ajax({
+                        url: '@Url.Action("ToastNotification","Products")',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { message: message, type: type },
+                        success: function (result) {
+                            console.log(result);
+                        },
+                        error: function (ex) {
+                            console.log(ex);
+                        }
+                    });
+
+                    var dialog = document.getElementById("deleteDialog").ej2_instances[0];
+                    dialog.hide();
+                }
+            },
+            error: function (ex) {
+                console.log("failed " + ex.message);
+            }
+        });
+    }
+
+</script>

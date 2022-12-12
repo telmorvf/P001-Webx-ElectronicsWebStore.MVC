@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
+using System.Transactions;
 using Webx.Web.Data.Entities;
 using Webx.Web.Helpers;
 
@@ -38,11 +39,66 @@ namespace Webx.Web.Data
             await AddServicesAsync();
             await AddStoresAsync();
             await AddStocksAsync();
-            await AddAppointmentsAsync();
+            await AddAppointmentsAsync();    
             await AddOrdersAsync();
             await AddOrdersDetailsAsync();
+            await AddProductReviews();
 
         }
+
+
+        private async Task AddProductReviews()
+        {
+            if (!_context.Reviews.Any())
+            {
+                Product[] products = new Product[3] {await _context.Products.Include(p => p.Category).Where(p => p.Category.Name == "Memory").FirstOrDefaultAsync(),
+                                                     await _context.Products.Include(p => p.Category).Where(p => p.Category.Name == "CPU Processors").FirstOrDefaultAsync(),
+                                                     await _context.Products.Include(p => p.Category).Where(p => p.Category.Name == "CPU Coolers").FirstOrDefaultAsync()
+                };
+                
+                var users = (List<User>)await _userHelper.GetAllCustomersUsersAsync();
+                Random r = new Random();
+                String[] Status = new string[2] { "Authorized", "Unauthorized"};
+
+
+                foreach(var product in products)
+                {
+                    foreach(var user in users)
+                    {
+                        _context.Reviews.Add(new ProductReview
+                        {
+                            Status = Status[r.Next(2)],
+                            Product = product,
+                            User = user,
+                            Rating = r.Next(1,6),
+                            ReviewDate = RandomDay(),
+                            WouldRecommend = r.Next(2) == 1, //atribui o resultado da expressão ao boleano, ou seja, se o random sair 0 a resposta é false, se for 1 é verdadeira
+                            ReviewText = RandomString(200),
+                            ReviewTitle = RandomString(25),                            
+                        });
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        private DateTime RandomDay()
+        {
+            Random gen = new Random();
+            DateTime start = new DateTime(2020, 1, 1);
+            int range = (DateTime.Today - start).Days;
+            return start.AddDays(gen.Next(range));
+        }
+
+        public static string RandomString(int length)
+        {
+            Random random = new Random();
+            const string chars = "ABC DEF GHI JKL MNO PQR STU VWXY Z abcdefghijklmnopqrstuvwxyz 0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
 
         private async Task AddOrdersDetailsAsync()
         {
@@ -120,20 +176,22 @@ namespace Webx.Web.Data
         {
             if (!_context.Statuses.Any())
             {
-                int nTimes = 6;
-                string[] OrderStatusName = new string[6] {
+                int nTimes = 7;
+                string[] OrderStatusName = new string[7] {
                     "Order Created",
                     "Appointment Created",
                     "Pending Appointment",
                     "Order Shipped",
                     "Appointment Done",
-                    "Order Closed"
+                    "Order Closed",
+                    "Ongoing"
                 };
 
-                string[] OrderStatusDesc = new string[6] {
+                string[] OrderStatusDesc = new string[7] {
                     "Pagamento Efetuado S/ marcação",
                     "Pagamento Efetuado C/ marcação",
                     "Pagamento Efetuado C/marcação por efetuar",
+                    "",
                     "",
                     "",
                     ""
@@ -178,8 +236,6 @@ namespace Webx.Web.Data
 
                 //Adiciona encomendas de / para produtos sem marcações
 
-                //TODO comentado por telmo há vezes que dá erro no formato da data, nem sempre - perceber o que se passa com o Filipe
-
                 for (int i = 0; i <= 2; i++)
                 {
                     var orderDate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, r.Next(DateTime.DaysInMonth(DateTime.UtcNow.Year, DateTime.UtcNow.Month)));
@@ -192,6 +248,7 @@ namespace Webx.Web.Data
                         OrderDate = orderDate,
                         DeliveryDate = orderDate.AddDays(r.Next(0, 4)),
                         Status= _context.Statuses.Where(s => s.Name == "Order Created").FirstOrDefault()
+
                     });
                 }
 
@@ -346,6 +403,8 @@ namespace Webx.Web.Data
                 string[] brandsNames = new string[5] { "Asus", "Corsair", "MSI", "Cooler Master", "Intel" };
                 string[] categories = new string[5] { "Motherboards", "Memory", "Cases", "CPU Coolers", "CPU Processors" };
                 decimal[] productsPrices = new decimal[5] {153.90m,297.20m,59.90m,71.90m,413.90m};
+                decimal[] productsDiscount = new decimal[5] { 10.0m, 0m, 0m, 0m, 5.0m };
+                bool[] promotion = new bool[5] { true, false, true, false, true };
                 Guid[][] images = new Guid[5][] { 
                     new Guid[4] {Guid.Parse("00000000-0000-0000-0000-11000000000a"),Guid.Parse("00000000-0000-0000-0000-11000000000b"),Guid.Parse("00000000-0000-0000-0000-11000000000c"),Guid.Parse("00000000-0000-0000-0000-11000000000e")},
                     new Guid[4] {Guid.Parse("00000000-0000-0000-0000-12000000000a"),Guid.Parse("00000000-0000-0000-0000-12000000000b"),Guid.Parse("00000000-0000-0000-0000-12000000000c"),Guid.Parse("00000000-0000-0000-0000-12000000000d") },
@@ -374,10 +433,11 @@ namespace Webx.Web.Data
                         Name = productNames[p],
                         Price = productsPrices[p],
                         IsService = false,
-                        Images = productImages
-                    });
+                        IsPromotion = promotion[p],
+                        Images = productImages,
+                        Discount = productsDiscount[p]
+                    });                  
                 }
-
                 await _context.SaveChangesAsync();
             }
         }
@@ -387,9 +447,21 @@ namespace Webx.Web.Data
             //var categories = new List<Category>();
             if (!_context.Categories.Any())
             {
-                int nTimes = 6;
-                string[] categ = new string[6] { "Motherboards", "Memory", "Cases", "CPU Coolers", "CPU Processors", "Services" };
-                Guid[] images = new Guid[6] { Guid.Parse("00000000-0000-0000-0000-900000000006"), Guid.Parse("00000000-0000-0000-0000-900000000005"), Guid.Parse("00000000-0000-0000-0000-900000000004"), Guid.Parse("00000000-0000-0000-0000-900000000003"), Guid.Parse("00000000-0000-0000-0000-900000000002"), Guid.Parse("00000000-0000-0000-0000-900000000001") };
+                int nTimes = 11;
+                string[] categ = new string[11] {
+                    "Toys","Routers",
+                    "Laptops" ,"Solid Drives",
+                    "Mouses & Keyboards",
+                    "Motherboards", "Memory", 
+                    "Cases", "CPU Coolers", 
+                    "CPU Processors", "Services" };
+                  Guid[] images = new Guid[11] {
+                                                                        Guid.Parse("00000000-0000-0000-0000-900000000011"),
+                    Guid.Parse("00000000-0000-0000-0000-900000000010"), Guid.Parse("00000000-0000-0000-0000-900000000009"),
+                    Guid.Parse("00000000-0000-0000-0000-900000000008"), Guid.Parse("00000000-0000-0000-0000-900000000007"),
+                    Guid.Parse("00000000-0000-0000-0000-900000000006"), Guid.Parse("00000000-0000-0000-0000-900000000005"), 
+                    Guid.Parse("00000000-0000-0000-0000-900000000004"), Guid.Parse("00000000-0000-0000-0000-900000000003"), 
+                    Guid.Parse("00000000-0000-0000-0000-900000000002"), Guid.Parse("00000000-0000-0000-0000-900000000001") };
 
                 for (int i = 0; i < nTimes; i++)
                 {
@@ -408,16 +480,31 @@ namespace Webx.Web.Data
         {
             if (!_context.Brands.Any())
             {
-                string[] brandsNames = new string[6] { "Asus","Corsair","MSI","Cooler Master","Intel","WebX"};
+                int nTimes = 14;
+                string[] brandsNames = new string[14] { 
+                    "Asus", "Corsair", "MSI", 
+                    "Cooler Master", "Intel", "WebX",
+                    "Samsung", "LG", "Apple",
+                    "Canon", "Sony", "Siemens",
+                    "Lenovo", "Microsoft"
+                };
+                Guid[] images = new Guid[14] { 
+                    Guid.Parse("00000000-0000-0000-0000-900000000001"), Guid.Parse("00000000-0000-0000-0000-900000000002"), Guid.Parse("00000000-0000-0000-0000-900000000003"),
+                    Guid.Parse("00000000-0000-0000-0000-900000000004"), Guid.Parse("00000000-0000-0000-0000-900000000005"), Guid.Parse("00000000-0000-0000-0000-900000000006"),
+                    Guid.Parse("00000000-0000-0000-0000-900000000007"), Guid.Parse("00000000-0000-0000-0000-900000000008"), Guid.Parse("00000000-0000-0000-0000-900000000009"),
+                    Guid.Parse("00000000-0000-0000-0000-900000000010"), Guid.Parse("00000000-0000-0000-0000-900000000011"), Guid.Parse("00000000-0000-0000-0000-900000000012"),
+                    Guid.Parse("00000000-0000-0000-0000-900000000013"), Guid.Parse("00000000-0000-0000-0000-900000000014")
+                };
 
-                foreach(string brandName in brandsNames)
+                for (int i = 0; i < nTimes; i++)
                 {
-                    _context.Brands.Add(new Brand
+                    var brands = new Brand
                     {
-                        Name = brandName
-                    });
+                        Name = brandsNames[i],
+                        ImageId = images[i]
+                    };
+                    _context.Brands.Add(brands);
                 }
-
                 await _context.SaveChangesAsync();
             }
         }

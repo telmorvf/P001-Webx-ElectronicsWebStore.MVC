@@ -194,9 +194,12 @@ namespace Webx.Web.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Brands");
                 });
@@ -213,9 +216,12 @@ namespace Webx.Web.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Categories");
                 });
@@ -360,21 +366,27 @@ namespace Webx.Web.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("BrandId")
+                    b.Property<int>("BrandId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CategoryId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Discount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("IsPromotion")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsService")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -384,6 +396,9 @@ namespace Webx.Web.Migrations
                     b.HasIndex("BrandId");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Products");
                 });
@@ -408,6 +423,65 @@ namespace Webx.Web.Migrations
                     b.ToTable("ProductImages");
                 });
 
+            modelBuilder.Entity("Webx.Web.Data.Entities.ProductReview", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ReviewDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ReviewText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReviewTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("WouldRecommend")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Reviews");
+                });
+
+            modelBuilder.Entity("Webx.Web.Data.Entities.ProductReviewTemps", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ProductReviewId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductReviewId");
+
+                    b.ToTable("ReviewsTemps");
+                });
+
             modelBuilder.Entity("Webx.Web.Data.Entities.Status", b =>
                 {
                     b.Property<int>("Id")
@@ -426,6 +500,21 @@ namespace Webx.Web.Migrations
                     b.ToTable("Statuses");
                 });
 
+            modelBuilder.Entity("Webx.Web.Data.Entities.StatusChecker", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StatusCheckers");
+                });
+
             modelBuilder.Entity("Webx.Web.Data.Entities.Stock", b =>
                 {
                     b.Property<int>("Id")
@@ -436,13 +525,13 @@ namespace Webx.Web.Migrations
                     b.Property<int>("MinimumQuantity")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProductId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int?>("StoreId")
+                    b.Property<int>("StoreId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -486,7 +575,7 @@ namespace Webx.Web.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -498,6 +587,9 @@ namespace Webx.Web.Migrations
                         .HasColumnType("nvarchar(8)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Stores");
                 });
@@ -719,11 +811,15 @@ namespace Webx.Web.Migrations
                 {
                     b.HasOne("Webx.Web.Data.Entities.Brand", "Brand")
                         .WithMany()
-                        .HasForeignKey("BrandId");
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Webx.Web.Data.Entities.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Brand");
 
@@ -737,15 +833,43 @@ namespace Webx.Web.Migrations
                         .HasForeignKey("ProductId");
                 });
 
-            modelBuilder.Entity("Webx.Web.Data.Entities.Stock", b =>
+            modelBuilder.Entity("Webx.Web.Data.Entities.ProductReview", b =>
                 {
                     b.HasOne("Webx.Web.Data.Entities.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId");
 
+                    b.HasOne("Webx.Web.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Webx.Web.Data.Entities.ProductReviewTemps", b =>
+                {
+                    b.HasOne("Webx.Web.Data.Entities.ProductReview", "ProductReview")
+                        .WithMany()
+                        .HasForeignKey("ProductReviewId");
+
+                    b.Navigation("ProductReview");
+                });
+
+            modelBuilder.Entity("Webx.Web.Data.Entities.Stock", b =>
+                {
+                    b.HasOne("Webx.Web.Data.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Webx.Web.Data.Entities.Store", "Store")
                         .WithMany()
-                        .HasForeignKey("StoreId");
+                        .HasForeignKey("StoreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Product");
 

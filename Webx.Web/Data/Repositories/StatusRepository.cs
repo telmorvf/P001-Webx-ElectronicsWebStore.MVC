@@ -34,6 +34,7 @@ namespace Webx.Web.Data.Repositories
             list.Add(_context.Statuses.Where(s => s.Name == "Appointment Created").FirstOrDefault());
             list.Add(_context.Statuses.Where(s => s.Name == "Order Created").FirstOrDefault());
             list.Add(_context.Statuses.Where(s => s.Name == "Pending Appointment").FirstOrDefault());
+            list.Add(_context.Statuses.Where(s => s.Name == "Ongoing").FirstOrDefault());
 
             foreach (var status in list)
             {

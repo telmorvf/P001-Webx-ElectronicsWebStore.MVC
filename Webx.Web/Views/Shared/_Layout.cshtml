@@ -70,6 +70,13 @@
 
 </head>
 
+<style>
+    .listaUl > li{
+        height: 34px;
+       
+    }
+</style>
+
 <body class="theme-color1 light ltr">
 
     <!-- header start -->
@@ -167,82 +174,7 @@
                             <div id="cartPartialDiv">
                                 <partial id="cartPartial" name="_CartDropDownPartial" ></partial>
                             </div>
-                            
 
-                            
-                            @*<div class="search-full">
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i data-feather="search" class="font-light"></i>
-                                    </span>
-                                    <input type="text" class="form-control search-type" placeholder="Search here..">
-                                    <span class="input-group-text close-search">
-                                        <i data-feather="x" class="font-light"></i>
-                                    </span>
-                                </div>
-                                <div class="search-suggestion">
-                                    <ul class="custom-scroll">
-                                        <li>
-                                            <div class="product-cart media">
-                                                <img src="~/assets/images/electronics/product/1.jpg"
-                                                    class="img-fluid blur-up lazyload" alt="">
-                                                <div class="media-body">
-                                                    <a href="javascript:void(0)">
-                                                        <h6 class="mb-1">New Smart Watch 4 ERT2</h6>
-                                                    </a>
-                                                    <ul class="rating">
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star"></i>
-                                                        </li>
-                                                    </ul>
-                                                    <p class="mb-0 mt-1">$28.00</p>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="product-cart media">
-                                                <img src="~/assets/images/electronics/product/5.jpg"
-                                                    class="img-fluid blur-up lazyload" alt="">
-                                                <div class="media-body">
-                                                    <a href="javascript:void(0)">
-                                                        <h6 class="mb-1">Powermatic 900 W Juicer</h6>
-                                                    </a>
-                                                    <ul class="rating">
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                        <li>
-                                                            <i class="fas fa-star theme-color"></i>
-                                                        </li>
-                                                    </ul>
-                                                    <p class="mb-0 mt-1">$35.00</p>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>*@
                         </div>
                     </div>
                 </div>
@@ -287,213 +219,101 @@
         </div>
 
     <!-- brand section start -->
-    <section class="section-b-space">
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    <div class="brand-slider">
-                        <div>
-                            <div class="brand-image">
-                                <img src="~/assets/images/brand/1.png" class="img-fluid blur-up lazyload"
-                                    alt="brand logo">
-                            </div>
-                        </div>
-                        <div>
-                            <div class="brand-image">
-                                <img src="~/assets/images/brand/2.png" class="img-fluid blur-up lazyload"
-                                    alt="brand logo">
-                            </div>
-                        </div>
-                        <div>
-                            <div class="brand-image">
-                                <img src="~/assets/images/brand/3.png" class="img-fluid blur-up lazyload"
-                                    alt="brand logo">
-                            </div>
-                        </div>
-                        <div>
-                            <div class="brand-image">
-                                <img src="~/assets/images/brand/4.png" class="img-fluid blur-up lazyload"
-                                    alt="brand logo">
-                            </div>
-                        </div>
-                        <div>
-                            <div class="brand-image">
-                                <img src="~/assets/images/brand/5.png" class="img-fluid blur-up lazyload"
-                                    alt="brand logo">
-                            </div>
-                        </div>
-                        <div>
-                            <div class="brand-image">
-                                <img src="~/assets/images/brand/6.png" class="img-fluid blur-up lazyload"
-                                    alt="brand logo">
-                            </div>
-                        </div>
-                        <div>
-                            <div class="brand-image">
-                                <img src="~/assets/images/brand/4.png" class="img-fluid blur-up lazyload"
-                                    alt="brand logo">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- brand section end -->
+
+    <div id="brandsPartialDiv">
+         <partial id="brandsPartial" name="_brandsPartial" ></partial>
+    </div>
+
+   
 
     <!-- footer start -->
     <footer class="footer-sm-space">
-        <div class="main-footer">
+        <div class="main-footer" style="background-color: #f0f3f8;position: relative;padding:20px 0 !important">
             <div class="container">
-                <div class="row gy-4">
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="footer-contact">
+                <div class="row gy-4" style="justify-content: center;display: flex;align-items: center;">
+
+                    <div class="col-xl-2 col-lg-2 col-md-2" style="display: flex;justify-content: center;align-items: center">
+                        <div class="footer-contact" style="padding:0px"> 
                             <div class="brand-logo">
-                                <a href="index.html" class="footer-logo">                                    
+                                <a asp-action="Index" asp-controller="Home" class="footer-logo" style="margin-bottom:0px !important">                                    
                                     <img src="~/assets/images/logofooter.png" class="img-fluid blur-up lazyload" alt="logo">
                                 </a>
-                            </div>
-                            <ul class="contact-lists">
-                                <li>
-                                    <span><b>phone:</b> <span class="font-light"> + 185659635</span></span>
-
-                                </li>
-                                <li>
-                                    <span><b>Address:</b><span class="font-light"> 1418 Riverwood Drive, Suite 3245
-                                            Cottonwood, CA 96052, United States</span></span>
-                                </li>
-                                <li>
-                                    <span><b>Email:</b><span class="font-light"> Voxo123@gmail.com</span></span>
-
-                                </li>
-                            </ul>
+                            </div>                           
                         </div>
-                    </div>
-                    <div class="col-lg-2 col-md-4 col-sm-6">
+                    </div>    
+                    <div class="col-xl-10"></div>    
+                    @*<div class="col-xl-3 col-lg-3 col-md-4 col-sm-6" style="text-align:center">
                         <div class="footer-links">
                             <div class="footer-title">
-                                <h3>About us</h3>
-                            </div>
-                            <div class="footer-content">
-                                <ul>
-                                    <li>
-                                        <a href="index.html" class="font-dark">Home</a>
-                                    </li>
-                                    <li>
-                                        <a href="shop-left-sidebar.html" class="font-dark">Shop</a>
-                                    </li>
-                                    <li>
-                                        <a href="about-us.html" class="font-dark">About Us</a>
-                                    </li>
-                                    <li>
-                                        <a href="shop-left-sidebar.html" class="font-dark">Blog</a>
-                                    </li>
-                                    <li>
-                                        <a href="shop-left-sidebar.html" class="font-dark">Contact</a>
-                                    </li>
-                                </ul>
-                            </div>
+                                <a asp-action="Index" asp-controller="Products"> 
+                                    <h3>Shop</h3>
+                                </a>
+                            </div>                            
                         </div>
-                    </div>
-                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-                        <div class="footer-links">
-                            <div class="footer-title">
-                                <h3>New Categories</h3>
-                            </div>
-                            <div class="footer-content">
-                                <ul>
-                                    <li>
-                                        <a href="shop-left-sidebar.html" class="font-dark">Latest Shoes</a>
-                                    </li>
-                                    <li>
-                                        <a href="shop-left-sidebar.html" class="font-dark">Branded Jeans</a>
-                                    </li>
-                                    <li>
-                                        <a href="shop-left-sidebar.html" class="font-dark">New Jackets</a>
-                                    </li>
-                                    <li>
-                                        <a href="shop-left-sidebar.html" class="font-dark">Colorfull Hoodies</a>
-                                    </li>
-                                    <li>
-                                        <a href="shop-left-sidebar.html" class="font-dark">Shiner Goggles</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-                        <div class="footer-links">
-                            <div class="footer-title">
-                                <h3>Get Help</h3>
-                            </div>
-                            <div class="footer-content">
-                                <ul>
-                                    <li>
-                                        <a href="user-dashboard.html" class="font-dark">Your Orders</a>
-                                    </li>
-                                    <li>
-                                        <a href="user-dashboard.html" class="font-dark">Your Account</a>
-                                    </li>
-                                    <li>
-                                        <a href="order-tracking.html" class="font-dark">Track Orders</a>
-                                    </li>
-                                    <li>
-                                        <a href="wishlist.html" class="font-dark">Your Wishlist</a>
-                                    </li>
-                                    <li>
-                                        <a href="faq.html" class="font-dark">Shopping FAQs</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4 col-sm-6 d-none d-sm-block">
-                        <div class="footer-newsletter">
-                            <h3>Let’s stay in touch</h3>
-                            <div class="form-newsletter">
-                                <div class="input-group mb-4">
-                                    <input type="text" class="form-control" placeholder="Your Email Address">
-                                    <span class="input-group-text" id="basic-addon4"><i
-                                            class="fas fa-arrow-right"></i></span>
-                                </div>
-                                <p class="font-dark mb-0">Keep up to date with our latest news and special offers.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    </div>*@                    
+                    
                 </div>
             </div>
         </div>
         <div class="sub-footer">
             <div class="container">
                 <div class="row gy-3">
-                    <div class="col-md-6">
-                        <ul>
-                            <li class="font-dark">We accept:</li>
+                    <div class="col-md-2" style="justify-content: center;display: flex;">
+    
+                       <div>
+                           <p class="font-dark" style="margin-bottom:2.1rem">Follow us on social media</p>
+                           <div class="row">
+                               <div class="col-3">
+                                   <a href="https://www.facebook.com/profile.php?id=100088391940410" target="_blank" class="font-dark" style="text-decoration:none">
+                                       <i class="fab fa-facebook font-dark" style="font-size: 24px;"></i>
+                                   </a>
+                               </div>
+                               <div class="col-3"><a href="#" class="font-dark30" style="text-decoration:none"><i class="fab fa-instagram font-dark" style="font-size: 24px;"></i></a></div>
+                               <div class="col-3"><a href="#" class="font-dark" style="text-decoration:none"><i class="fab fa-twitter font-dark" style="font-size: 24px;"></i></a></div>
+                               <div class="col-3"><a href="#" class="font-dark" style="text-decoration:none"><i class="fab fa-linkedin-in font-dark" style="font-size: 24px;"></i></a></div>
+                           </div>
+                           
+                       </div>
+                    </div>
+                    <div class="col-md-4"></div>
+                    <div class="col-md-3">
+                       <ul style="display: grid;" class="listaUl">
+                           <li>
+                               <p class="font-dark" style="text-decoration:underline">Information</p>
+                           </li>
+                           <li>                               
+                               <p>
+                                    <a asp-action="AboutUs" asp-controller="Home">
+                                        About Us
+                                    </a>
+                               </p>
+                           </li>
+                           <li>
+                               <p>
+                                   <a asp-action="ContactUs" asp-controller="Home">
+                                        Contact Us
+                                   </a>
+                               </p>
+                           </li>
+                       </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <ul style="display: grid;" class="listaUl">                                                    
                             <li>
-                                <a href="javascript:void(0)">
-                                    <img src="~/assets/images/payment-icon/1.jpg" class="img-fluid blur-up lazyload"
-                                        alt="payment icon"></a>
+                                <p class="font-dark" style="justify-content: end; display: flex; align-items: end;">Payment Method:   
+                                    <a href="javascript:void(0)">
+                                        <img src="~/assets/images/payment-icon/4.jpg" class="img-fluid blur-up lazyload" style="margin-left: 10px;" alt="payment icon">
+                                    </a>   
+                                </p>
+                            </li>
+                            <li style="margin:0px;">
+                                <p class="mb-0 font-dark">WebX © 2022 All Rights Reserved</p>
                             </li>
                             <li>
-                                <a href="javascript:void(0)">
-                                    <img src="~/assets/images/payment-icon/2.jpg" class="img-fluid blur-up lazyload"
-                                        alt="payment icon"></a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0)">
-                                    <img src="~/assets/images/payment-icon/3.jpg" class="img-fluid blur-up lazyload"
-                                        alt="payment icon"></a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0)">
-                                    <img src="~/assets/images/payment-icon/4.jpg" class="img-fluid blur-up lazyload"
-                                        alt="payment icon"></a>
+
                             </li>
                         </ul>
-                    </div>
-                    <div class="col-md-6">
-                        <p class="mb-0 font-dark">© 2022, Voxo Theme. Made with heart by Pixelstrap</p>
+                        
                     </div>
                 </div>
             </div>
@@ -501,286 +321,8 @@
     </footer>
     <!-- footer end -->
 
-    <!-- Cart Successful Start -->
-    <div class="modal fade cart-modal" id="addtocart" tabindex="-1" role="dialog" aria-label="myModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content ">
-                <div class="modal-header">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <div class="modal-contain">
-                        <div>
-                            <div class="modal-messages">
-                                <i class="fas fa-check"></i> 3-stripes full-zip hoodie successfully added to
-                                you cart.
-                            </div>
-                            <div class="modal-product">
-                                <div class="modal-contain-img">
-                                    <img src="~/assets/images/fashion/instagram/4.jpg" class="img-fluid blur-up lazyload"
-                                        alt="">
-                                </div>
-                                <div class="modal-contain-details">
-                                    <h4>Premier Cropped Skinny Jean</h4>
-                                    <p class="font-light my-2">Yellow, Qty : 3</p>
-                                    <div class="product-total">
-                                        <h5>TOTAL : <span>$1,140.00</span></h5>
-                                    </div>
-                                    <div class="shop-cart-button mt-3">
-                                        <a href="shop-left-sidebar.html"
-                                            class="btn default-light-theme conti-button default-theme default-theme-2 rounded">CONTINUE
-                                            SHOPPING</a>
-                                        <a href="cart.html"
-                                            class="btn default-light-theme conti-button default-theme default-theme-2 rounded">VIEW
-                                            CART</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="ratio_asos mt-4">
-                        <div class="container">
-                            <div class="row m-0">
-                                <div class="col-sm-12 p-0">
-                                    <div
-                                        class="product-wrapper product-style-2 slide-4 p-0 light-arrow bottom-space spacing-slider">
-                                        <div>
-                                            <div class="product-box">
-                                                <div class="img-wrapper">
-                                                    <div class="front">
-                                                        <a href="product-left-sidebar.html">
-                                                            <img src="~/assets/images/fashion/product/front/1.jpg"
-                                                                class="bg-img blur-up lazyload" alt="">
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <div class="product-details text-center">
-                                                    <div class="rating-details d-block text-center">
-                                                        <span class="font-light grid-content">B&Y Jacket</span>
-                                                    </div>
-                                                    <div class="main-price mt-0 d-block text-center">
-                                                        <h3 class="theme-color">$78.00</h3>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <div class="product-box">
-                                                <div class="img-wrapper">
-                                                    <div class="front">
-                                                        <a href="product-left-sidebar.html">
-                                                            <img src="~/assets/images/fashion/product/front/2.jpg"
-                                                                class="bg-img blur-up lazyload" alt="">
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <div class="product-details text-center">
-                                                    <div class="rating-details d-block text-center">
-                                                        <span class="font-light grid-content">B&Y Jacket</span>
-                                                    </div>
-                                                    <div class="main-price mt-0 d-block text-center">
-                                                        <h3 class="theme-color">$78.00</h3>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <div class="product-box">
-                                                <div class="img-wrapper">
-                                                    <div class="front">
-                                                        <a href="product-left-sidebar.html">
-                                                            <img src="~/assets/images/fashion/product/front/3.jpg"
-                                                                class="bg-img blur-up lazyload" alt="">
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <div class="product-details text-center">
-                                                    <div class="rating-details d-block text-center">
-                                                        <span class="font-light grid-content">B&Y Jacket</span>
-                                                    </div>
-                                                    <div class="main-price mt-0 d-block text-center">
-                                                        <h3 class="theme-color">$78.00</h3>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <div class="product-box">
-                                                <div class="img-wrapper">
-                                                    <div class="front">
-                                                        <a href="product-left-sidebar.html">
-                                                            <img src="~/assets/images/fashion/product/front/4.jpg"
-                                                                class="bg-img blur-up lazyload" alt="">
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <div class="product-details text-center">
-                                                    <div class="rating-details d-block text-center">
-                                                        <span class="font-light grid-content">B&Y Jacket</span>
-                                                    </div>
-                                                    <div class="main-price mt-0 d-block text-center">
-                                                        <h3 class="theme-color">$78.00</h3>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Cart Successful End -->
-
-    <!-- Quick view modal start -->
-    <div class="modal fade quick-view-modal" id="quick-view">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                <div class="modal-body">
-                    <div class="row gy-4">
-                        <div class="col-lg-6">
-                            <div class="quick-view-image">
-                                <div class="quick-view-slider ratio_2">
-                                    <div>
-                                        <img src="~/assets/images/electronics/product/1.jpg" class="img-fluid bg-img"
-                                            alt="product">
-                                    </div>
-                                    <div>
-                                        <img src="~/assets/images/electronics/product/8.jpg" class="img-fluid bg-img"
-                                            alt="product">
-                                    </div>
-                                    <div>
-                                        <img src="~/assets/images/electronics/product/9.jpg" class="img-fluid bg-img"
-                                            alt="product">
-                                    </div>
-                                    <div>
-                                        <img src="~/assets/images/electronics/product/8.jpg" class="img-fluid bg-img"
-                                            alt="product">
-                                    </div>
-                                </div>
-                                <div class="quick-nav">
-                                    <div>
-                                        <img src="~/assets/images/electronics/product/1.jpg"
-                                            class="img-fluid blur-up lazyload" alt="product">
-                                    </div>
-                                    <div>
-                                        <img src="~/assets/images/electronics/product/8.jpg"
-                                            class="img-fluid blur-up lazyload" alt="product">
-                                    </div>
-                                    <div>
-                                        <img src="~/assets/images/electronics/product/9.jpg"
-                                            class="img-fluid blur-up lazyload" alt="product">
-                                    </div>
-                                    <div>
-                                        <img src="~/assets/images/electronics/product/8.jpg"
-                                            class="img-fluid blur-up lazyload" alt="product">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="product-right">
-                                <h2 class="mb-2">Smart Watch ERT2</h2>
-                                <h6 class="font-light mb-1">Model LR274</h6>
-                                <ul class="rating">
-                                    <li>
-                                        <i class="fas fa-star theme-color"></i>
-                                    </li>
-                                    <li>
-                                        <i class="fas fa-star theme-color"></i>
-                                    </li>
-                                    <li>
-                                        <i class="fas fa-star theme-color"></i>
-                                    </li>
-                                    <li>
-                                        <i class="fas fa-star"></i>
-                                    </li>
-                                    <li>
-                                        <i class="fas fa-star"></i>
-                                    </li>
-                                </ul>
-                                <div class="price mt-3">
-                                    <h3>$20.00</h3>
-                                </div>
-                                <div class="color-types">
-                                    <h4>colors</h4>
-                                    <ul class="color-variant mb-0">
-                                        <li class="bg-half-light selected"></li>
-                                        <li class="bg-light1"></li>
-                                        <li class="bg-blue1"></li>
-                                        <li class="bg-black1"></li>
-                                    </ul>
-                                </div>
-                                <div class="product-details">
-                                    <h4>product details</h4>
-                                    <ul>
-                                        <li>
-                                            <span class="font-light">Display type :</span> Analog
-                                        </li>
-                                        <li>
-                                            <span class="font-light">Mechanism:</span> Quartz
-                                        </li>
-                                        <li>
-                                            <span class="font-light">Warranty:</span> 1 year
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="product-btns">
-                                    <a href="cart.html" class="btn btn-solid-default btn-sm" data-bs-dismiss="modal">Add
-                                        to cart</a>
-                                    <a href="product-left-sidebar.html" class="btn btn-solid-default btn-sm"
-                                        data-bs-dismiss="modal">View details</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Quick view modal end -->
-
-    <!-- Newsletter modal start -->
-    <div class="modal fade newletter-modal" id="newsletter">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <img src="~/assets/images/newletter-icon.png" class="img-fluid blur-up lazyload" alt="">
-                    <div class="modal-title">
-                        <h2 class="tt-title">Sign up for our Newsletter!</h2>
-                        <p class="font-light">Never miss any new updates or products we reveal, stay up to date.</p>
-                        <p class="font-light">Oh, and it's free!</p>
-
-                        <div class="input-group mb-3">
-                            <input placeholder="Email" class="form-control" type="text">
-
-                        </div>
-
-                        <div class="cancel-button text-center">
-                            <button class="btn btn-solid-default w-100" data-bs-dismiss="modal"
-                                type="button">Submit</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Newsletter modal end -->
-   
+    
+      
 
     <!-- tap to top Section Start -->
     <div class="tap-to-top">
@@ -822,16 +364,39 @@
     <!-- Notify js-->
     <script src="~/assets/js/bootstrap/bootstrap-notify.min.js"></script>
 
+    <!--Google Maps-->
+    <script async
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDu7HkD5T7NpUxLG2OM3i_MjYKOWoeMbK4&callback=initMap">
+    </script>
+
     <!-- script js -->
     @*<script src="~/assets/js/theme-setting.js"></script>*@
     <script src="~/assets/js/script.js"></script>
     <script src="~/assets/js/home-script.js"></script>
+
+
 
     <!-- Syncfusion ASP.NET Core Script Manager -->
     
     @await RenderSectionAsync("Scripts", required: false)
     <ejs-scripts></ejs-scripts>
     @await Component.InvokeAsync("Notyf")
+
+
+
+    <!-- Start of ChatBot (www.chatbot.com) code -->
+
+    <!-- End of ChatBot code -->
+
+    <!-- Start of LiveChat (www.livechat.com) code -->
+    <script>
+        window.__lc = window.__lc || {};
+        window.__lc.license = 14813607;
+        ; (function (n, t, c) { function i(n) { return e._h ? e._h.apply(null, n) : e._q.push(n) } var e = { _q: [], _h: null, _v: "2.0", on: function () { i(["on", c.call(arguments)]) }, once: function () { i(["once", c.call(arguments)]) }, off: function () { i(["off", c.call(arguments)]) }, get: function () { if (!e._h) throw new Error("[LiveChatWidget] You can't use getters before load."); return i(["get", c.call(arguments)]) }, call: function () { i(["call", c.call(arguments)]) }, init: function () { var n = t.createElement("script"); n.async = !0, n.type = "text/javascript", n.src = "https://cdn.livechatinc.com/tracking.js", t.head.appendChild(n) } }; !n.__lc.asyncInit && e.init(), n.LiveChatWidget = n.LiveChatWidget || e }(window, document, [].slice))
+    </script>
+    <noscript><a href="https://www.livechat.com/chat-with/14813607/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a></noscript>
+    <!-- End of LiveChat code -->
+
 </body>
 
 

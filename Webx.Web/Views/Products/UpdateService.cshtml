@@ -1,0 +1,221 @@
+﻿@* Service Update  *@
+
+
+@model Webx.Web.Models.ServiceViewModel
+
+@{
+    ViewData["Title"] = "Update";
+    ViewData["BreadCrumb"] = "Edit Service";
+    Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
+}
+
+
+<style>
+    .gridView {
+        border-color: #edebe9;
+        border-radius: 1px;
+        border-style: none solid solid;
+        border-width: 1px;
+        display: block;
+        position: relative;
+        width: auto;
+        background-color: #fff;
+    }
+
+    .form-group {
+        display: grid;
+    }
+
+    #submit {
+        border: solid 1px;
+        border-color: #46BAED;
+        color: #fff;
+        background-color: #46BAED;
+        width: 100%;
+        transition: ease-in-out 0.3s;
+    }
+
+        #submit:hover {
+            background-color: #edebe9;
+            color: #000;
+        }
+
+    #return {
+        border: solid 1px;
+        border-color: #46BAED;
+        color: #fff;
+        background-color: #46BAED;
+        width: 100%;
+        transition: ease-in-out 0.3s;
+    }
+
+        #return:hover {
+            background-color: #edebe9;
+            color: #000;
+        }
+
+    .imageStyle {
+        min-height: 500px;
+        min-width: 500px;
+        position: Absolute;
+        overflow: hidden;
+        margin: auto;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        border-radius: 0%;
+        display: flex;
+        box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+    }
+</style>
+
+<!--Div que permite dar espaçamento entre ejs grid e topo-->
+<div class="container-fluid" style="min-height:25px;background-color: #f4f6f9;">
+</div>
+
+<div class="container-fluid gridView" style="min-height:90%">
+
+    <div class="row">
+        <div class="col-md-12" style="margin-top: 15px;">
+            <h4 style="text-align:center">Edit Service @Model.Name</h4>
+            <hr />
+        </div>
+    </div>
+
+
+    <div class="row" style="padding:25px;min-height: 715px;">
+        <div class="col-md-6">
+
+            <form enctype="multipart/form-data" asp-action="Update">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="ImageFirst" />
+
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="form-group">
+                            <label asp-for="Name" class="control-label"></label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label asp-for="IsService" style="text-align:center" class="control-label"></label>
+                            <input asp-for="IsService" type="checkbox" style="text-align:center;height: 37px;" />
+                            <span asp-validation-for="IsService" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Price" class="control-label"></label>
+                            <input asp-for="Price" style="text-align:right" class="form-control" />
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label asp-for="Discount" class="control-label"></label>
+                            <input asp-for="Discount" style="text-align:right" class="form-control" />
+                            <span asp-validation-for="Discount" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label asp-for="PriceWithDiscount" class="control-label"></label>
+                            <input asp-for="PriceWithDiscount" style="text-align:right" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label asp-for="Description" class="control-label"></label>
+                            <textarea asp-for="Description" style="resize: none;" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="CategoryId" class="control-label"></label>
+                            <select asp-for="CategoryId" asp-items="Model.Categories" class="form-control" ></select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="DefaultWebxBrandName" class="control-label"></label>
+                            <input asp-for="DefaultWebxBrandName" style="text-align:right" class="form-control" readonly />
+                            @*<label asp-for="BrandId" class="control-label"></label>
+                            <select asp-for="BrandId" asp-items="Model.Brands" class="form-control" ></select>
+                            <span asp-validation-for="BrandId" class="text-danger"></span>*@
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                          @*<label asp-for="PictureFile" class="control-label font-weight-bold"></label>
+                            <ejs-uploader id="PictureFile" autoUpload="false"></ejs-uploader>*@
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12" style="margin-top:100px;">
+                    </div>
+                </div>
+
+                @* style="margin-top: 60px;*@
+
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-3"></div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <a id="return" asp-action="ViewAll" asp-controller="Products" asp-route-isService="true" class="btn"><i class="fas fa-arrow-left"></i> Back</a>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <input id="submit" type="submit" value="Update Service" asp-action="UpdateService" asp-controller="Products" class="btn" />
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="box">
+                <div class="imageStyle" style="background:Url(@Model.ImageFirst) no-repeat center;background-size: cover;"></div>
+                @*<div class="imageStyle" style="background-size: cover;"></div>*@
+            </div>
+
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,303 @@
+﻿@* Product Update  *@
+
+
+@model Webx.Web.Models.ProductViewModel
+
+@{
+    ViewData["Title"] = "Update";
+    ViewData["BreadCrumb"] = "Edit Product";
+    Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
+}
+
+
+<style>
+    .gridView {
+        border-color: #edebe9;
+        border-radius: 1px;
+        border-style: none solid solid;
+        border-width: 1px;
+        display: block;
+        position: relative;
+        width: auto;
+        background-color: #fff;
+    }
+
+    .form-group {
+        display: grid;
+    }
+
+    #submit {
+        border: solid 1px;
+        border-color: #46BAED;
+        color: #fff;
+        background-color: #46BAED;
+        width: 100%;
+        transition: ease-in-out 0.3s;
+    }
+
+        #submit:hover {
+            background-color: #edebe9;
+            color: #000;
+        }
+
+    #return {
+        border: solid 1px;
+        border-color: #46BAED;
+        color: #fff;
+        background-color: #46BAED;
+        width: 100%;
+        transition: ease-in-out 0.3s;
+    }
+
+        #return:hover {
+            background-color: #edebe9;
+            color: #000;
+        }
+
+    .imageStyle {
+        min-height: 500px;
+        min-width: 500px;
+        position: Absolute;
+        overflow: hidden;
+        margin: auto;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        border-radius: 0%;
+        display: flex;
+        box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+    }
+
+    .borderDashed{
+        padding: 20px 0;
+        border-bottom: 1px dashed #ced4da;
+    }
+    .carousel-indicators {
+        margin-bottom: -2rem;
+    }
+</style>
+
+<!--Div que permite dar espaçamento entre ejs grid e topo-->
+<div class="container-fluid" style="min-height:25px;background-color: #f4f6f9;">
+</div>
+
+<div class="container-fluid gridView" style="min-height:90%">
+
+    <div class="row">
+        <div class="col-md-12" style="margin-top: 15px;">
+            <h4 style="text-align:center">Edit Product @Model.Name</h4>
+            <hr />
+        </div>
+    </div>
+
+
+    <div class="row" style="padding:25px;min-height: 700px;">
+        <div class="col-md-6">
+
+            <form enctype="multipart/form-data" asp-action="Update">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="ImageFirst" />
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label asp-for="Name" class="control-label"></label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label asp-for="IsHighlighted" style="text-align:center" class="control-label"></label>
+                            <input asp-for="IsHighlighted" type="checkbox" style="text-align:center;height: 37px;" />
+                            <span asp-validation-for="IsHighlighted" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label asp-for="IsService" style="text-align:center" class="control-label"></label>
+                            <input asp-for="IsService" type="checkbox" style="text-align:center;height: 37px;" disabled="disabled" />
+                            <span asp-validation-for="IsService" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Price" class="control-label"></label>
+                            <input asp-for="Price" style="text-align:right" class="form-control" />
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label asp-for="Discount" class="control-label"></label>
+                            <input asp-for="Discount" style="text-align:right" class="form-control" />
+                            <span asp-validation-for="Discount" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label asp-for="PriceWithDiscount" class="control-label"></label>
+                            <input asp-for="PriceWithDiscount" style="text-align:right" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label asp-for="Description" class="control-label"></label>
+                            <textarea asp-for="Description" style="resize: none;" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="CategoryId" class="control-label"></label>
+                            <select asp-for="CategoryId" asp-items="Model.Categories" class="form-control"></select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="BrandId" class="control-label"></label>
+                            <select asp-for="BrandId" asp-items="Model.Brands" class="form-control"></select>
+                            <span asp-validation-for="BrandId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="UploadFiles" class="control-label font-weight-bold"></label>
+                            <span id="drop"> File maximum size 5MB <br /> File type allowed: .jpeg, .jpg, .png </span>
+                            <ejs-uploader id="UploadFiles" allowedExtensions=" .jpeg, .jpg, .png" autoUpload="false" maxFileSize="5120000"></ejs-uploader>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2" style="margin-top:100px;">
+                        <div class="form-group">
+                            <a id="return" asp-action="ViewAll" asp-controller="Products" asp-route-isService="false" class="btn">Back</a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2" style="margin-top:100px;">
+                        <div class="form-group">
+                            <a id="return" asp-action="ImageCards" asp-controller="Products" asp-route-id=@Model.Id class="btn">Images</a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2" style="margin-top:100px;">
+                        <div class="form-group">
+                            <input id="submit" type="submit" value="Save" asp-action="Update" asp-controller="Products" class="btn" />
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-12" style="margin-top:10px;">
+                    </div>
+                </div>
+
+                @* style="margin-top: 60px;*@
+
+            </form>
+
+        </div>
+
+        @*<div class="col-md-6" style="padding: 20px 100px 20px 100px;">*@
+        <div class="col-md-6 img-wrapper " style="padding: 5px 95px 5px 95px;">
+
+            @*<div class="box">*@
+
+            @*<div class="imageStyle" style="background-size: cover;"></div>*@
+
+            @*<div class="imageStyle" style="background:Url(@Model.ImageFirst) no-repeat center;background-size: cover;"></div>*@
+
+            @if (Model.Images != null)
+            {
+                @if (Model.Images.Count() > 0)
+                {
+                    int imageCounter = 0;
+                    <div id="productSlideShow" class="carousel carousel-dark slide carousel-fade" data-bs-ride="carousel">
+
+                        <div class="carousel-indicators">
+                            @foreach (var item in Model.Images)
+                            {
+                                if (item == Model.Images.ElementAt(0))
+                                {
+                                    <button type="button" data-bs-target="#productSlideShow" data-bs-slide-to="@imageCounter" class="active" aria-current="true" aria-label="Slide to @(imageCounter+1)"></button>
+                                    imageCounter++;
+                                }
+                                else
+                                {
+                                    <button type="button" data-bs-target="#productSlideShow" data-bs-slide-to="@imageCounter" aria-current="true" aria-label="Slide to @(imageCounter+1)"></button>
+                                    imageCounter++;
+                                }
+                            }
+                        </div>
+                        <div class="carousel-inner">
+
+                            @foreach (var item in Model.Images)
+                            {
+                                if (item == Model.Images.ElementAt(0))
+                                {
+                                    <div class="carousel-item active">
+                                        <img src="@item.ImageFullPath" class="d-block w-100 " alt="product">
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="carousel-item">
+                                        <img src="@item.ImageFullPath" class="d-block w-100" alt="product">
+                                    </div>
+                                }
+                            }
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#productSlideShow" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#productSlideShow" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+
+                    </div>
+
+                }
+                else
+                {
+                    <div>
+                        <div>
+                            @*<img src="https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg" class="img-fluid blur-up lazyload" alt="product">*@
+                        </div>
+                        <div class="imageStyle" style="background:Url(@Model.ImageFirst) no-repeat center;background-size: cover;" alt="product"></div>
+                    </div>
+                }
+
+            }
+
+
+
+
+            @*</div>*@
+
+        </div>
+
+    </div>
+</div>
+

@@ -12,6 +12,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
+using Webx.Web.Data.Repositories;
 
 namespace Webx.Web.Controllers
 {
@@ -22,18 +23,21 @@ namespace Webx.Web.Controllers
         private readonly IConverterHelper _converterHelper;
         private readonly IBlobHelper _blobHelper;
         private readonly IMailHelper _mailHelper;
+        private readonly IProductRepository _productRepository;
 
         public CustomerController(IUserHelper userHelper,
             INotyfService toastNotification,
             IConverterHelper converterHelper,
             IBlobHelper blobHelper,
-            IMailHelper mailHelper)
+            IMailHelper mailHelper,
+            IProductRepository productRepository)
         {
             _userHelper = userHelper;
             _toastNotification = toastNotification;
             _converterHelper = converterHelper;
             _blobHelper = blobHelper;
             _mailHelper = mailHelper;
+            _productRepository = productRepository;
         }
 
         public async Task<IActionResult> ViewAll(bool isActive)
@@ -49,7 +53,7 @@ namespace Webx.Web.Controllers
             {
                 customers = await _userHelper.GetAllCustomersUsersAsync();
             }
-
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             ViewBag.IsActive = isActive;
             ViewBag.Type = typeof(User);
 
@@ -74,7 +78,7 @@ namespace Webx.Web.Controllers
 
             var model = _converterHelper.ToEditCustomerViewModel(user);
 
-
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             return View(model);
         }
 
@@ -101,25 +105,34 @@ namespace Webx.Web.Controllers
                 try
                 {
                     await _userHelper.UpdateUserAsync(user);
-                    
+                    ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                     _toastNotification.Success("Customer updated with success!");
                     return View(model);
                 }
                 catch (Exception ex)
                 {
-                    _toastNotification.Error($"There was a problem updating the customer! {ex.InnerException}");
+                    if (ex.InnerException.Message.Contains("Cannot insert duplicate key row in object"))
+                    {
+                        _toastNotification.Error($"The nif  {user.NIF}  already exists!");
+                    }
+                    else
+                    {
+                        _toastNotification.Error($"There was a problem updating the employee!");
+                    }
+                    ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                     return View(model);
                 }
 
             }
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             return View(model);
         }
 
-        public IActionResult Create()
+        public async Task<ActionResult> Create()
         {
 
             var model = new CreateCustomerViewModel();
-
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             return View(model);
         }
 
@@ -158,6 +171,7 @@ namespace Webx.Web.Controllers
                         if (!result.Succeeded)
                         {
                             _toastNotification.Error("There was an error creating the user. Please try again");
+                            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                             return View(model);
                         }
 
@@ -191,20 +205,23 @@ namespace Webx.Web.Controllers
                         {
                             _toastNotification.Success($"An email has been sent to {user.Email}, please check your email and follow the instructions.", 10);
                             model = new CreateCustomerViewModel();
+                            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                             return View(model);
                         }
 
                     }
 
                     _toastNotification.Warning("A user with the typed nif already exists!");
+                    ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                     return View(model);
 
                 }
 
                 _toastNotification.Warning("A user with the typed email already exists!");
+                ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                 return View(model);
             }
-
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             return View(model);
         }
         public async Task<IActionResult> Reactivate(string id)

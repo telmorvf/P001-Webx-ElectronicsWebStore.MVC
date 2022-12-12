@@ -1,0 +1,483 @@
+﻿@using System.Globalization
+@model Webx.Web.Models.ShopViewModel
+
+@{
+    ViewData["Title"] = "WebX";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    CultureInfo ci = new CultureInfo("en-gb");
+}
+
+<style>
+    .product-buttons{
+        margin-bottom: 20px;
+        text-align: center;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+
+    .product-buttons .btn-solid{
+        background-color: var(--theme-color);
+        color: #fff;
+        padding: 12px 45px;
+        font-size: 15px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+    }
+
+    ul li a{
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+    }
+
+    .review i{
+        color: var(--theme-color);
+        transition: all 0.3s;
+    }
+
+    .review:hover i{
+        color: #FFCD3C;
+    }
+
+    .hide{
+        display:none;
+    }
+
+</style>
+
+ <section>
+        <div class="container">
+            <div class="row gx-4 gy-5">
+                <div class="col-12">
+                    <div class="details-items">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="degree-section">
+                                    <div class="details-image ratio_asos">
+                                        @if(Model.Product.Images.Count() > 0)
+                                        {
+                                            int id = 1;
+
+                                            @foreach(var image in Model.Product.Images)
+                                            {
+                                                string idtag = "zoom_"+id.ToString("D2");
+
+                                                <div>
+                                                    <div class="product-image-tag">
+                                                        <img src="@image.ImageFullPath" id="@idtag" data-zoom-image="@image.ImageFullPath" class="img-fluid w-100 image_zoom_cls-0 blur-up lazyload" alt="">
+                                                        @*<div class="label-tag">
+                                                            <h6><i class="fas fa-star"></i> 4.8 <span class="font-light">120</span></h6>
+                                                        </div>*@
+                                                    </div>
+                                                </div>
+
+                                                id++;
+                                            }
+                                        }
+                                        else
+                                        {
+                                                <div>
+                                                    <div class="product-image-tag">
+                                                        <img src="@Model.Product.ImageFirst" id="zoom_01" data-zoom-image="@Model.Product.ImageFirst" class="img-fluid w-100 image_zoom_cls-0 blur-up lazyload" alt="">
+                                                       @* <div class="label-tag">
+                                                            <h6><i class="fas fa-star"></i> 4.8 <span class="font-light">120</span></h6>
+                                                        </div>*@
+                                                    </div>
+                                                </div>
+                                        }                                       
+                                       
+                                    </div>
+
+                                    <div class="details-image-option black-slide mt-4 rounded">
+                                        @if(Model.Product.IsService == false)
+                                        {
+                                            @if(Model.Product.Images.Count() > 0)
+                                            {
+                                                @foreach(var image in Model.Product.Images)
+                                                {
+                                                   <div>
+                                                    <img src="@image.ImageFullPath" class="img-fluid blur-up lazyload" alt="">                                                
+                                                   </div> 
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <div>
+                                                    <img src="@Model.Product.ImageFirst" class="img-fluid blur-up lazyload" alt="">                                                
+                                                </div> 
+                                            }       
+                                        }                                                                       
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="cloth-details-size">
+                                    
+                                    <div class="details-image-concept">
+                                        <h2>@Model.Product.Name</h2>
+                                    </div>                                    
+
+                                    <h3 class="price-detail" style="margin-top:25px;font-size: 30px;color: var(--theme-color);font-weight: 400;">
+                                       @Model.Product.PriceWithDiscount.ToString("C2")
+                                       @if(Model.Product.Discount > 0){
+                                            <del style="font-size:20px;" class="font-light">@Model.Product.Price.ToString("C2")</del><span style="font-size:20px;margin-left:10px" class="font-light">@Decimal.Truncate(Model.Product.Discount)% Discount</span>
+                                       }                                      
+                                    </h3>
+                                   
+                                    <ul class="product-count shipping-order" style="margin-top:25px;background-color: #EFF2F7;margin-bottom: 10px;">
+                                        <li> 
+                                             <img style="padding: 10px 10px 10px 15px;" src="~/assets/images/gif/truck.png" class="img-fluid blur-up lazyload" alt="image">  
+                                             <span class="lang" style="font-weight: 400;"> Free shipping for all orders!</span>   
+                                        </li>                                       
+                                    </ul> 
+                                    @if (Model.CanReview)
+                                    {
+                                        @if(Model.CustomerReview == null)
+                                        {
+                                            <ul class="product-count shipping-order" style="margin-top:10px;background-color: #EFF2F7;margin-bottom: 10px;height: 44px;">                                               
+                                                <li style="width:100%">                                                                                                                                  
+                                                    <a asp-action="Create" asp-controller="Reviews"
+                                                    asp-route-productId="@Model.Product.Id" asp-route-userId="@Model.Customer.Id"
+                                                    class="review" style="font-weight: 400;text-decoration: none;color:black">
+                                                    <i style="font-size:18px;padding: 13px 14px 13px 17px;" class="fas fa-star"></i>
+                                                    Give us your opinion now!
+                                                </a>    
+                                                </li>                                       
+                                            </ul>
+                                        }
+                                        else
+                                        {
+                                            <ul class="product-count shipping-order" style="margin-top:10px;background-color: #EFF2F7;margin-bottom: 10px;height: 44px;">                                               
+                                                <li style="width:100%">                                                                                                                                  
+                                                    <a asp-action="Edit" asp-controller="Reviews" asp-route-id="@Model.CustomerReview.Id" class="review" style="font-weight: 400;text-decoration: none;color:black"><i style="font-size:18px;padding: 13px 14px 13px 17px;" class="fas fa-star"></i> Edit your review</a>    
+                                                </li>                                       
+                                            </ul>
+                                        }
+
+                                }                                
+                                    <ul class="product-count shipping-order" style="padding: 20px 0;border-top: 1px dashed #ddd;border-bottom: 1px dashed #ddd;">
+                                        <li>  
+                                            <img src="@Model.Product.Brand.ImageFullPath" class="img-fluid blur-up lazyload" alt="image">                                            
+                                        </li>                                       
+                                    </ul>
+                                    <ul class="product-count shipping-order" style="background-color: #EFF2F7; margin-top: 10px;">
+                                        <li>                                                                                                                                  
+                                            <span class="lang" style="padding: 10px 10px 10px 15px;font-weight: 400;">@Model.Product.Category.Name</span>   
+                                        </li>                                       
+                                    </ul>
+                                    @if(Model.Product.IsService == false)
+                                    {
+                                        <ul class="product-count shipping-order" style="background-color: #EFF2F7; margin-top: 10px;">
+                                            <li>                                                                                                                                  
+                                                <span class="lang" style="padding: 10px 10px 10px 15px;font-weight: 400;">Stock <i class="fas fa-chevron-down"></i></span>   
+                                            </li>                                        
+                                        </ul>
+
+                                        @foreach(var item in Model.Stocks)
+                                        {                                            
+                                            if(item.Product.Id == Model.Product.Id)
+                                            {
+                                               
+                                                var color = "";
+                                                var textColor = "";
+                                                @if(item.Quantity == 0)
+                                                {
+                                                   color = "rgba(63,63,63,0.8)";
+                                                   textColor = "#fff";
+                                                }
+
+                                                @if(item.Quantity > 0 && item.Quantity < 10)
+                                                {
+                                                    color = "rgba(252,1,0,0.8)";
+                                                    textColor = "#fff";
+                                                }
+
+                                                @if(item.Quantity >=10 && item.Quantity <= 25)
+                                                {
+                                                    color = "rgba(255,183,3,0.8)";
+                                                    textColor = "black";
+                                                }
+
+                                                @if(item.Quantity > 25)
+                                                {
+                                                    color = "rgba(0,128,0,0.8)";
+                                                    textColor = "#fff";
+                                                } 
+
+                                               <ul  class="product-count shipping-order" style="background-color:@color; margin-top: 10px;text-align: center;">
+                                                    <li>
+                                                        <h6 style="font-weight:400;padding: 10px 10px 10px 15px;color: @textColor;text-shadow: #919191 2px 0px 5px;">@item.Store.Name</h6>                                                         
+                                                    </li>
+                                               </ul>
+                                            }
+                                        }
+                                    }
+                                
+
+                                     
+                                                                       
+
+                                    <div class="product-buttons" style="margin-top:25px;justify-content:end">
+                                        <a href="#" onclick="AddtoWishlist('@Model.Product.Id')" class="btn btn-solid">
+                                            <i class="fas fa-bookmark fz-16 me-2"></i>
+                                            <span>Wishlist</span>
+                                        </a>
+                                        <a href="#" onclick="AddtoCart(@Model.Product.Id)" id="cartEffect"
+                                            class="btn btn-solid hover-solid btn-animation" style="margin-left: 8px;">
+                                            <i class="fas fa-shopping-cart"></i>
+                                            <span>Add To Cart</span>
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="cloth-review">
+                        <nav>
+                            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab"
+                                    data-bs-target="#desc" type="button">Description</button>                             
+
+                                <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab"
+                                    data-bs-target="#review" type="button">Reviews</button>
+                            </div>
+                        </nav>
+
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="desc">
+                                <div class="shipping-chart">
+                                    <div class="part">
+                                        @*<h4 class="inner-title mb-2">Give you a complete account of the system</h4>*@
+                                        <p class="font-light" style="margin-top:25px">@Model.Product.Description</p>
+                                    </div>                                    
+                                </div>
+                            </div>                                                      
+                            
+
+                            <div class="tab-pane fade" id="review">
+                                <div class="row g-4">
+                                    @if(Model.Reviews != null && Model.Reviews.Count > 0)
+                                    {
+                                       
+                                       <div class="col-lg-4">
+                                            <div class="customer-rating">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <h2>Customer reviews</h2>
+                                                    </div>                                                    
+                                                </div>
+                                                <div class="row">
+                                                    <h5>Overall Rating</h5>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <ul class="rating my-2 d-inline-block">
+                                                            @for(int i = 1; i < 6; i++)
+                                                            {
+                                                                @if(i <= Model.OveralRating)
+                                                                {
+                                                                     <li>
+                                                                        <i class="fas fa-star theme-color"></i>
+                                                                     </li>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <li>
+                                                                        <i class="fas fa-star"></i>
+                                                                    </li>
+                                                                }
+                                                            }                                                
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="global-rating">
+                                                            <h5 class="font-light" style="line-height: 37px;">(@Model.Reviews.Count Ratings)</h5>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6"></div>
+                                                </div>                                              
+                                            </div>
+                                       </div> 
+
+                                        <div class="col-12 mt-4">
+                                            <div class="customer-review-box">  
+                                                
+                                                @if(Model.CustomerReview != null)
+                                                {
+                                                    <div class="customer-section" style="margin-top: 20px;margin-bottom: 20px;padding-bottom: 20px; border-bottom: 1px solid rgba(211, 211, 222,0.5);">   
+                                                            <div class="customer-details">
+                                                                <div class="row">
+                                                                    <div class="col-md-1">
+                                                                        <div class="customer-profile">
+                                                                            <img style="max-width: 75px;" src="@Model.CustomerReview.User.ImageFullPath" class="img-fluid blur-up lazyload" alt="">                                                                
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-11">
+
+                                                                        <h5 style="font-weight: 500;">@Model.CustomerReview.User.FullName
+                                                                            <span style="font-size: 12px;font-weight: 400;line-height: 19px;" class="font-light">
+                                                                                - @Model.CustomerReview.ReviewDate.ToString("MMM dd, yyyy",ci)
+                                                                                - (@Model.CustomerReview.Status)                                                                               
+                                                                            </span>
+                                                                        </h5>    
+                                                                        <ul class="rating my-2 d-inline-block">
+                                                                            @for(int i = 1; i < 6; i++)
+                                                                            {
+                                                                                @if(i <= Model.CustomerReview.Rating)
+                                                                                {
+                                                                                     <li>
+                                                                                        <i class="fas fa-star theme-color"></i>
+                                                                                     </li>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <li>
+                                                                                        <i class="fas fa-star"></i>
+                                                                                    </li>
+                                                                                }
+                                                                            }               
+                                                                        </ul>
+                                                                        <h6 style="font-weight: 500;">@Model.CustomerReview.ReviewTitle</h6>
+                                                                        <p class="font-light">@Model.CustomerReview.ReviewText</p>
+
+                                                                        <p class="font-light" style="font-weight:500">
+                                                                            Would you recommend 
+                                                                            @if(Model.CustomerReview.WouldRecommend == true)
+                                                                            {
+                                                                                <span style="margin-left:10px"><i class="fas fa-check theme-color" style="margin-right:4px"></i>Yes</span>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <span style="margin-left:10px;"><i class="fas fa-times font-light" style="margin-right:4px"></i>No</span>
+                                                                            }
+                                                                        </p>
+
+                                                                        @*<p class="date-custo font-light">- Sep 08, 2021</p>*@
+
+                                                                    </div>                                                                     
+                                                                </div>                                                         
+                                                            </div>
+                                                    </div>
+                                                }
+
+
+                                                @foreach(var review in Model.Reviews)
+                                                {  
+                                                    if(review.Status == "Authorized")
+                                                    {
+                                                        @if(review != Model.CustomerReview)
+                                                        {
+                                                            <div class="customer-section" style="margin-top: 20px;margin-bottom: 20px;padding-bottom: 20px; border-bottom: 1px solid rgba(211, 211, 222,0.5);">   
+                                                                <div class="customer-details">
+                                                                    <div class="row">
+                                                                        <div class="col-md-1">
+                                                                            <div class="customer-profile">
+                                                                                <img style="max-width: 75px;" src="@review.User.ImageFullPath" class="img-fluid blur-up lazyload" alt="">                                                                
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-11">
+
+                                                                            <h5 style="font-weight: 500;">@review.User.FullName <span style="font-size: 12px;font-weight: 400;line-height: 19px;" class="font-light"> - @review.ReviewDate.ToString("MMM dd, yyyy",ci)</span> </h5>
+    
+                                                                            <ul class="rating my-2 d-inline-block">
+                                                                                @for(int i = 1; i < 6; i++)
+                                                                                {
+                                                                                    @if(i <= review.Rating)
+                                                                                    {
+                                                                                         <li>
+                                                                                            <i class="fas fa-star theme-color"></i>
+                                                                                         </li>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <li>
+                                                                                            <i class="fas fa-star"></i>
+                                                                                        </li>
+                                                                                    }
+                                                                                }               
+                                                                            </ul>
+                                                                            <h6 style="font-weight: 500;">@review.ReviewTitle</h6>
+                                                                            <p class="font-light">@review.ReviewText</p>
+
+                                                                            <p class="font-light" style="font-weight:500">
+                                                                                Would you recommend 
+                                                                                @if(review.WouldRecommend == true)
+                                                                                {
+                                                                                    <span style="margin-left:10px"><i class="fas fa-check theme-color" style="margin-right:4px"></i>Yes</span>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <span style="margin-left:10px;"><i class="fas fa-times font-light" style="margin-right:4px"></i>No</span>
+                                                                                }
+                                                                            </p>
+
+                                                                            @*<p class="date-custo font-light">- Sep 08, 2021</p>*@
+
+                                                                        </div>                                                                     
+                                                                    </div>                                                         
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                  
+                                                    }
+
+                                                    
+                                                }
+
+                                            </div>
+                                    </div>
+
+                                }
+                                else
+                                {
+                                        <div class="customer-section" style="margin-top: 50px;margin-bottom: 50px;padding-bottom: 20px; border-bottom: 1px solid rgba(211, 211, 222,0.5);">   
+                                            <div class="customer-details">
+                                                <div class="row">
+                                                    <div class="col-md-12" style="justify-content:center;align-items:center;">
+                                                        @if (Model.CanReview)
+                                                        {
+                                                            <h5>There are no reviews for this product yet.</h5><br />
+                                                            <a class="btn btn-primary btn-sm">Give us your opinion now!</a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <h5>There are no reviews for this product yet.</h5>
+                                                        }                                                    
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+ </section>
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="~/js/ShopScript.js"></script>
+ }

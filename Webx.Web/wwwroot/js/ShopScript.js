@@ -4,7 +4,7 @@ desiredResultsPerPage = 12;
 minimumPrice = 0;
 maximumPrice = document.getElementById("maxRange").value;
 activeDiv = "";
-
+desiredRating = [];
 
 window.onload = onloadFunction(); 
 
@@ -19,6 +19,32 @@ function onloadFunction() {
         categoryNameToBeDisplayed.innerHTML = "AllCategories";
     }
 
+}
+
+
+function AddtoWishlist(id) {
+    debugger;
+    
+
+    
+    $.ajax({
+        url: '/Products/AddToWishlist/',
+        type: 'GET',
+        contentType: 'application/html',
+        dataType: "html",
+        data: {id:id},
+        success: function (value) {
+            debugger;
+
+            let content = $("#cartPartialDiv").html(value);
+            eval(content);
+        },
+        error: function (ex) {
+            debugger;
+
+            console.log("error");
+        }
+    })
 }
 
 
@@ -77,6 +103,32 @@ function showProductDetails(productId) {
     })
 }
 
+
+function showHomeProductDetails(productId) {
+    debugger;   
+
+    $.ajax({
+        url: '/Products/GetHomeProductDetails/',
+        type: 'GET',
+        contentType: 'application/html',
+        dataType: "html",
+        data: { Id: productId },
+        success: function (partialViewResult) {
+            debugger;
+
+            var content = $("#modalHomePartial").html(partialViewResult);
+            eval(content);
+
+            $('#quickHome-view').modal('toggle');
+        },
+        error: function (ex) {
+            console.log("error");
+        }
+    })
+}
+
+
+
 function testFunction() {
     console.log("entrou");
 }
@@ -87,17 +139,25 @@ function closeViewModel() {
     $('#quick-view').modal('hide');
 }
 
+function closeHomeViewModel() {
+    $('#quickHome-view').modal('hide');
+}
 
 function ClearFilters() {
 
 
-    filterArray.forEach(function (value) {
-        debugger;
+    filterArray.forEach(function (value) {       
         var element = document.getElementById(value);
         element.checked = false;
     })
-
     filterArray.length = 0;
+
+    desiredRating.forEach(function (value){
+        var inputId = "flexCheckDefault" + value;
+        var element = document.getElementById(inputId);
+        element.checked = false;
+    })
+    desiredRating.length = 0;    
 
     $.ajax({
         url: '/Products/ClearFilters/',
@@ -114,6 +174,36 @@ function ClearFilters() {
         div.classList.remove("activeDiv");
     }
     currentCategory.innerHTML = "AllCategories";
+}
+
+
+function filterRate(id) {
+   
+    var inputId = "flexCheckDefault" + id;
+    var element = document.getElementById(inputId);
+    var category = document.getElementById("CurrentCategory").innerHTML;
+
+    if (element.checked) {
+        desiredRating.push(id);        
+    }
+    else{
+        let itemToRemove = desiredRating.indexOf(id);
+        if (itemToRemove > -1) {
+            desiredRating.splice(itemToRemove, 1);
+        }       
+    }
+
+    let arrayString = JSON.stringify(desiredRating);
+    let brandString = JSON.stringify(filterArray);
+
+    $.ajax({
+        url: '/Products/FilterBrand/',
+        type: 'GET',
+        data: { category: category, resultsPerPage: desiredResultsPerPage, minRange: minimumPrice, maxRange: maximumPrice, brandsfilter: brandString, ratefilter:arrayString }
+    }).done(function (partialViewResult) {
+        $("#refPartial").html(partialViewResult);
+    });
+
 }
 
 
@@ -135,11 +225,12 @@ function filterBrand(identifier) {
     }
     
     let arrayString = JSON.stringify(filterArray);
+    let rateString = JSON.stringify(desiredRating);
 
     $.ajax({
         url: '/Products/FilterBrand/',
         type: 'GET',
-        data: { category: category, resultsPerPage: desiredResultsPerPage, minRange: minimumPrice, maxRange: maximumPrice ,brandsfilter: arrayString }
+        data: { category: category, resultsPerPage: desiredResultsPerPage, minRange: minimumPrice, maxRange: maximumPrice, brandsfilter: arrayString, ratefilter: rateString }
     }).done(function (partialViewResult) {
         $("#refPartial").html(partialViewResult);
     });
@@ -247,11 +338,12 @@ rangeInput.forEach(input => {
 
         var currentCategory = document.getElementById('CurrentCategory').innerHTML;
         let brandsfilter = JSON.stringify(filterArray);
+        let ratefilter = JSON.stringify(desiredRating);
        
         $.ajax({
             url: '/Products/ChangePriceRange/',
             type: 'GET',
-            data: { category: currentCategory,resultsPerPage: desiredResultsPerPage,minRange:minVal,maxRange:maxVal ,brandsFilter: brandsfilter }
+            data: { category: currentCategory, resultsPerPage: desiredResultsPerPage, minRange: minVal, maxRange: maxVal, brandsFilter: brandsfilter, ratefilter:ratefilter }
         }).done(function (partialViewResult) {
 
             $("#refPartial").html(partialViewResult);

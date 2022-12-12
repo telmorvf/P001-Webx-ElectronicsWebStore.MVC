@@ -14,6 +14,9 @@ namespace Webx.Web.Data
 
         public DbSet<ProductImages> ProductImages { get; set; }
 
+        //ToDo Teste telmo
+        //public DbSet<ProductImages> Product_Images { get; set; }
+
         public DbSet<Brand> Brands { get; set; }
 
         public DbSet<Category> Categories { get; set; }
@@ -28,9 +31,15 @@ namespace Webx.Web.Data
 
         public DbSet<Appointment> Appointments { get; set; }
 
-        public DbSet<Status> Statuses { get; set; }
+        public DbSet<CheckoutTempData> CheckoutTemps { get; set; }
 
-        public DbSet<CheckoutTempData> CheckoutTemps { get; set; }      
+        public DbSet<Status> Statuses { get; set; }
+        
+        public DbSet<StatusChecker> StatusCheckers { get; set; }
+
+        public DbSet<ProductReview> Reviews { get; set; }
+
+        public DbSet<ProductReviewTemps> ReviewsTemps { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
@@ -59,7 +68,20 @@ namespace Webx.Web.Data
             .Property(p => p.Price)
             .HasColumnType("decimal(18,2)");
 
+            builder.Entity<Product>()
+            .Property(p => p.Discount)
+            .HasColumnType("decimal(18,2)");
+
             builder.Entity<User>().HasIndex(u => u.NIF).IsUnique();
+
+            builder.Entity<Store>().HasIndex(u => u.Name).IsUnique();
+
+            builder.Entity<Product>().HasIndex(u => u.Name).IsUnique();
+
+            builder.Entity<Category>().HasIndex(u => u.Name).IsUnique();
+
+            builder.Entity<Brand>().HasIndex(u => u.Name).IsUnique();
+
         }
 
 

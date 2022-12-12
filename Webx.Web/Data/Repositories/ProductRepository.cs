@@ -10,6 +10,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Webx.Web.Data.Entities;
 using Webx.Web.Helpers;
@@ -46,6 +47,32 @@ namespace Webx.Web.Data.Repositories
             return list;
         }
 
+        public IEnumerable<SelectListItem> GetBrandsCombo(int brandId)
+        {
+            var brand = _context.Brands.Find(brandId);
+            var list = new List<SelectListItem>();
+            if (brand != null)
+            {
+                list = _context.Brands.Select(c => new SelectListItem
+                {
+                    Text = c.Name,
+                    Value = c.Id.ToString()
+
+                }).OrderBy(l => l.Text).ToList();
+
+
+                list.Insert(0, new SelectListItem
+                {
+                    Text = "(Select a brand...)",
+                    Value = "0"
+                });
+
+            }
+
+            return list;
+        }
+
+
         public IEnumerable<SelectListItem> GetCategoriesCombo()
         {
             var list = _context.Categories.Select(b => new SelectListItem
@@ -64,9 +91,32 @@ namespace Webx.Web.Data.Repositories
             return list;
         }
 
-        /// <summary>
-        /// Return all products to the Shop by id (when i click one product)
-        /// </summary>
+        public IEnumerable<SelectListItem> GetCategoriesCombo(int categoryId)
+        {
+            var category = _context.Categories.Find(categoryId);
+            var list = new List<SelectListItem>();
+            if (category != null)
+            {
+                list = _context.Categories.Select(c => new SelectListItem
+                {
+                    Text = c.Name,
+                    Value = c.Id.ToString()
+
+                }).OrderBy(l => l.Text).ToList();
+
+
+                list.Insert(0, new SelectListItem
+                {
+                    Text = "(Select a category...)",
+                    Value = "0"
+                });
+
+            }
+
+            return list;
+        }
+
+
         public async Task<Product> GetFullProduct(int id)
         {
             var product =
@@ -75,7 +125,7 @@ namespace Webx.Web.Data.Repositories
                 .Include(p => p.Images)
                 .Include(p => p.Brand)
                 .Where(p => p.Id == id)
-                .OrderBy(p => p.Name)
+                .OrderBy(p => p.Id)
                 .FirstOrDefaultAsync();
 
             if (product == null)
@@ -85,7 +135,8 @@ namespace Webx.Web.Data.Repositories
             return product;
         }
 
-        public async Task<List<Product>> GetAllProducts(string category)
+#nullable enable
+        public async Task<IEnumerable<Product>> GetFullProducts(string? category)
         {
             //IEnumerable<Product> productAll;
             List<Product> list = new List<Product>();
@@ -168,9 +219,6 @@ namespace Webx.Web.Data.Repositories
             return Product.Price;
         }
 
-        /// <summary>
-        /// Return all product to the Views of Product CRUD Controller
-        /// </summary>
         public async Task<IEnumerable<Product>> GetAllProductsControllerAsync()
         {
             IEnumerable<Product> productAll;
@@ -180,6 +228,98 @@ namespace Webx.Web.Data.Repositories
                 .ToListAsync();
 
             return productAll;
+        }
+
+        public async Task<IEnumerable<Product>> GetProductAllAsync()
+        {
+            IEnumerable<Product> productAll;
+
+            productAll = await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Images)
+                .Include(p => p.Brand)
+                .Where(p => p.IsService == false)
+                .OrderBy(p => p.Name)
+                .ToListAsync();
+
+            return productAll;
+        }
+        
+        public async Task<Product> GetProductByIdAsync(int id)
+        {
+            var product =
+                await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Images)
+                .Include(p => p.Brand)
+                .Where(p => p.Id == id && p.IsService == false)
+                .OrderBy(p => p.Name)
+                .FirstOrDefaultAsync();
+
+            if (product == null)
+            {
+                return null;
+            }
+            
+            return product;
+            
+            
+        }
+ 
+
+        public async Task<Product> GetProSerByIdAsync(int id)
+        {
+            var product =
+                await _context.Products
+                .Include(p => p.Category)
+                //.Include(p => p.Images)
+                .Include(p => p.Brand)
+                .Where(p => p.Id == id)
+                .OrderBy(p => p.Name)
+                .FirstOrDefaultAsync();
+
+            if (product == null)
+            {
+                return null;
+            }
+            return product;
+        }
+
+        public async Task<IEnumerable<Product>> GetServiceAllAsync()
+        {
+            IEnumerable<Product> productAll;
+
+            productAll = await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Brand)
+                .Where(p => p.IsService == true)
+                .OrderBy(p => p.Name)
+                .ToListAsync();
+
+            return productAll;
+        }
+
+
+
+        public async Task<Product> GetServiceByIdAsync(int id)
+        {
+            var product =
+                await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Brand)
+                .Where(p => p.Id == id && p.IsService == true)
+                .OrderBy(p => p.Name)
+                .FirstOrDefaultAsync();
+
+            if (product == null)
+            {
+                return null;
+            }
+            return product;
+        }
+        public async Task<Product> GetServiceByNameAsync(string name)
+        {
+            return await _context.Products.SingleOrDefaultAsync(b => b.Name == name);
         }
 
         public async Task<ShopViewModel> GetInitialShopViewModelAsync()
@@ -248,7 +388,12 @@ namespace Webx.Web.Data.Repositories
                 var stock = await _context.Stocks.Where(s => s.Product.Id == productId && s.Store.Id == storeId).FirstOrDefaultAsync();
                 var productTotal = stock.Quantity;
 
-                if (productTotal < 10)
+                if(productTotal == 0)
+                {
+                    color = "#3F3F3F";
+                }
+
+                if (productTotal > 0 && productTotal < 10)
                 {
                     color = "Red";
                 }
@@ -361,5 +506,215 @@ namespace Webx.Web.Data.Repositories
 
             return list;
         }
+
+
+        public async Task<Product> GetProductByNameAsync(string productName)
+        {
+            return await _context.Products
+                .Include(p => p.Brand)
+                .Include(p => p.Category)
+                .Include(p => p.Images)
+                .Where(p => p.Name == productName)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<List<Product>> GetAllProducts(string category)
+        {
+            List<Product> list = new List<Product>();
+
+            if(category == "AllCategories")
+            {
+                list = await _context.Products.Include(p => p.Images).Include(p => p.Brand).Include(p => p.Category).ToListAsync();
+            }
+            else
+            {
+                list = await _context.Products.Include(p => p.Images).Include(p => p.Brand).Include(p => p.Category).Where(p => p.Category.Name == category).ToListAsync();
+            }
+
+            return list;
+        }
+
+        public async Task<List<Product>> GetAllProductsAsync()
+        {
+            return await _context.Products.Include(p => p.Images).Include(p => p.Brand).Include(p => p.Category).ToListAsync();
+        }
+
+        public async Task<List<Product>> GetHighlightedProductsAsync()
+        {
+            return await _context.Products.Include(p => p.Images).Include(p => p.Brand).Include(p => p.Category).Where(p => p.IsPromotion == true).ToListAsync();
+        }
+
+        public async Task<List<Product>> GetOrStartWishListAsync()
+        {
+            var wishlistCookie = _httpContext.HttpContext.Request.Cookies["Wishlist"];
+            List<int> wishlist = new List<int>();
+            List<Product> Products = new List<Product>();
+
+            if (string.IsNullOrEmpty(wishlistCookie))
+            {
+                var serializedList = JsonConvert.SerializeObject(wishlist);
+                CookieOptions options = new CookieOptions();
+                options.Expires = DateTime.UtcNow.AddDays(365);
+                options.Secure = true;
+                _httpContext.HttpContext.Response.Cookies.Append("Wishlist", serializedList, options);
+            }
+            else
+            {
+                wishlist = JsonConvert.DeserializeObject<List<int>>(wishlistCookie);
+                foreach(int number in wishlist)
+                {
+                    Products.Add(await GetFullProduct(number));
+                }
+            }
+
+            return Products;
+        }
+
+        public Response AddProductToWishList(Product product)
+        {
+            try
+            {
+                var wishlistCookie = _httpContext.HttpContext.Request.Cookies["Wishlist"];
+                //List<int> wishlist = new List<int>();
+                var wishlist = JsonConvert.DeserializeObject<List<int>>(wishlistCookie);
+                wishlist.Add(product.Id);
+
+                var serializedList = JsonConvert.SerializeObject(wishlist);
+                CookieOptions options = new CookieOptions();
+                options.Expires = DateTime.UtcNow.AddDays(365);
+                options.Secure = true;
+                _httpContext.HttpContext.Response.Cookies.Append("Wishlist", serializedList, options);
+
+                return new Response
+                {
+                    IsSuccess = true,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };                
+            }            
+        }
+
+        public Response UpdateWishlistCookie(List<Product> currentWishlist)
+        {
+            try
+            {
+                var cookie = _httpContext.HttpContext.Request.Cookies["Wishlist"];
+                List<int> productsIds = new List<int>();
+                foreach(var item in currentWishlist)
+                {
+                    productsIds.Add(item.Id);
+                }
+
+                var serializedList = JsonConvert.SerializeObject(productsIds);
+                CookieOptions options = new CookieOptions();
+                options.Expires = DateTime.UtcNow.AddDays(365);
+                options.Secure = true;
+                _httpContext.HttpContext.Response.Cookies.Append("Wishlist", serializedList, options);
+                
+                return new Response { IsSuccess = true };
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public async Task<List<ProductReview>> GetProductReviewsAsync(int productId)
+        {
+            return await _context.Reviews.Include(r => r.User).Include(r => r.Product).Where(r => r.Product.Id == productId).ToListAsync();
+        }
+
+        public async Task<ProductReview> GetThisCustomerProdReviewAsync(User user, Product product)
+        {
+            return await _context.Reviews.Include(r => r.User).Where(r => r.User.Id == user.Id && r.Product.Id == product.Id).FirstOrDefaultAsync();
+        }
+
+        public async Task CreateReviewAsync(ProductReview review)
+        {
+            await _context.Reviews.AddAsync(review);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<ProductReview> GetProductReviewByIdAsync(int value)
+        {
+            return await _context.Reviews.Include(r => r.User).Include(r => r.Product).ThenInclude(p => p.Images).Where(r => r.Id == value).FirstOrDefaultAsync();
+        }
+
+        public async Task UpdateReviewAsync(ProductReview customerReview)
+        {
+            _context.Reviews.Update(customerReview);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<ProductReview>> GetAllReviewsAsync()
+        {
+            return await _context.Reviews
+                .Include(r => r.User)
+                .Include(r => r.Product).ThenInclude(p => p.Images)
+                .Include(r => r.Product).ThenInclude(p => p.Brand)
+                .Include(r => r.Product).ThenInclude(p => p.Category)
+                .ToListAsync();
+        }
+
+        public Task<ProductReview> GetRecentCreatedReviewAsync(ProductReview review)
+        {
+            return _context.Reviews.Where(r => r.User == review.User && r.Product == review.Product && r.ReviewDate == review.ReviewDate).FirstOrDefaultAsync();
+        }
+
+        public async Task CreateReviewTempAsync(ProductReview review)
+        {
+            ProductReviewTemps temp = new ProductReviewTemps
+            {
+                ProductReview = review
+            };
+
+            await _context.ReviewsTemps.AddAsync(temp);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveReviewTempIfExistsAsync(ProductReview customerReview)
+        {
+            var reviewTemp = await _context.ReviewsTemps.Where(rt => rt.ProductReview == customerReview).FirstOrDefaultAsync();
+
+            if(reviewTemp != null)
+            {
+                _context.ReviewsTemps.Remove(reviewTemp);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<List<ProductReviewTemps>> GetReviewsTempsAsync()
+        {
+            return await _context.ReviewsTemps.Include(rt => rt.ProductReview).ToListAsync();
+        }
+
+        public async Task RemoveReviewTempsAsync(List<ProductReviewTemps> temps)
+        {
+            _context.ReviewsTemps.RemoveRange(temps);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> GetReviewsTempsCountAsync()
+        {
+            var temps = await _context.ReviewsTemps.AsNoTracking().ToListAsync();
+
+            if(temps != null && temps.Count > 0)
+            {
+                return temps.Count;
+            }
+
+            return 0;
+
+       
     }
 }
