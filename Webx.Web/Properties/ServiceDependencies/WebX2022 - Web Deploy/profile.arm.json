@@ -21,7 +21,7 @@
     },
     "resourceName": {
       "type": "string",
-      "defaultValue": "Webx69",
+      "defaultValue": "WebX2022",
       "metadata": {
         "description": "Name of the main resource to be created by this template."
       }

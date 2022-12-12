@@ -22,6 +22,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using HttpResponse = PayPalHttp.HttpResponse;
 using Order = Webx.Web.Data.Entities.Order;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using IronPdf;
 
 namespace Webx.Web.Controllers
 {
@@ -460,13 +462,11 @@ namespace Webx.Web.Controllers
         }
 
 
-
-        public async Task<IActionResult>Printpdf(int OrderId)
+        //[HttpGet]
+        public async Task<IActionResult> Printpdf(int OrderId)
         {
-            
             var order = await _orderRepository.GetCompleteOrderByIdAsync(OrderId);
-
-            
+        
             var model = new InvoiceViewModel
             {
                 Id = order.InvoiceId,
@@ -474,7 +474,25 @@ namespace Webx.Web.Controllers
                 orderDetails = await _orderRepository.GetOrderDetailsAsync(order.Id)
             };
 
+            // Return to new HTML Window, and you print them if interested
+            //return View("_InvoicePDF",model);
+            //return View();
 
+            // Iron Pdf
+            //var html = await _templateHelper.RenderAsync("_InvoicePDF", model);
+
+            //var Renderer = new IronPdf.HtmlToPdf();
+            //var PDF = Renderer.RenderHtmlAsPdf(html);
+            ////Renderer.PrintOptions.Foter = new HtmlHeaderFooter() {HtmlFragment = "page {page} of {total-pages}" };
+
+            //var OutputPath = "C:\\ProjectsCET69\\HtmlToPDF.pdf";
+            //PDF.SaveAs(OutputPath);
+            //return View();
+            // Iron Pdf
+
+
+
+            // puppeteer
             var html = await _templateHelper.RenderAsync("_InvoicePDF", model);
 
             await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions
@@ -482,17 +500,22 @@ namespace Webx.Web.Controllers
                 Headless = true,
                 ExecutablePath = PuppeteerExtensions.ExecutablePath
             });
+
+
             await using var page = await browser.NewPageAsync();
             await page.EmulateMediaTypeAsync(MediaType.Screen);
             await page.SetContentAsync(html);
+
+
             var pdfContent = await page.PdfStreamAsync(new PdfOptions
             {
                 Format = PaperFormat.A4,
                 PrintBackground = true
             });
 
-            return File(pdfContent, "application/pdf", $"Invoice-{model.Id}.pdf");         
-            
+            return File(pdfContent, "application/pdf", $"Invoice-{model.Id}.pdf");
+
+            //return View("_InvoicePDF",model);
         }
 
 
