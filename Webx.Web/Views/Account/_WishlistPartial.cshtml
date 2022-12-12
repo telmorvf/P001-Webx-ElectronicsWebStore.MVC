@@ -1,0 +1,78 @@
+﻿@model Webx.Web.Models.ShopViewModel
+
+
+    
+    <div class="box-head mb-3">
+        <h3>My Wishlist</h3>
+    </div>
+     <div class="table-responsive">
+        @if(Model.WishList != null && Model.WishList.Count() > 0)
+        {
+            
+           <table class="table cart-table">
+               <thead>
+                   <tr class="table-head">
+                       <th scope="col">image</th>                                              
+                       <th scope="col">Product</th>
+                       <th scope="col">Price</th>
+                       <th scope="col">Action</th>
+                       <th scope="col"></th>
+                   </tr>
+               </thead>
+               <tbody>
+
+                   @foreach(var item in Model.WishList)
+                   {
+                       <tr>
+                           <td>
+                               <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@item.Id">
+                                   @if(item.Images.Count() > 0)
+                                   {
+                                       <img src="@item.Images.ElementAt(0).ImageFullPath" class="blur-up lazyload" alt="">
+                                   }
+                                   else
+                                   {
+                                       <img src="@item.ImageFirst" class="blur-up lazyload" alt="">                                                        
+                                   }                                                  
+                               </a>
+                           </td>                                                  
+                           <td>
+                               <p style="white-space:nowrap;text-overflow:ellipsis;overflow:hidden; max-width:500px;margin:auto" class="fs-6 m-0">@item.Name</p>
+                           </td>
+                           <td>
+                               @if(item.Discount > 0){
+                                    <p><del style="font-size:16px;" class="font-light">@item.Price.ToString("C2")</del></p>
+                               } 
+                               <h2>@item.PriceWithDiscount.ToString("C2")</h2>     
+                           </td>
+                           <td>
+                               <a style="cursor:pointer" onclick="RemoveFromWishList(@item.Id)">
+                                    <i class="fas fa-times"></i>
+                               </a>
+                           </td>
+                           <td>
+                               <a href="#" onclick="addWishToCart(@item.Id)" class="btn btn-solid-default btn-sm fw-bold">Move to
+                                   Cart</a>
+                           </td>
+                       </tr>    
+                   }
+
+                                                       
+               </tbody>
+           </table>
+        }
+        else
+        {
+            <table class="table cart-table">                                                                        
+                 <thead>
+                     <tr class="table-head">
+                         <th scope="col">Your Wishlist is still empty!</th>                                                 
+                     </tr>
+                 </thead>
+             </table>
+        }
+
+
+     </div>
+
+   

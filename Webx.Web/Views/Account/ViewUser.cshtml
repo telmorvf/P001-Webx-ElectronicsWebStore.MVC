@@ -2,116 +2,12 @@
 @using Webx.Web.Models
 
 @{
-    ViewData["Title"] = "User Profile";
+    ViewData["Title"] = "WebX";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var updateButton = new ButtonModel() { content = "Update", cssClass = "e-flat" };
     var changeButton = new ButtonModel() { content = "Update", cssClass = "e-flat" };
 }
 
-<style>
-    /*.e-footer-content .e-btn.e-flat:not([DISABLED])
-    {
-         background-color: #0163D2 !important;
-         border-color: #fff !important;
-         color: #fff !important;
-         font-weight:400 !important;
-         transition:ease-in-out 0.5s;
-    }
-
-    .e-footer-content .e-btn.e-flat:not([DISABLED]):hover{
-        background-color: #fff !important;
-        border-color: #0163D2 !important;
-        color: #0163D2 !important;
-        border-radius:0px !important;
-    }
-
-    .fontawesome{
-        font-size:18px;
-        color:grey;
-        cursor:pointer;
-    }
-
-    .fontawesome:hover .fa-eye-slash:before{
-        content:"\f06e";
-        color:#0163D2;
-        opacity:0.4;
-    }
-
-    .my_file{    
-    bottom:0px;
-    outline:none;
-    color: transparent;
-    width: 100%;      
-    height:350px;
-    padding: 15px 100px;
-    cursor: pointer;
-    transition: 1s;
-    background: rgba(0,0,0,0.5);
-    opacity:0;
-    border-radius:50%;
-    margin:auto;
-    }
-    .my_file::-webkit-file-upload-button{
-        visibility: hidden;
-    }
-    .my_file::before {
-        content: 'Update';    
-        font-size: 14px;
-        font-family:Arial;
-        font-weight:bold;
-        color: rgba(85, 150, 223,0.8);
-        display:block; 
-        text-align: center;
-    }
-    .my_file:hover{
-        opacity:1;
-    }
-
-    .imageStyle {
-         height: 350px;
-         width: auto;
-         position: relative;       
-         overflow: hidden;  
-         box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
-    }
-
-    .pad{
-        padding: 15px;
-    }
-
-    .appointmentWarning{
-        width: 100%;
-        margin: 0;
-        display: flex;
-        position: relative;        
-        margin-bottom: 20px;
-    }
-
-    .appointmentWarning > div{
-        width: 100%;
-        height: 50px;        
-        /*background-color: #FFCA2C;*/
-   /*     justify-content: center;
-        text-align: center;
-        line-height: 50px;
-        font-weight: 500;
-        border: solid 1px;
-        animation-name: backgroundColorWarning;
-        animation-duration:4s;
-        animation-iteration-count:infinite;
-        animation-direction:alternate;
-    }
-
-    @@keyframes backgroundColorWarning{
-        0%{
-            background: #FFCA2C;
-        }
-        50%{
-            background: #FFF;
-        }
-    }*/
-
-</style>
 
 
 <!-- user dashboard section start -->
@@ -122,13 +18,34 @@
                     <ul class="nav nav-tabs custome-nav-tabs flex-column category-option" id="myTab">
                         @if(Model.HasAppointmentToDo == false)
                         {
-                                <li class="nav-item mb-2">
-                                    <button class="nav-link font-light active" id="tab" data-bs-toggle="tab" data-bs-target="#dash" type="button"><i class="fas fa-angle-right"></i>Profile</button>
-                                </li>
+                                @if(Model.GoToWishList == false)
+                                {
+                                    <li class="nav-item mb-2">
+                                        <button class="nav-link font-light active" id="tab" data-bs-toggle="tab" data-bs-target="#dash" type="button"><i class="fas fa-angle-right"></i>Profile</button>
+                                    </li>
 
-                                <li class="nav-item mb-2">
-                                    <button class="nav-link font-light" id="1-tab" data-bs-toggle="tab" data-bs-target="#order" type="button"><i class="fas fa-angle-right"></i>Orders</button>
-                                </li>
+                                    <li class="nav-item mb-2">
+                                        <button class="nav-link font-light" id="1-tab" data-bs-toggle="tab" data-bs-target="#order" type="button"><i class="fas fa-angle-right"></i>Orders</button>
+                                    </li>
+
+                                    <li class="nav-item mb-2">
+                                       <button class="nav-link font-light" id="2-tab" data-bs-toggle="tab" data-bs-target="#wishlist" type="button"> <i class="fas fa-angle-right"></i>Wishlist</button>                              
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="nav-item mb-2">
+                                        <button class="nav-link font-light" id="tab" data-bs-toggle="tab" data-bs-target="#dash" type="button"><i class="fas fa-angle-right"></i>Profile</button>
+                                    </li>
+
+                                    <li class="nav-item mb-2">
+                                        <button class="nav-link font-light" id="1-tab" data-bs-toggle="tab" data-bs-target="#order" type="button"><i class="fas fa-angle-right"></i>Orders</button>
+                                    </li>
+
+                                    <li class="nav-item mb-2">
+                                       <button class="nav-link font-light active" id="2-tab" data-bs-toggle="tab" data-bs-target="#wishlist" type="button"> <i class="fas fa-angle-right"></i>Wishlist</button>                              
+                                    </li>
+                                }
                         }
                         else
                         {
@@ -139,19 +56,13 @@
                                 <li class="nav-item mb-2">
                                     <button class="nav-link font-light active" id="1-tab" data-bs-toggle="tab" data-bs-target="#order" type="button"><i class="fas fa-angle-right"></i>Orders</button>
                                 </li>
+
+                                 <li class="nav-item mb-2">
+                                    <button class="nav-link font-light" id="2-tab" data-bs-toggle="tab" data-bs-target="#wishlist" type="button"> <i class="fas fa-angle-right"></i>Wishlist</button>                              
+                                </li>                      
                         }
 
-                        
-
-                        <li class="nav-item mb-2">
-                            <button class="nav-link font-light" id="2-tab" data-bs-toggle="tab" data-bs-target="#wishlist" type="button"> <i class="fas fa-angle-right"></i>Wishlist</button>                              
-                        </li>                        
-
-                        <li class="nav-item mb-2">
-                            <button class="nav-link font-light" id="4-tab" data-bs-toggle="tab" data-bs-target="#pay"
-                                type="button"><i class="fas fa-angle-right"></i>Payment</button>
-                        </li>                           
-                       
+                                             
                         
                     </ul>
 
@@ -181,15 +92,13 @@
                                             <div class="col-lg-4 col-sm-6">
                                                 <div class="order-box">
                                                     <div class="order-box-image">
-                                                        <img src="~/assets/images/svg/box.png"
-                                                            class="img-fluid blur-up lazyload" alt="">
+                                                        <img src="~/assets/images/svg/box.png" class="img-fluid blur-up lazyload" alt="">                                                            
                                                     </div>
                                                     <div class="order-box-contain">
-                                                        <img src="~/assets/images/svg/box1.png"
-                                                            class="img-fluid blur-up lazyload" alt="">
+                                                        <img src="~/assets/images/svg/box1.png" class="img-fluid blur-up lazyload" alt="">                                                            
                                                         <div>
                                                             <h5 class="font-light">total orders</h5>
-                                                            <h3>3648</h3>
+                                                            <h3>@Model.CompletedOrders</h3>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -198,15 +107,13 @@
                                             <div class="col-lg-4 col-sm-6">
                                                 <div class="order-box">
                                                     <div class="order-box-image">
-                                                        <img src="~/assets/images/svg/sent.png"
-                                                            class="img-fluid blur-up lazyload" alt="">
+                                                        <img src="~/assets/images/svg/sent.png" class="img-fluid blur-up lazyload" alt="">                                                            
                                                     </div>
                                                     <div class="order-box-contain">
-                                                        <img src="~/assets/images/svg/sent1.png"
-                                                            class="img-fluid blur-up lazyload" alt="">
+                                                        <img src="~/assets/images/svg/sent1.png" class="img-fluid blur-up lazyload" alt="">                                                            
                                                         <div>
                                                             <h5 class="font-light">pending orders</h5>
-                                                            <h3>215</h3>
+                                                            <h3>@Model.PendingOrders</h3>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -223,7 +130,7 @@
                                                             class="img-fluid blur-up lazyload" alt="">
                                                         <div>
                                                             <h5 class="font-light">wishlist</h5>
-                                                            <h3>63874</h3>
+                                                            <h3 id="wishCount">@Model.WishList.Count()</h3>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -298,394 +205,118 @@
                             </div>
                             <div class="table-responsive">
                                  @if(Model.HasAppointmentToDo == true)
-                                    {
-                                        <div class="table-head row appointmentWarning" stlye="background-color:#FFCA2C"> 
-                                            <div class="col-md-12">You have unscheduled appointments!</div>
-                                        </div>
-                                    }
-                                <table class="table cart-table">                                                                        
-                                    <thead>
-                                        <tr class="table-head">
-                                            <th scope="col">image</th>
-                                            <th scope="col">Order Id</th>
-                                            <th scope="col">Order Details</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Price</th>
-                                            <th scope="col">View</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach(var order in Model.CustomerOrders)
-                                    {
-                                        <tr>
-                                            <td>
-                                                <a href="product-left-sidebar.html">
-                                                    @if(order.OrderDetails.FirstOrDefault().Product.Images.Count() > 0)
-                                                    {
-                                                        <img src="@order.OrderDetails.FirstOrDefault().Product.Images.ElementAt(0).ImageFullPath" class="blur-up lazyload" alt="">
-                                                    }
-                                                    else
-                                                    {
-                                                        <img src="https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg" class="blur-up lazyload" alt="">                                                        
-                                                    }                                                    
-                                                       
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="mt-0">#@order.Order.InvoiceId</p>
-                                            </td>
-                                            <td>
-                                                @foreach(var orderDetails in order.OrderDetails)
-                                                {
-                                                    <div style="white-space:nowrap;text-overflow:ellipsis;overflow:hidden; max-width:300px;margin:auto" class="fs-6">@orderDetails.Product.Name</div>
-                                                }                                                
-                                            </td>
-                                            <td>
-                                                @if(order.Order.Status.Name == "Order Created")
-                                                {
-                                                    <p style="cursor:default" class="btn btn-sm btn-primary">Order Created</p>
-                                                }
-                                                @if(order.Order.Status.Name == "Appointment Created")
-                                                {
-                                                    <p style="cursor:default" class="btn btn-sm btn-success">Appointment Created</p>
-                                                }
-                                                @if(order.Order.Status.Name == "Pending Appointment")
-                                                {
-                                                    <a asp-action="MakeAppointment" asp-controller="Appointment" asp-route-orderId="@order.Order.Id">
-                                                        <p class="btn btn-sm btn-warning">Pending Appointment</p>
-                                                    </a>
-                                                }
-                                                @if(order.Order.Status.Name == "Order Shipped")
-                                                {
-                                                    <p style="cursor:default" class="btn btn-sm btn-success">Order Shipped</p>
-                                                }
-                                                @if(order.Order.Status.Name == "Order Closed")
-                                                {
-                                                    <p style="cursor:default" class="btn btn-sm btn-secondary">Order Closed</p>
-                                                }
-                                                @if(order.Order.Status.Name == "Appointment Done")
-                                                {
-                                                    <p style="cursor:default" class="btn btn-sm btn-secondary">Appointment Done</p>
-                                                }
-                                                
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">@order.Order.TotalPrice.ToString("C2")</p>
-                                            </td>
-                                            <td>
-                                                <a href="javascript:void(0)">
-                                                    <i class="far fa-eye"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    }
-                                        
-                                        
-                                    </tbody>
-                                </table>
+                                 {
+                                     <div class="table-head row appointmentWarning" stlye="background-color:#FFCA2C"> 
+                                         <div class="col-md-12">You have unscheduled appointments!</div>
+                                     </div>
+                                 }
+                                 @if(Model.CustomerOrders.Count() > 0)
+                                 {
+                                    <table class="table cart-table">                                                                        
+                                         <thead>
+                                             <tr class="table-head">
+                                                 <th scope="col">image</th>
+                                                 <th scope="col">Order Id</th>
+                                                 <th scope="col">Order Details</th>
+                                                 <th scope="col">Status</th>
+                                                 <th scope="col">Price</th>
+                                                 <th scope="col">View</th>
+                                             </tr>
+                                         </thead>
+                                         <tbody>
+                                            @foreach(var order in Model.CustomerOrders)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <a asp-action="OrderDetails" asp-controller="Account" asp-route-id="@order.Order.Id">
+                                                            @if(order.OrderDetails.FirstOrDefault().Product.Images.Count() > 0)
+                                                            {
+                                                                <img src="@order.OrderDetails.FirstOrDefault().Product.Images.ElementAt(0).ImageFullPath" class="blur-up lazyload" alt="">
+                                                            }
+                                                            else
+                                                            {
+                                                                <img src="@order.OrderDetails.FirstOrDefault().Product.ImageFirst" class="blur-up lazyload" alt="">                                                        
+                                                            }                                                    
+                                                               
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <p class="mt-0">#@order.Order.InvoiceId</p>
+                                                    </td>
+                                                    <td>
+                                                        @foreach(var orderDetails in order.OrderDetails)
+                                                        {
+                                                            <div style="white-space:nowrap;text-overflow:ellipsis;overflow:hidden; max-width:300px;margin:auto" class="fs-6">@orderDetails.Product.Name</div>
+                                                        }                                                
+                                                    </td>
+                                                    <td>
+                                                        @if(order.Order.Status.Name == "Order Created")
+                                                        {
+                                                            <p style="cursor:default" class="btn btn-sm btn-primary">Order Created</p>
+                                                        }
+                                                        @if(order.Order.Status.Name == "Appointment Created")
+                                                        {
+                                                            <p style="cursor:default" class="btn btn-sm btn-success">Appointment Created</p>
+                                                        }
+                                                        @if(order.Order.Status.Name == "Pending Appointment")
+                                                        {
+                                                            <a asp-action="MakeAppointment" asp-controller="Appointment" asp-route-orderId="@order.Order.Id">
+                                                                <p class="btn btn-sm btn-warning">Pending Appointment</p>
+                                                            </a>
+                                                        }
+                                                        @if(order.Order.Status.Name == "Order Shipped")
+                                                        {
+                                                            <p style="cursor:default" class="btn btn-sm btn-success">Order Shipped</p>
+                                                        }
+                                                        @if(order.Order.Status.Name == "Order Closed")
+                                                        {
+                                                            <p style="cursor:default" class="btn btn-sm btn-secondary">Order Closed</p>
+                                                        }
+                                                        @if(order.Order.Status.Name == "Appointment Done")
+                                                        {
+                                                            <p style="cursor:default" class="btn btn-sm btn-secondary">Appointment Done</p>
+                                                        }
+                                                        @if(order.Order.Status.Name == "Ongoing")
+                                                        {
+                                                            <p style="cursor:default" class="btn btn-sm btn-info">Booking in progress</p>
+                                                        }
+                                                        
+                                                    </td>
+                                                    <td>
+                                                        <p class="theme-color fs-6">@order.Order.TotalPrice.ToString("C2")</p>
+                                                    </td>
+                                                    <td>
+                                                        <a asp-action="OrderDetails" asp-controller="Account" asp-route-id="@order.Order.Id">
+                                                            <i class="far fa-eye"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                             
+                                             
+                                         </tbody>
+                                    </table>
+                                 }
+                                 else
+                                 {
+                                     <table class="table cart-table">                                                                        
+                                         <thead>
+                                             <tr class="table-head">
+                                                 <th scope="col">You haven't bought anything in our stores yet!</th>                                                 
+                                             </tr>
+                                         </thead>
+                                     </table>
+                                 }
+ 
+                                
                             </div>
                         </div>
-
                         <div class="tab-pane fade table-dashboard dashboard wish-list-section" id="wishlist">
-                            <div class="box-head mb-3">
-                                <h3>My Wishlist</h3>
+                            <div id="wishPartialDiv">
+                                 <partial id="wishListPartial" name="_WishlistPartial"></partial>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table cart-table">
-                                    <thead>
-                                        <tr class="table-head">
-                                            <th scope="col">image</th>
-                                            <th scope="col">Order Id</th>
-                                            <th scope="col">Product Details</th>
-                                            <th scope="col">Price</th>
-                                            <th scope="col">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <a href="product-left-sidebar.html">
-                                                    <img src="~/assets/images/fashion/product/front/1.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#125021</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Outwear & Coats</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="cart.html" class="btn btn-solid-default btn-sm fw-bold">Move to
-                                                    Cart</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <a href="product-left-sidebar.html">
-                                                    <img src="~/assets/images/fashion/product/front/2.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#125367</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Outwear & Coats</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="cart.html" class="btn btn-solid-default btn-sm fw-bold">Move to
-                                                    Cart</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <a href="product-left-sidebar.html">
-                                                    <img src="~/assets/images/fashion/product/front/3.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#125948</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Men's Sweatshirt</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="cart.html" class="btn btn-solid-default btn-sm fw-bold">Move to
-                                                    Cart</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <a href="product-left-sidebar.html">
-                                                    <img src="~/assets/images/fashion/product/front/4.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#127569</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Men's Hoodie t-shirt</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="cart.html" class="btn btn-solid-default btn-sm fw-bold">Move to
-                                                    Cart</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <a href="product-left-sidebar.html">
-                                                    <img src="~/assets/images/fashion/product/front/5.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#127569</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Men's Hoodie t-shirt</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="cart.html" class="btn btn-solid-default btn-sm fw-bold">Move to
-                                                    Cart</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <a href="product-left-sidebar.html">
-                                                    <img src="~/assets/images/fashion/product/front/6.jpg"
-                                                        class="blur-up lazyload" alt="">
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <p class="m-0">#125021</p>
-                                            </td>
-                                            <td>
-                                                <p class="fs-6 m-0">Men's Sweatshirt</p>
-                                            </td>
-                                            <td>
-                                                <p class="theme-color fs-6">$49.54</p>
-                                            </td>
-                                            <td>
-                                                <a href="cart.html" class="btn btn-solid-default btn-sm fw-bold">Move to
-                                                    Cart</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>                        
+                        </div>                      
 
-                        <div class="tab-pane fade dashboard" id="pay">
-                            <div class="box-head">
-                                <h3>Card & Payment</h3>
-                                <button class="btn btn-solid-default btn-sm fw-bold ms-auto" data-bs-toggle="modal"
-                                    data-bs-target="#addPayment"><i class="fas fa-plus"></i>
-                                    Add New Card</button>
-                            </div>
-
-                            <div class="card-details-section">
-                                <div class="row g-4">
-                                    <div class="col-lg-4 col-sm-6">
-                                        <div class="payment-card-detail">
-                                            <div class="card-details">
-                                                <div class="card-number">
-                                                    <h4>XXXX - XXXX - XXXX - 2548</h4>
-                                                </div>
-
-                                                <div class="valid-detail">
-                                                    <div class="title">
-                                                        <span>valid</span>
-                                                        <span>thru</span>
-                                                    </div>
-                                                    <div class="date">
-                                                        <h3>12/23</h3>
-                                                    </div>
-                                                    <div class="primary">
-                                                        <span class="badge bg-pill badge-light">primary</span>
-                                                    </div>
-                                                </div>
-
-                                                <div class="name-detail">
-                                                    <div class="name">
-                                                        <h5>mark jecno</h5>
-                                                    </div>
-                                                    <div class="card-img">
-                                                        <img src="~/assets/images/payment-icon/1.jpg"
-                                                            class="img-fluid blur-up lazyloaded" alt="">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="edit-card">
-                                                <a data-bs-toggle="modal" data-bs-target="#addPayment"
-                                                    href="javascript:void(0)"><i class="far fa-edit"></i> edit</a>
-                                                <a href="javascript:void(0)"><i class="far fa-minus-square"></i>
-                                                    delete</a>
-                                            </div>
-                                        </div>
-
-                                        <div class="edit-card-mobile">
-                                            <a data-bs-toggle="modal" data-bs-target="#addPayment"
-                                                href="javascript:void(0)"><i class="far fa-edit"></i> edit</a>
-                                            <a href="javascript:void(0)"><i class="far fa-minus-square"></i>
-                                                delete</a>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-4 col-sm-6">
-                                        <div class="payment-card-detail">
-                                            <div class="card-details card-visa">
-                                                <div class="card-number">
-                                                    <h4>XXXX - XXXX - XXXX - 2548</h4>
-                                                </div>
-
-                                                <div class="valid-detail">
-                                                    <div class="title">
-                                                        <span>valid</span>
-                                                        <span>thru</span>
-                                                    </div>
-                                                    <div class="date">
-                                                        <h3>12/23</h3>
-                                                    </div>
-                                                    <div class="primary">
-                                                        <span class="badge bg-pill badge-light">primary</span>
-                                                    </div>
-                                                </div>
-
-                                                <div class="name-detail">
-                                                    <div class="name">
-                                                        <h5>mark jecno</h5>
-                                                    </div>
-                                                    <div class="card-img">
-                                                        <img src="~/assets/images/payment-icon/2.jpg"
-                                                            class="img-fluid blur-up lazyloaded" alt="">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="edit-card">
-                                                <a data-bs-toggle="modal" data-bs-target="#addPayment"
-                                                    href="javascript:void(0)"><i class="far fa-edit"></i> edit</a>
-                                                <a href="javascript:void(0)"><i class="far fa-minus-square"></i>
-                                                    delete</a>
-                                            </div>
-                                        </div>
-
-                                        <div class="edit-card-mobile">
-                                            <a data-bs-toggle="modal" data-bs-target="#addPayment"
-                                                href="javascript:void(0)"><i class="far fa-edit"></i> edit</a>
-                                            <a href="javascript:void(0)"><i class="far fa-minus-square"></i>
-                                                delete</a>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-4 col-sm-6">
-                                        <div class="payment-card-detail">
-                                            <div class="card-details dabit-card">
-                                                <div class="card-number">
-                                                    <h4>XXXX - XXXX - XXXX - 2548</h4>
-                                                </div>
-
-                                                <div class="valid-detail">
-                                                    <div class="title">
-                                                        <span>valid</span>
-                                                        <span>thru</span>
-                                                    </div>
-                                                    <div class="date">
-                                                        <h3>12/23</h3>
-                                                    </div>
-                                                    <div class="primary">
-                                                        <span class="badge bg-pill badge-light">primary</span>
-                                                    </div>
-                                                </div>
-
-                                                <div class="name-detail">
-                                                    <div class="name">
-                                                        <h5>mark jecno</h5>
-                                                    </div>
-                                                    <div class="card-img">
-                                                        <img src="~/assets/images/payment-icon/3.jpg"
-                                                            class="img-fluid blur-up lazyloaded" alt="">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="edit-card">
-                                                <a data-bs-toggle="modal" data-bs-target="#addPayment"
-                                                    href="javascript:void(0)"><i class="far fa-edit"></i> edit</a>
-                                                <a href="javascript:void(0)"><i class="far fa-minus-square"></i>
-                                                    delete</a>
-                                            </div>
-                                        </div>
-
-                                        <div class="edit-card-mobile">
-                                            <a data-bs-toggle="modal" data-bs-target="#addPayment"
-                                                href="javascript:void(0)"><i class="far fa-edit"></i> edit</a>
-                                            <a href="javascript:void(0)"><i class="far fa-minus-square"></i>
-                                                delete</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>                                               
                     </div>
                 </div>
             </div>
@@ -695,7 +326,7 @@
 
 <script type="text/javascript">
 
-    
+    let oldEmail;
 
     function onThisOverlayClick() {
       debugger;
@@ -714,7 +345,7 @@
                     
         var currentEmail = document.getElementById("email");
         currentEmail.Value = model.Email;
-
+        oldEmail = currentEmail.value;
         var currentNif = document.getElementById("nif");
         currentNif.Value = model.NIF;
 
@@ -728,7 +359,8 @@
     };
 
     function ondlgUpdateClick() {
-       
+        debugger;
+
         var dialogObj = document.getElementById("dialog").ej2_instances[0];        
         var isOk = true;
 
@@ -736,7 +368,7 @@
         document.getElementById("spanNif").innerHTML = "";
         document.getElementById("spanEmail").innerHTML = "";
 
-        var oldEmail = document.getElementById("dialog").querySelector('#email').Value;
+        //var oldEmail = document.getElementById("dialog").querySelector('#email').Value;
         var email = document.getElementById("dialog").querySelector('#email').value;      
         var phone = document.getElementById("dialog").querySelector('#phone').value;        
         var nif = document.getElementById("dialog").querySelector('#nif').value;
@@ -801,6 +433,7 @@
            dataType: 'json',
            data: { email: email, phoneNumber: phoneNum, nif: nif},
            success: function(data) {
+               debugger;
                if (data) {
                    if (oldEmail == email) {
                        window.location.reload();
@@ -1084,35 +717,111 @@
    @section Scripts{
        @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     
+    <script src="~/js/ShopScript.js"></script>
+
     <script type="text/Javascript">
         window.onload = function() {
             getBackgroundProfilePicture();
             
             var tab = document.getElementById("tab");
             var onetab = document.getElementById("1-tab");
+            var twotab = document.getElementById("2-tab");
+
             var dashDiv = document.getElementById("dash");
             var orderDiv = document.getElementById("order");
-
+            var wishDiv = document.getElementById("wishlist");
+            debugger;
             var tabClasssNames = tab.classList;
             var onetabClasssNames = onetab.classList;
+            var twotabClasssNames = twotab.classList;
 
             if(tabClasssNames.length > 2){
                 dashDiv.classList.add('active');
                 dashDiv.classList.add('show');
                 orderDiv.classList.remove('active');
-                 orderDiv.classList.remove('show');
+                orderDiv.classList.remove('show');
+                wishDiv.classList.remove('active');
+                wishDiv.classList.remove('show');
             }
 
             if(onetabClasssNames.length > 2){
                 dashDiv.classList.remove('active');
                 dashDiv.classList.remove('show');
+                wishDiv.classList.remove('active');
+                wishDiv.classList.remove('show');
                 orderDiv.classList.add('active');
                 orderDiv.classList.add('show');
             }
             
+
+            if (twotabClasssNames.length > 2) {
+                dashDiv.classList.remove('active');
+                dashDiv.classList.remove('show');
+                orderDiv.classList.remove('active');
+                orderDiv.classList.remove('show');
+                wishDiv.classList.add('active');
+                wishDiv.classList.add('show');
+            }
+
         }      
     </script>
    
+    <script>
+
+        function RemoveFromWishList(id) {
+            debugger;  
+            
+            let wishCounth3 = document.getElementById("wishCount");
+            let countString = wishCounth3.innerHTML;
+            let count = parseInt(countString);
+
+            $.ajax({
+                url: '/Account/RemoveFromWishlist/',
+                type: 'GET',
+                contentType: 'application/html',
+                dataType: "html",
+                data: {id:id},
+                success: function (value) {
+                    debugger;
+                    let content = $("#wishPartialDiv").html(value);
+                    eval(content);
+                    count = count - 1;
+                    wishCounth3.innerHTML = count;
+                    updateCartPartial();
+                },
+                error: function (ex) {
+                    debugger;
+
+                    console.log("error");
+                }
+            })
+        }
+
+        function updateCartPartial() {
+            $.ajax({
+                url: '/Account/UpdateCartPartial/',
+                type: 'GET',
+                contentType: 'application/html',
+                dataType: "html",                
+                success: function (value) {
+                    debugger;
+                    let content = $("#cartPartialDiv").html(value);
+                    eval(content);
+                    
+                },
+                error: function (ex) {
+                    debugger;
+
+                    console.log("error");
+                }
+            })
+        }
+
+        function addWishToCart(id) {
+            AddtoCart(id);             
+        }
+
+    </script>
           
 
     <script>

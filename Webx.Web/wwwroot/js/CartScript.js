@@ -15,7 +15,8 @@ function checkProductStock(productId, storeId) {
             
             let content = $("#cartDetailsPartial").html(partial);
             eval(content);
-            
+            updateDropDownList();
+         
         },
         error: function (ex) {
             console.log("error");
@@ -230,8 +231,28 @@ function ondlgClearClick()
 
 function clearDropDownList() {
     $.ajax({
-        url: '/Cart/UpdateDrowpDown/',
+        url: '/Cart/UpdateToClearDrowpDown/',
         type: 'GET',
+        contentType: 'application/html',
+        dataType: "html",
+        success: function (value) {
+            debugger;
+            let content = $("#cartPartialDiv").html(value);
+            eval(content);
+        },
+        error: function (ex) {
+            debugger;
+
+            console.log("error");
+        }
+    })
+}
+
+function updateDropDownList() {
+    debugger;
+    $.ajax({
+        url: '/Cart/UpdateDropDown/',
+        type: 'POST',
         contentType: 'application/html',
         dataType: "html",
         success: function (value) {

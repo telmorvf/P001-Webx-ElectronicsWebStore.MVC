@@ -2,7 +2,7 @@
 
 
 @{
-    ViewData["Title"] = "MakeAppointment";
+    ViewData["Title"] = "WebX";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -160,9 +160,7 @@
 
        startDateConverted = appointmentStart.getFullYear().toString()+"-"+((appointmentStart.getMonth()+1).toString().length==2?(appointmentStart.getMonth()+1).toString():"0"+(appointmentStart.getMonth()+1).toString())+"-"+(appointmentStart.getDate().toString().length==2?appointmentStart.getDate().toString():"0"+appointmentStart.getDate().toString())+" "+(appointmentStart.getHours().toString().length==2?appointmentStart.getHours().toString():"0"+appointmentStart.getHours().toString())+":"+((parseInt(appointmentStart.getMinutes()/5)*5).toString().length==2?(parseInt(appointmentStart.getMinutes()/5)*5).toString():"0"+(parseInt(appointmentStart.getMinutes()/5)*5).toString())+":00";
        endDateConverted = appointmentEnd.getFullYear().toString()+"-"+((appointmentEnd.getMonth()+1).toString().length==2?(appointmentEnd.getMonth()+1).toString():"0"+(appointmentEnd.getMonth()+1).toString())+"-"+(appointmentEnd.getDate().toString().length==2?appointmentEnd.getDate().toString():"0"+appointmentEnd.getDate().toString())+" "+(appointmentEnd.getHours().toString().length==2?appointmentEnd.getHours().toString():"0"+appointmentEnd.getHours().toString())+":"+((parseInt(appointmentEnd.getMinutes()/5)*5).toString().length==2?(parseInt(appointmentEnd.getMinutes()/5)*5).toString():"0"+(parseInt(appointmentEnd.getMinutes()/5)*5).toString())+":00";
-       let comment = document.getElementById("customerComment").innerHTML;
-
-       console.log(startDateConverted);
+       let comment = document.getElementById("customerComment").value;            
 
        var urlRoute = "/Appointment/SaveAppointment?startDate=" + startDateConverted + "&endDate=" + endDateConverted+"&orderId="+orderId+"&comment="+comment;
        

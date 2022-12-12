@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<OrderData>
+  <Header>
+    <CompanyName>WebX - Company</CompanyName>
+    <OrderDate>05/12/2022</OrderDate>
+    <ProductManager>Tatiana Margins</ProductManager>
+  </Header>
+  <Products>
+    <Store Name="WebX Porto Store" Address="Rua da Igreja" Phone="229448521" Email="webxPorto@gmail.com">
+      <Product>
+        <Name>2323</Name>
+        <Brand>Samsung</Brand>
+        <Category>Mouses &amp; Keyboards</Category>
+        <Price>20,00</Price>
+        <Quantity>1</Quantity>
+      </Product>
+    </Store>
+    <Store Name="WebX Lisbon Store" Address="Zona Industrial de Alfragide - Estrada Nacional 117" Phone="213645895" Email="webxLisbon@gmail.com">
+      <Product>
+        <Name>Intel Core i9-11900K 8-Core 3.5GHz W/Turbo 5.3GHz 16MB Skt1200 Processor</Name>
+        <Brand>Intel</Brand>
+        <Category>CPU Processors</Category>
+        <Price>413,90</Price>
+        <Quantity>1</Quantity>
+      </Product>
+    </Store>
+    <Store Name="WebX Online Store" Address="Avenida Nossa Senhora de Fatima, Armazem 23" Phone="244835530" Email="webxOnline@gmail.com">
+      <Product>
+        <Name>teste</Name>
+        <Brand>Asus</Brand>
+        <Category>Cases</Category>
+        <Price>1,00</Price>
+        <Quantity>1</Quantity>
+      </Product>
+    </Store>
+  </Products>
+</OrderData>

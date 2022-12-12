@@ -52,8 +52,7 @@
                       </div>
                     </li>
                 }
-            }
-            
+            }   
             
          </ul>
      </div>
@@ -99,50 +98,55 @@
              <div class="img-wrapper">
 
                  <div class="front">
-                     @if (item.Images.Count() > 0)
+                     @if (item.Product.Images.Count() > 0)
                      {
-                         <a href="product-left-sidebar.html" style="max-height: 240px;">                                                       
-                             <img src="@item.Images.ElementAt(0).ImageFullPath"
+                         <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@item.Product.Id" style="max-height: 240px;">                                                       
+                             <img src="@item.Product.Images.ElementAt(0).ImageFullPath"
                              class="bg-img blur-up lazyload teste" alt=""> 
                          </a>
                      }
                      else
                      {
-                         <a href="product-left-sidebar.html" style="max-height: 240px;">
-                             <img src="https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg"
-                                 class="bg-img blur-up lazyload teste" alt="">
+                         <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@item.Product.Id" style="max-height: 240px;">                             
+                              <img src="@item.Product.ImageFirst"  class="bg-img blur-up lazyload teste" alt=""> 
                          </a>
                      }
                  </div>
-                 @if(item.Images.Count() > 1)
+                 @if(item.Product.Images.Count() > 1)
                  {
                    <div class="back">
-                     <a href="product-left-sidebar.html" style="max-height: 240px;">
+                     <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@item.Product.Id" style="max-height: 240px;">
                          
-                         <img src="@item.Images.ElementAt(1).ImageFullPath"
+                         <img src="@item.Product.Images.ElementAt(1).ImageFullPath"
                          class="bg-img blur-up lazyload teste" alt=""> 
                                     
                      </a>
                    </div>  
                  }                                    
-                
+                @if(item.Product.Discount > 0)
+                 {
+                     <div class="label-block">
+                         <span class="label label-black">Promo</span>
+                         <span class="label label-theme">@Decimal.Truncate(@item.Product.Discount)% Off</span>
+                     </div>
+                 }
                  <div class="cart-wrap">
                      <ul>
                          @*data-bs-toggle="modal" data-bs-target="#addtocart"*@
                          <li>
-                             <a href="#" onclick="AddtoCart(@item.Id)" class="addtocart-btn">                                 
+                             <a href="#" onclick="AddtoCart(@item.Product.Id)" class="addtocart-btn">                                 
                                  <i class="fas fa-shopping-bag"></i>                                 
                              </a>
                          </li>
                          <li>
                              @*data-bs-toggle="modal" data-bs-target="#quick-view"*@
-                             <a href="#"  onclick="showProductDetails(@item.Id)">                                                                                     
+                             <a href="#"  onclick="showProductDetails(@item.Product.Id)">                                                                                     
                                  <i class="fas fa-eye"></i>
                              </a>
                          </li>                         
                          <li>
                              
-                             <a href="wishlist.html" class="wishlist">
+                             <a href="#" onclick="AddtoWishlist('@item.Product.Id')">
                                  <i class="fas fa-heart"></i>
                              </a>
                          </li>
@@ -152,37 +156,47 @@
 
              <div class="product-details">
                  <div class="rating-details">
-                     <span class="font-light grid-content">@item.Category.Name</span>
+                     <span class="font-light grid-content">@item.Product.Category.Name</span>
                      <ul class="rating mt-0">
-                         <li>
-                             <i class="fas fa-star theme-color"></i>
-                         </li>
-                         <li>
-                             <i class="fas fa-star theme-color"></i>
-                         </li>
-                         <li>
-                             <i class="fas fa-star"></i>
-                         </li>
-                         <li>
-                             <i class="fas fa-star"></i>
-                         </li>
-                         <li>
-                             <i class="fas fa-star"></i>
-                         </li>
+                        @for(int i = 1; i < 6; i++)
+                        {
+                            @if(i <= item.ProductOverallRating)
+                            {
+                                 <li>
+                                    <i class="fas fa-star theme-color"></i>
+                                 </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <i class="fas fa-star"></i>
+                                </li>
+                            }
+                        }             
                      </ul>
                  </div>
                  <div class="main-price">
-                     <a href="product-left-sidebar.html" class="font-default" style="max-width:75%;min-width:65%">
-                         <h5 class="ms-0" style="font-size:inherit;">@item.Name</h5>
+                     <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@item.Product.Id" class="font-default" style="max-width:75%;min-width:65%">
+                         <h5 class="ms-0" style="font-size:inherit;">@item.Product.Name</h5>
                      </a>
                      <div class="listing-content">
                          <span class="font-light">Regular Fit</span>
                          <p class="font-light">
-                             @item.Description
+                             @item.Product.Description
                          </p>
                      </div>
-                     <h3 class="theme-color" style="font-size:small;max-width: 35%;min-width:25%;text-align: center;">@item.Price €</h3>    
-                     <button onclick="location.href = 'cart.html';" class="btn listing-content">
+                     <div style="font-size: small;max-width: 35%; min-width: 25%;text-align: center;">  
+                        @if(item.Product.Discount > 0)
+                        {
+                            <span style="font-size: 12px;"><del class="font-light">@item.Product.Price.ToString("C2")</del></span>
+                            <h3 class="theme-color" style="font-size:small;text-align: center;"> @item.Product.PriceWithDiscount.ToString("C2")</h3>   
+                        }
+                        else
+                        {
+                           <h3 class="theme-color" style="font-size:small;text-align: center;">@item.Product.Price.ToString("C2")</h3>     
+                        }
+                     </div> 
+                     <button onclick="AddtoCart(@item.Product.Id)" class="btn listing-content">
                          Add
                          To Cart
                      </button>

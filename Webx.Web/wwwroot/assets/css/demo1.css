@@ -4705,7 +4705,7 @@ header .main-navbar {
   [dir="rtl"] .rating {
     padding: 0; }
   .rating li i {
-    color: #c3c3c3 !important; }
+    color: #c3c3c3 }
     .rating li i.theme-color {
       color: #ffa202 !important; }
 

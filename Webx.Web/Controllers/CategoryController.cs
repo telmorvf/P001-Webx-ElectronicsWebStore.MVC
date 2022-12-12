@@ -22,23 +22,30 @@ namespace Webx.Web.Controllers
         private readonly INotyfService _toastNotification;
         private readonly DataContext _dataContext;
         private readonly IConverterHelper _converterHelper;
+        private readonly IImageHelper _imageHelper;
         private readonly IBlobHelper _blobHelper;
+        private readonly IProductRepository _productRepository;
 
-        public CategoryController( 
+        public CategoryController(
             ICategoryRepository categoryRepository,
             INotyfService toastNotification,
             DataContext dataContext,
             IConverterHelper converterHelper,
-            IBlobHelper blobHelper
+            IImageHelper imageHelper,
+            IBlobHelper blobHelper,
+            IProductRepository productRepository
             )
         {
             _categoryRepository = categoryRepository;
             _toastNotification = toastNotification;
             _dataContext = dataContext;
             _converterHelper = converterHelper;
+            _imageHelper = imageHelper;
             _blobHelper = blobHelper;
+            _productRepository = productRepository;
         }
 
+        [Authorize(Roles = "Admin, Product Manager, Technician")]
         public async Task<IActionResult> ViewAll()
         {
             IEnumerable<Category> categories;
@@ -48,6 +55,7 @@ namespace Webx.Web.Controllers
 
             //vai buscar as dataAnnotations da class Category para injectar na tabela do syncfusion
             ViewBag.Type = typeof(Brand);
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
 
             return View(categories);
         }
@@ -79,6 +87,7 @@ namespace Webx.Web.Controllers
             {
                 return null;
             }
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             return View(model);
         }
 
@@ -88,14 +97,6 @@ namespace Webx.Web.Controllers
         {
             if (this.ModelState.IsValid)
             {
-                // TODO Remover duplicados no update
-                //var categoryDuplicated = _categoryRepository.GetAllCategoryByNameAsync(model.Name);
-                //if (categoryDuplicated.Result != null)
-                //{
-                //    _toastNotification.Error("This Category Already Exists, Please try again...");
-                //    return View(model);
-                //}
-
                 var category = await _categoryRepository.GetAllCategoriesByIdAsync(model.Id);
                 if (category == null)
                 {
@@ -105,50 +106,54 @@ namespace Webx.Web.Controllers
 
                 try
                 {
-                    // Iage File - Start
-                    Guid imageId = category.ImageId;
-
+                    Guid imageId = Guid.Empty;                  
                     if (model.PictureFile != null && model.PictureFile.Length > 0)
                     {
-                        using var image = Image.Load(model.PictureFile.OpenReadStream());
-                        image.Mutate(img => img.Resize(512, 0));
-
-                        using (MemoryStream m = new MemoryStream())
-                        {
-                            image.SaveAsJpeg(m);
-                            byte[] imageBytes = m.ToArray();
-                            imageId = await _blobHelper.UploadBlobAsync(imageBytes, "categories");
-                        }
+                        imageId = await _imageHelper.UploadImageAsync(model.PictureFile, model.ImageId, "categories");
+                        category.ImageId = imageId;
+                        model.ImageId = imageId;
                     }
-                    model.ImageId = imageId;
+                    else
+                    {
+                        category.ImageId = model.ImageId;
+                    }
+                    //model.ImageId = imageId;
 
-                    // Image File - End
                     category.Id = model.Id;
                     category.Name = model.Name;
-                    category.ImageId = imageId;
 
                     _dataContext.Categories.Update(category);
                     await _dataContext.SaveChangesAsync();
+                    model = _converterHelper.CategoryToViewModel(category);
 
-                    // Passando a model para o repository o nome da imagem não é gravado na tabela
-                    //await _categoryRepository.UpdateCategoryAsync(model);
                     _toastNotification.Success("Category changes saved successfully!!!");
+                    ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
+                    return View(model);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    //TODO colocar if se duplicado
-                    _toastNotification.Error("There was a problem, When try Modifiy the category. Please try again");
+                    if (ex.InnerException.Message.Contains("Cannot insert duplicate key row in object"))
+                    {
+                        _toastNotification.Error($"The Category Name:  {category.Name} , already exists!");
+                    }
+                    else
+                    {
+                        _toastNotification.Error($"There was a problem updating the employee!");
+                    }
+                    ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                     return View(model);
                 }
 
             };
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             return View(model);
         }
 
         [Authorize(Roles = "Admin")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var model = new CategoryViewModel();
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             return View(model);
         }
 
@@ -164,6 +169,7 @@ namespace Webx.Web.Controllers
                 if (category.Result != null)
                 {
                     _toastNotification.Error("This Category Already Exists, Please try again...");
+                    ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                     return View(model);
                 }
 
@@ -171,38 +177,32 @@ namespace Webx.Web.Controllers
                 {
                     try
                     {
-                        // Iage File - Start
                         Guid imageId = Guid.Empty;
                         if (model.PictureFile != null && model.PictureFile.Length > 0)
                         {
-                            using var image = Image.Load(model.PictureFile.OpenReadStream());
-                            image.Mutate(img => img.Resize(512, 0));
-
-                            using (MemoryStream m = new MemoryStream())
-                            {
-                                image.SaveAsJpeg(m);
-                                byte[] imageBytes = m.ToArray();
-                                imageId = await _blobHelper.UploadBlobAsync(imageBytes, "categories");
-                            }
-                            //category.ImageId = imageId;
-                            model.ImageId = imageId;
+                            imageId = await _imageHelper.UploadImageAsync(model.PictureFile, model.ImageId, "categories");
                         }
+                        model.ImageId = imageId;
 
                         await _categoryRepository.AddCategoryAsync(model);
-                        return RedirectToAction(nameof(ViewAll));
+                        _toastNotification.Success("Category created successfully!!!");
+                        ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
+                        return View(model);
                     }
                     catch (Exception)
                     {
                         _toastNotification.Error("There was a problem, When try creating the category. Please try again");
+                        ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
                         return View(model);
                     }
                 }
             };
+            ViewBag.TempsCounter = await _productRepository.GetReviewsTempsCountAsync();
             return View(model);
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Product Manager, Technician")]
         [Route("Category/CategoryDetails")]
         public async Task<JsonResult> CategoryDetails(int? Id)
         {
@@ -234,7 +234,7 @@ namespace Webx.Web.Controllers
             return json;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Product Manager, Technician")]
         [HttpPost]
         [Route("Category/ToastNotification")]
         public JsonResult ToastNotification(string message, string type)

@@ -87,7 +87,7 @@
                              {
                                 <div>
                                          <div>
-                                                 <img src="https://webx2022.blob.core.windows.net/images/NoPhoto-round.jpg" class="img-fluid blur-up lazyload" alt="product">                                                 
+                                                 <img src="@Model.Product.ImageFirst" class="img-fluid blur-up lazyload" alt="product">                                                 
                                          </div>
                                 </div>
                              }
@@ -115,7 +115,12 @@
                                   <li class="font-light">(In stock)</li>
                               </ul>
                               <div class="price mt-3">
-                                  <h3>@Model.Product.Price €</h3>
+                                   <h3>@Model.Product.PriceWithDiscount.ToString("C2")</h3>
+                                    @if(Model.Product.Discount > 0)
+                                    {
+                                      <span class="font-light ml-1" style="text-decoration:line-through;">@Model.Product.Price.ToString("C2")</span>
+                                      <span style="margin-left: 10px;">@Decimal.Truncate(Model.Product.Discount)% Discount</span>
+                                    }
                               </div>
                               
                               
@@ -149,7 +154,13 @@
                                                               <h6 style="font-weight:500">@item.Store.Name :</h6>                                                              
                                                           </div>                                                          
                                                           <div class="col-md-2">
-                                                             @if(item.Quantity < 10)
+                                                             
+                                                             @if(item.Quantity == 0)
+                                                             {
+                                                                 <h6><i class="fas fa-circle" style="color:#3F3F3F"></i></h6> 
+                                                             }
+
+                                                             @if(item.Quantity > 0 && item.Quantity < 10)
                                                              {
                                                                <h6><i class="fas fa-circle" style="color:red"></i></h6> 
                                                              }
@@ -175,10 +186,9 @@
                                   <button type="button" onclick="AddtoCart(@Model.Product.Id)" class="btn btn-solid-default btn-sm" data-bs-dismiss="modal">                                          
                                       Add to cart
                                   </button>
-                                  <button type="button" class="btn btn-solid-default btn-sm"
-                                          data-bs-dismiss="modal">
+                                  <a asp-action="ProductInfo" asp-controller="Products" asp-route-id="@Model.Product.Id" class="btn btn-solid-default btn-sm">
                                       View details
-                                  </button>
+                                  </a>
                               </div>
                           </div>
                       </div>

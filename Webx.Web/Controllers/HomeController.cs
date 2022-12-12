@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Webx.Web.Data.Entities;
 using Webx.Web.Data.Repositories;
 using Webx.Web.Helpers;
 using Webx.Web.Models;
@@ -22,11 +23,19 @@ namespace Webx.Web.Controllers
         private readonly ICategoryRepository _categoryRepository;        
         private readonly INotyfService _toastNotification;
         private readonly IProductRepository _productRepository;
+        private readonly IBrandRepository _brandRepositoty;
+        private readonly IStockRepository _stockRepository;
+        private readonly IConverterHelper _converterHelper;
 
         public HomeController(
             ILogger<HomeController> logger,
             IBlobHelper blobHelper, IUserHelper userHelper,
-            ICategoryRepository categoryRepository, INotyfService toastNotification,IProductRepository productRepository)
+            ICategoryRepository categoryRepository,
+            INotyfService toastNotification,
+            IProductRepository productRepository,
+            IBrandRepository brandRepositoty,
+            IStockRepository stockRepository,
+            IConverterHelper converterHelper)
         {
             _logger = logger;
             _blobHelper = blobHelper;
@@ -34,6 +43,9 @@ namespace Webx.Web.Controllers
             _categoryRepository = categoryRepository;            
             _toastNotification = toastNotification;
             _productRepository = productRepository;
+            _brandRepositoty = brandRepositoty;
+            _stockRepository = stockRepository;
+            _converterHelper = converterHelper;
         }
 
         public async Task<IActionResult> Index()
@@ -41,12 +53,24 @@ namespace Webx.Web.Controllers
 
             //ViewBag.Categories = await _categoryRepository.GetAllCategoriesAsync();
 
-            var model = await _productRepository.GetInitialShopViewModelAsync();            
+            var model = await _productRepository.GetInitialShopViewModelAsync();
+            model.WishList = await _productRepository.GetOrStartWishListAsync();
+
 
             if (model == null)
             {
                 return NotFound();
             }
+
+            List<Product> sugestedProducts = new List<Product>();
+            sugestedProducts.Add(await _productRepository.GetProductByNameAsync("Motherboard ATX Asus Prime B550-Plus"));
+            sugestedProducts.Add(await _productRepository.GetProductByNameAsync("RAM Memory Corsair Vengeance RGB 32GB (2x16GB) DDR5-6000MHz CL36 White"));
+
+            model.SuggestedProducts = sugestedProducts;
+            model.Product = await _productRepository.GetProductByNameAsync("Intel Core i9-11900K 8-Core 3.5GHz W/Turbo 5.3GHz 16MB Skt1200 Processor");
+            var products = await _productRepository.GetHighlightedProductsAsync();
+            model.HighlightedProducts = await _converterHelper.ToProductsWithReviewsViewModelList(products);
+            model.Stocks = await _stockRepository.GetAllStockWithStoresAsync();
 
             if (User.Identity.IsAuthenticated)
             {
@@ -57,11 +81,69 @@ namespace Webx.Web.Controllers
 
             var cookiesConsent = _productRepository.CheckCookieConsentStatus();
             model.CookieConsent = cookiesConsent;
+            model.Brands = (List<Brand>)await _brandRepositoty.GetAllBrandsAsync();
 
             return View(model);
         }
 
-   
+        public async Task<IActionResult> AboutUs(bool isLayoutAdmin)
+        {
+            if (isLayoutAdmin == false)
+            {
+
+
+
+                var model = await _productRepository.GetInitialShopViewModelAsync();
+                model.WishList = await _productRepository.GetOrStartWishListAsync();
+
+
+                if (model == null)
+                {
+                    return NotFound();
+                }
+
+                List<Product> sugestedProducts = new List<Product>();
+                sugestedProducts.Add(await _productRepository.GetProductByNameAsync("Motherboard ATX Asus Prime B550-Plus"));
+                sugestedProducts.Add(await _productRepository.GetProductByNameAsync("RAM Memory Corsair Vengeance RGB 32GB (2x16GB) DDR5-6000MHz CL36 White"));
+
+                model.SuggestedProducts = sugestedProducts;
+                model.Product = await _productRepository.GetProductByNameAsync("Intel Core i9-11900K 8-Core 3.5GHz W/Turbo 5.3GHz 16MB Skt1200 Processor");
+                var products = await _productRepository.GetHighlightedProductsAsync();
+                model.HighlightedProducts = await _converterHelper.ToProductsWithReviewsViewModelList(products);
+                model.Stocks = await _stockRepository.GetAllStockWithStoresAsync();
+
+                if (User.Identity.IsAuthenticated)
+                {
+                    var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+                    ViewBag.UserFullName = user.FullName;
+                    ViewBag.IsActive = user.Active;
+                }
+
+                var cookiesConsent = _productRepository.CheckCookieConsentStatus();
+                model.CookieConsent = cookiesConsent;
+                model.Brands = (List<Brand>)await _brandRepositoty.GetAllBrandsAsync();
+                return View(model);
+            }
+            else
+            { return View(); }
+       }
+
+        public async Task<IActionResult> ContactUs()
+        {
+            var model = await _productRepository.GetInitialShopViewModelAsync();
+            model.WishList = await _productRepository.GetOrStartWishListAsync();
+            model.Brands = (List<Brand>)await _brandRepositoty.GetAllBrandsAsync();
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+                ViewBag.UserFullName = user.FullName;
+                ViewBag.IsActive = user.Active;
+            }
+
+
+            return View(model);
+        }
+
 
         public IActionResult Privacy()
         {
@@ -80,6 +162,7 @@ namespace Webx.Web.Controllers
         public async Task<IActionResult> Error404()
         {
             var model = await _productRepository.GetInitialShopViewModelAsync();
+            model.Brands = (List<Brand>)await _brandRepositoty.GetAllBrandsAsync();
             return View(model);
         }
     }

@@ -1,0 +1,333 @@
+﻿@model Webx.Web.Models.AppointmentViewModel
+
+@{
+    ViewData["Title"] = "Appointments";
+    Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
+    var asAttendedButton = new ButtonModel() { content = "Attended", cssClass = "e-flat" };
+    var markDoneButton = new ButtonModel() { content = "Mark as done", cssClass = "e-flat" };
+}
+
+<style>
+    mark.theme {
+    color:var(--theme-color);
+    background: none;
+}
+</style>
+
+ 
+
+ <div class="container-fluid" style="padding:0px;">
+        <div class="row" style="height:50px;box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;padding:0px;background-color:#EFF2F7">
+            <div class="col-md-2" style="display: flex; align-items:center;justify-content: center;height:100%">
+                <select id="comboBox" style="width:80%;height:80%;text-align:center" onchange="changeStore(this)" asp-for="@Model.StoreId" asp-items="@Model.PhysicalStoresCombo"></select>
+            </div>
+            <div class="col-md-6" ></div>          
+            <div class="col-md-4" style="display: flex;align-items: center;justify-content: center;height: 100%;">
+                <div style="width: 90%;text-align: center;height: 40px;background-color: white; border: 0.5px solid #292929;">
+                    <h6 style="line-height: 40px; font-weight:500;">
+                         Appointments:
+                        <span style="padding-left:10px;padding-right:10px"></span> <b><mark class="theme"> @Model.OngoingAppointmentsTotals</mark></b> Ongoing
+                        <span style="padding-left:10px;padding-right:10px"></span> <b><mark class="theme"> @Model.AppointmentsCreatedTotals </mark></b> Created
+                        <span style="padding-left:10px;padding-right:10px"></span> <b><mark class="theme"> @Model.AppointmentsDoneTotals </mark></b> Done
+                    </h6>
+                </div>
+            </div>
+           
+        </div>
+        <div class=font-weight style="margin-top:50px;margin-right: 20px;margin-left: 20px;">    
+            
+            <div class="col-md-12">
+                <div id='calendar' style="max-height: 700px; margin-bottom:50px">
+
+                </div>             
+            </div>
+            @*<div class="col-md-1"></div>*@
+        </div>
+    </div>
+
+   
+
+    <div id='container' style="height:auto">
+        <ejs-dialog id='dialog' visible="false" isModal="true" width="400px" showCloseIcon="true" allowDragging="true" overlayClick="onOverlayClick" target="#container">
+            <e-dialog-buttons>                
+                <e-dialog-dialogbutton buttonModel="@asAttendedButton" click="ondlgAttendedClick"></e-dialog-dialogbutton>
+            </e-dialog-buttons>
+        </ejs-dialog>
+
+        <ejs-dialog id='OngoingDialog' visible="false" isModal="true" width="400px" showCloseIcon="true" allowDragging="true" overlayClick="onOverlayClick" target="#container">
+           <e-dialog-buttons>                
+                <e-dialog-dialogbutton buttonModel="@markDoneButton" click="ondlgdoneClick"></e-dialog-dialogbutton>
+            </e-dialog-buttons>
+        </ejs-dialog>
+
+        <ejs-dialog id='DoneDialog' visible="false" isModal="true" width="400px" showCloseIcon="true" allowDragging="true" overlayClick="onOverlayClick" target="#container">
+
+          
+        </ejs-dialog>
+    </div>
+
+
+
+    <script>     
+         function onOverlayClick() {
+             var dialog = document.getElementById("dialog").ej2_instances[0];
+             dialog.hide();
+
+             var onGoingDialog = document.getElementById("OngoingDialog").ej2_instances[0];
+             onGoingDialog.hide();
+
+             var doneDialog = document.getElementById("DoneDialog").ej2_instances[0];
+             doneDialog.hide();
+         }   
+    
+    </script>  
+
+
+    <script type="text/javascript">
+          let appointmentStart;
+          let appointmentEnd;
+          let eventClickedId;
+          let eventOrderId;
+         
+         document.addEventListener('DOMContentLoaded', function() {
+           debugger;     
+           
+
+           var calendarEl = document.getElementById('calendar');
+
+           var calendar = new FullCalendar.Calendar(calendarEl, {
+
+                  themeSystem: 'bootstrap',
+                  timeZone: 'UTC',
+                  aspectRatio: 1.8,
+                  height:750,
+                  initialView: 'timeGridWeek',            
+                  nowIndicator: true,
+                  businessHours: [{
+                      daysOfWeek: [1, 2, 3, 4, 5],
+                      startTime: '09:00',
+                      endTime: '18:00'
+                  },
+                  {
+                      daysOfWeek: [0, 6],
+                      startTime: '09:00',
+                      endTime: '13:00'
+                  }
+                  ],
+                  headerToolbar: {
+                      left: 'prev,next today',
+                      center: 'title',
+                      right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                  },
+                  slotLabelInterval: "00:30",
+                  slotLabelFormat: {
+                      hour: 'numeric',
+                      minute: '2-digit',
+                      omitZeroMinute: false,
+                      meridiem: false,
+                      hour12: false
+                  },
+                  slotMinTime: "07:00:00",
+                  slotMaxTime: "20:00:00",
+                  allDaySlot: false,
+                  editable: true,
+                  events: @Html.Raw(ViewData["Events"]),                  
+                  eventClick: function(info) {
+                                                    
+                      debugger; 
+                      
+                      var eventObj = info.event;     
+                      var eventStatus = eventObj.extendedProps.eventStatus;                    
+                      eventClickedId = eventObj.id;
+                      eventOrderId = eventObj.extendedProps.eventOrderId;
+
+                      if (eventStatus === "Appointment Created") {
+                          var dialog = document.getElementById("dialog").ej2_instances[0];
+                          let eventStartTime = eventObj.start;
+                          let content = eventObj.title + eventObj.extendedProps.eventDescription;
+                          dialog.content = eventObj.extendedProps.eventDescription;
+                          dialog.header = eventStartTime.toUTCString();
+                          dialog.show();
+                      }
+                      
+
+                      if (eventStatus === "Ongoing"){                          
+                          var dialog = document.getElementById("OngoingDialog").ej2_instances[0];
+                          let eventStartTime = eventObj.start;
+                          let content = eventObj.title + eventObj.extendedProps.eventDescription;
+                          dialog.content = eventObj.extendedProps.eventDescription;
+                          dialog.header = eventStartTime.toUTCString();
+                          dialog.show();
+                      }
+
+                      
+                      if (eventStatus === "Appointment Done"){
+                          var dialog = document.getElementById("DoneDialog").ej2_instances[0];
+                          let eventStartTime = eventObj.start;
+                          let content = eventObj.title + eventObj.extendedProps.eventDescription;
+                          dialog.content = eventObj.extendedProps.eventDescription;
+                          dialog.header = eventStartTime.toUTCString();
+                          dialog.show();                            
+                      }
+                      
+                      
+                      
+                  },
+                  eventResize: function(info) {
+                      var eventObj = info.event;
+                      console.log(eventObj);
+                      var url = '/Appointment/EventResize/' + eventObj.id + "?" + eventObj.start.toUTCString() + "?" + eventObj.end.toUTCString();
+                      console.log(url);
+                      $.ajax({
+                          url: '@Url.Action("EventResize","Appointment")',
+                          type: 'POST',
+                          dataType: 'json',
+                          data: { eventId: eventObj.id, startTime: eventObj.start.toUTCString(), endTime: eventObj.end.toUTCString() },
+                          success: function(models) {
+                              console.log("Success");
+                          },
+                          error: function(ex) {
+                                                         
+                              console.log("failed " + ex.message);
+                          }
+                      });
+                  },
+                  eventDrop: function(info) {
+                      var eventObj = info.event;
+                      console.log(eventObj);
+                      var url = '/Appointment/EventResize/' + eventObj.id + "?" + eventObj.start.toUTCString() + "?" + eventObj.end.toUTCString();
+                      console.log(url);
+                      $.ajax({
+                          url: '@Url.Action("EventResize","Appointment")',
+                          type: 'POST',
+                          dataType: 'json',
+                          data: { eventId: eventObj.id, startTime: eventObj.start.toUTCString(), endTime: eventObj.end.toUTCString() },
+                          success: function(models) {
+                              console.log("Success");
+                          },
+                          error: function(ex) {
+
+                              console.log("failed " + ex.message);
+                          }
+                      });
+                  },
+                  dayMaxEvents: true,
+                  dateClick: function(info) {
+                     let currentView = info.view.type;
+                     let date = info.date;
+                     if (currentView == "dayGridMonth") {                      
+                         calendar.changeView("timeGridWeek", date);
+                     }
+                     if (currentView == "timeGridWeek") {                      
+                         calendar.changeView("timeGridDay", date);
+                     }
+                     if (currentView == "timeGridDay") {
+                         calendar.changeView("dayGridMonth", date);
+                     }
+                  },
+                  droppable:true,
+                  dragScroll: true,
+                  dayMaxEvents: true,                
+
+           });
+
+            calendar.render();
+
+         });
+
+
+         function ondlgAttendedClick() {            
+             debugger;
+
+             $.ajax({
+                    url: '@Url.Action("DeclareAsAttended","Appointment")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { id: eventOrderId,appointmentId:eventClickedId },
+                    success: function(result) {
+                        debugger;
+                        if (result == true) {
+                            debugger;
+                            var combo = document.getElementById("comboBox");                            
+                            var storeId = combo.value;                         
+
+                            var url = "/Appointment/Index?storeId=" + storeId;
+                            window.location.href = url;                                                       
+                        }                       
+                        else {        
+                           let message = "There was a problem declaring the order as attended. please try again.";
+                           let type = "warning";
+
+                           $.ajax({
+                               url: '@Url.Action("ToastNotification","Employee")',
+                               type: 'POST',
+                               dataType: 'json',
+                               data: { message: message, type: type },
+                               success: function(result) {
+                                   console.log(result);
+                               },
+                               error: function(ex) {
+                                   console.log(ex);
+                               }
+                           });
+                        }                      
+                    },
+                    error: function(ex) {
+                        console.log("error"+ex);
+                    },
+              });               
+
+         }
+
+        function ondlgdoneClick() {
+            $.ajax({
+                    url: '@Url.Action("DeclareAsDone","Appointment")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { id: eventOrderId,appointmentId:eventClickedId },
+                    success: function(result) {
+                        debugger;
+                        if (result == true) {
+                            debugger;
+                            var combo = document.getElementById("comboBox");                            
+                            var storeId = combo.value;                         
+
+                            var url = "/Appointment/Index?storeId=" + storeId;
+                            window.location.href = url;                                                       
+                        }                       
+                        else {        
+                           let message = "There was a problem declaring the order as done. please try again.";
+                           let type = "warning";
+
+                           $.ajax({
+                               url: '@Url.Action("ToastNotification","Employee")',
+                               type: 'POST',
+                               dataType: 'json',
+                               data: { message: message, type: type },
+                               success: function(result) {
+                                   console.log(result);
+                               },
+                               error: function(ex) {
+                                   console.log(ex);
+                               }
+                           });
+                        }                      
+                    },
+                    error: function(ex) {
+                        console.log("error"+ex);
+                    },
+            });               
+        }
+    </script>
+ 
+
+   
+
+    @section Scripts{
+       @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+             
+        <script src='~/js/AppointmentScript.js'></script>
+
+
+     }
+            

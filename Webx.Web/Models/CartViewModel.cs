@@ -14,6 +14,8 @@ namespace Webx.Web.Models
 
         public string TotalPrice => (Product.Price * Quantity).ToString("C2");
 
+        public string TotalPriceWithDiscount => (Product.PriceWithDiscount * Quantity).ToString("C2");
+
         public string Price => Product.Price.ToString("C2");
     }
 }
