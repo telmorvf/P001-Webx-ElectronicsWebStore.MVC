@@ -120,9 +120,7 @@ namespace Webx.Web.Data.Repositories
         {
             List<OrderWithDetailsViewModel> ordersWithDetails = new List<OrderWithDetailsViewModel>();
             List<Order> orders = new List<Order>();
-              .Include(o => o.Status)
-                .Include(o => o.Appointment)
-                .Where(o => o.Customer.Id == customerId).ToListAsync();
+              
 
             foreach(var order in orders)
             {
@@ -163,9 +161,9 @@ namespace Webx.Web.Data.Repositories
             return await _context.OrderDetails.Include(od => od.Product).Include(od=> od.Order).Where(od => od.Order.Id == id).ToListAsync();
         }
 
-        public async Task<OrderStatus> GetOrderStatusByNameAsync(string orderStatusName)
+        public async Task<Status> GetOrderStatusByNameAsync(string orderStatusName)
         {
-            return await _context.OrderStatus.Where(os => os.Name == orderStatusName).FirstOrDefaultAsync();
+            return await _context.Statuses.Where(os => os.Name == orderStatusName).FirstOrDefaultAsync();
         }
     }
 }

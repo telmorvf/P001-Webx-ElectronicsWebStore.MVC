@@ -1,0 +1,51 @@
+﻿@model Webx.Web.Models.AnnouncementViewModel
+
+@{
+    ViewData["Title"] = "Send Announcement";
+    ViewData["Breadcrumb"] = null;
+    Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
+}
+
+<div class="container" >
+    <div class="row" style="height:100px"></div>
+    <div class="card mb-5">
+        <div class="card-body" style="margin-top:0px">
+            <form asp-action="Announcement" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>            
+                <div class="row" style="margin-top:10px">
+                    <div class="col">
+                        <select asp-for="ToId" asp-items="Model.To" class="form-control"></select>
+                        <span asp-validation-for="ToId" class="text-danger"></span>
+                    </div>                                     
+                </div>              
+           
+                <div class="row" style="margin-top:30px">
+                    <div class="col">
+                        <input asp-for="Title" placeholder="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>                    
+                </div>
+                
+                <div class="row" style="margin-top:30px">
+                    <div class="col">
+                        <textarea rows="5" asp-for="Message" placeholder="Message" class="form-control"> </textarea>
+                        <span asp-validation-for="Message" class="text-danger"></span>
+                    </div>                    
+                </div>
+                
+                <div class="row" style="margin-top:30px">
+                    <div class="col">
+                        <input asp-for="Attachment" placeholder="Attachment" class="form-control" />
+                    </div>                    
+                </div>
+                                
+                <div class="row" style="margin-top:30px;margin-right:20px">
+                    <div class="col">
+                        <input type="submit" value="Send Announcement" class="btn btn-primary" style="float:right"/>
+                    </div>
+                </div>              
+    </form>
+        </div>
+    </div>
+</div>
+

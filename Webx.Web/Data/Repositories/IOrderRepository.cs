@@ -16,7 +16,7 @@ namespace Webx.Web.Data.Repositories
         Task<IEnumerable<OrderDetail>> GetAllOrderDetailsByOrderIdAsync(int id);
         Task<List<Order>> GetCustomerRecentOrdersAsync(User user, DateTime date);
         Task<Response> CreateOrderDetailsAsync(List<OrderDetail> orderDetails);
-        Task<OrderStatus> GetOrderStatusByNameAsync(string orderStatusName);
+        Task<Status> GetOrderStatusByNameAsync(string orderStatusName);
         Task<List<OrderDetail>> GetOrderDetailsAsync(int id);
         Task AddOrderAsync(OrderViewModel orderVm,int storeId);
         Task<Order> GetCompleteOrderByIdAsync(int orderId);        

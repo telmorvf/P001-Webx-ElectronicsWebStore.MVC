@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Migrations\" />
     <Folder Include="wwwroot\assets\images\inner-page\" />
     <Folder Include="wwwroot\assets\adminlte\" />
     <Folder Include="wwwroot\images\brands\" />
@@ -13,6 +14,7 @@
     <Folder Include="wwwroot\images\users\" />
     <Folder Include="wwwroot\images\products\" />
     <Folder Include="wwwroot\Invoices\" />
+    <Folder Include="wwwroot\tempData\" />
   </ItemGroup>
 
   <ItemGroup>
