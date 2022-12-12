@@ -485,6 +485,11 @@ namespace Webx.Web.Controllers
             var html = await _templateHelper.RenderAsync("_InvoicePDF", model);
 
             var Renderer = new IronPdf.HtmlToPdf();
+            Renderer.RenderingOptions.PaperSize = IronPdf.Rendering.PdfPaperSize.A4;
+            Renderer.RenderingOptions.MarginBottom = 1;
+            Renderer.RenderingOptions.MarginTop = 1;
+            Renderer.RenderingOptions.MarginLeft= 1;
+            Renderer.RenderingOptions.MarginRight = 1;
             var PDF = Renderer.RenderHtmlAsPdf(html);
             //Renderer.PrintOptions.Foter = new HtmlHeaderFooter() {HtmlFragment = "page {page} of {total-pages}" };
             

@@ -26,29 +26,40 @@ namespace Webx.Web.Helpers
             try
             {
                 var html = await _templateHelper.RenderAsync("_InvoicePDF", model);
-                await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions
-                {
-                    Headless = true,
-                    ExecutablePath = PuppeteerExtensions.ExecutablePath
-                });
-                await using var page = await browser.NewPageAsync();
-                await page.EmulateMediaTypeAsync(MediaType.Screen);
-                await page.SetContentAsync(html);
-                var pdfContent = await page.PdfStreamAsync(new PdfOptions
-                {
-                    Format = PaperFormat.A4,
-                    PrintBackground = true
-                });
+                var Renderer = new IronPdf.HtmlToPdf();
+                Renderer.RenderingOptions.PaperSize = IronPdf.Rendering.PdfPaperSize.A4;
+                Renderer.RenderingOptions.MarginBottom = 1;
+                Renderer.RenderingOptions.MarginTop = 1;
+                Renderer.RenderingOptions.MarginLeft = 1;
+                Renderer.RenderingOptions.MarginRight = 1;
+                var PDF = Renderer.RenderHtmlAsPdf(html);
 
-                //return File(pdfContent, "application/pdf", $"Invoice-{model.Id}.pdf");
-                //var file = File.Create(pdfContent, "application/pdf", $"Invoice-{model.Id}.pdf");
+                //await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions
+                //{
+                //    Headless = true,
+                //    ExecutablePath = PuppeteerExtensions.ExecutablePath
+                //});
+                //await using var page = await browser.NewPageAsync();
+                //await page.EmulateMediaTypeAsync(MediaType.Screen);
+                //await page.SetContentAsync(html);
+                //var pdfContent = await page.PdfStreamAsync(new PdfOptions
+                //{
+                //    Format = PaperFormat.A4,
+                //    PrintBackground = true
+                //});                     
+            
 
                 string invoices = Path.Combine(_hostingEnvironment.WebRootPath, "Invoices");
                 string filePath = Path.Combine(invoices, $"Invoice-{model.Id}.pdf");
-                using (Stream filestream = new FileStream(filePath, FileMode.Create))
-                {
-                    await pdfContent.CopyToAsync(filestream);
-                }
+                var OutputPath = filePath;
+                PDF.SaveAs(OutputPath);
+                //byte[] pdfbytes = System.IO.File.ReadAllBytes(OutputPath);
+
+
+                //using (Stream filestream = new FileStream(filePath, FileMode.Create))
+                //{
+                //    await pdfbytes.CopyToAsync(filestream);
+                //}
 
                 return filePath;
             }
