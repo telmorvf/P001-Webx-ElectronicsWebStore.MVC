@@ -23,10 +23,10 @@ namespace Webx.Web.Data.Repositories
         private readonly DataContext _context;
         private readonly IHttpContextAccessor _httpContext;
 
-        public ProductRepository(DataContext context,IHttpContextAccessor httpContext) : base(context)
+        public ProductRepository(DataContext context, IHttpContextAccessor httpContext) : base(context)
         {
             _context = context;
-            _httpContext = httpContext;       
+            _httpContext = httpContext;
         }
 
         public IEnumerable<SelectListItem> GetBrandsCombo()
@@ -201,7 +201,7 @@ namespace Webx.Web.Data.Repositories
 
 
                 foreach (var filter in brandsFilter)
-                {                    
+                {
                     filteredlist.AddRange(list.Where(p => p.Brand.HtmlId == filter).ToList());
                 }
 
@@ -244,7 +244,7 @@ namespace Webx.Web.Data.Repositories
 
             return productAll;
         }
-        
+
         public async Task<Product> GetProductByIdAsync(int id)
         {
             var product =
@@ -260,12 +260,12 @@ namespace Webx.Web.Data.Repositories
             {
                 return null;
             }
-            
+
             return product;
-            
-            
+
+
         }
- 
+
 
         public async Task<Product> GetProSerByIdAsync(int id)
         {
@@ -344,13 +344,14 @@ namespace Webx.Web.Data.Repositories
                 {
                     var color = await GetStockColor(item.ProductId, item.StoreId);
                     var product = await GetFullProduct(item.ProductId);
-                    cart.Add(new CartViewModel { Product = product, Quantity = item.Quantity,StoreId = item.StoreId,Color = color });                   
+                    cart.Add(new CartViewModel { Product = product, Quantity = item.Quantity, StoreId = item.StoreId, Color = color });
                 }
-            }             
-           
-            return new ShopViewModel{
-                 Cart = cart,
-            };          
+            }
+
+            return new ShopViewModel
+            {
+                Cart = cart,
+            };
         }
 
         public async Task<List<CartViewModel>> GetCurrentCartAsync()
@@ -362,13 +363,14 @@ namespace Webx.Web.Data.Repositories
 
             if (cookieItemList != null && cookieItemList.Count() > 0)
             {
-                foreach (var item in cookieItemList){
+                foreach (var item in cookieItemList)
+                {
                     var color = await GetStockColor(item.ProductId, item.StoreId);
                     var product = await GetFullProduct(item.ProductId);
-                    cart.Add(new CartViewModel { Product = product, Quantity = item.Quantity, StoreId = item.StoreId,Color = color});                   
+                    cart.Add(new CartViewModel { Product = product, Quantity = item.Quantity, StoreId = item.StoreId, Color = color });
                 }
             }
-            
+
             return cart;
 
         }
@@ -388,7 +390,7 @@ namespace Webx.Web.Data.Repositories
                 var stock = await _context.Stocks.Where(s => s.Product.Id == productId && s.Store.Id == storeId).FirstOrDefaultAsync();
                 var productTotal = stock.Quantity;
 
-                if(productTotal == 0)
+                if (productTotal == 0)
                 {
                     color = "#3F3F3F";
                 }
@@ -421,7 +423,7 @@ namespace Webx.Web.Data.Repositories
             options.Secure = true;
 
             if (string.IsNullOrEmpty(cookieConsent))
-            {                
+            {
                 _httpContext.HttpContext.Response.Cookies.Append("Consent", "false", options);
                 return false;
             }
@@ -429,7 +431,7 @@ namespace Webx.Web.Data.Repositories
             {
                 _httpContext.HttpContext.Response.Cookies.Append("Consent", "true", options);
                 return true;
-            }        
+            }
 
         }
 
@@ -453,10 +455,11 @@ namespace Webx.Web.Data.Repositories
 
                 return new Response { IsSuccess = true };
             }
-            catch (Exception ex)            {
+            catch (Exception ex)
+            {
 
                 return new Response { IsSuccess = false, Message = ex.Message };
-            }           
+            }
         }
 
         public Response ClearCart()
@@ -475,8 +478,8 @@ namespace Webx.Web.Data.Repositories
             }
             catch (Exception ex)
             {
-                return new Response { IsSuccess = false,Message = ex.Message };
-            }           
+                return new Response { IsSuccess = false, Message = ex.Message };
+            }
 
         }
 
@@ -488,7 +491,7 @@ namespace Webx.Web.Data.Repositories
             var products = await _context.Products
                  .Include(p => p.Brand)
                  .Include(p => p.Images)
-                 .Include(p => p.Category).Where(p => p.IsService== false).ToListAsync();
+                 .Include(p => p.Category).Where(p => p.IsService == false).ToListAsync();
 
             foreach (var product in products)
             {
@@ -522,7 +525,7 @@ namespace Webx.Web.Data.Repositories
         {
             List<Product> list = new List<Product>();
 
-            if(category == "AllCategories")
+            if (category == "AllCategories")
             {
                 list = await _context.Products.Include(p => p.Images).Include(p => p.Brand).Include(p => p.Category).ToListAsync();
             }
@@ -561,7 +564,7 @@ namespace Webx.Web.Data.Repositories
             else
             {
                 wishlist = JsonConvert.DeserializeObject<List<int>>(wishlistCookie);
-                foreach(int number in wishlist)
+                foreach (int number in wishlist)
                 {
                     Products.Add(await GetFullProduct(number));
                 }
@@ -596,8 +599,8 @@ namespace Webx.Web.Data.Repositories
                 {
                     IsSuccess = false,
                     Message = ex.Message
-                };                
-            }            
+                };
+            }
         }
 
         public Response UpdateWishlistCookie(List<Product> currentWishlist)
@@ -606,7 +609,7 @@ namespace Webx.Web.Data.Repositories
             {
                 var cookie = _httpContext.HttpContext.Request.Cookies["Wishlist"];
                 List<int> productsIds = new List<int>();
-                foreach(var item in currentWishlist)
+                foreach (var item in currentWishlist)
                 {
                     productsIds.Add(item.Id);
                 }
@@ -616,7 +619,7 @@ namespace Webx.Web.Data.Repositories
                 options.Expires = DateTime.UtcNow.AddDays(365);
                 options.Secure = true;
                 _httpContext.HttpContext.Response.Cookies.Append("Wishlist", serializedList, options);
-                
+
                 return new Response { IsSuccess = true };
             }
             catch (Exception ex)
@@ -686,7 +689,7 @@ namespace Webx.Web.Data.Repositories
         {
             var reviewTemp = await _context.ReviewsTemps.Where(rt => rt.ProductReview == customerReview).FirstOrDefaultAsync();
 
-            if(reviewTemp != null)
+            if (reviewTemp != null)
             {
                 _context.ReviewsTemps.Remove(reviewTemp);
                 await _context.SaveChangesAsync();
@@ -708,13 +711,14 @@ namespace Webx.Web.Data.Repositories
         {
             var temps = await _context.ReviewsTemps.AsNoTracking().ToListAsync();
 
-            if(temps != null && temps.Count > 0)
+            if (temps != null && temps.Count > 0)
             {
                 return temps.Count;
             }
 
             return 0;
 
-       
+
+        }
     }
 }

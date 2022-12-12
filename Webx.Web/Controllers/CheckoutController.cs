@@ -23,7 +23,6 @@ using Microsoft.AspNetCore.Hosting;
 using HttpResponse = PayPalHttp.HttpResponse;
 using Order = Webx.Web.Data.Entities.Order;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using IronPdf;
 
 namespace Webx.Web.Controllers
 {
