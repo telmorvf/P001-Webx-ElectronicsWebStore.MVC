@@ -19,7 +19,7 @@ namespace Webx.Web.Models
         public Guid ImageId { get; set; }
 
         public string ImageFullPath => ImageId == Guid.Empty
-            ? $"https://supershoptpsi.azurewebsites.net/images/noimage.png"
-            : $"https://supershoptpsi.blob.core.windows.net/products/{ImageId}";
+            ? $"https://webx2022.blob.core.windows.net/images/NoPhoto.jpg"
+            : $"https://webx2022.blob.core.windows.net/products/{ImageId}";
     }
 }
