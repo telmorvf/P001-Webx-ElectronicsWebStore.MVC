@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Hosting;
 using HttpResponse = PayPalHttp.HttpResponse;
 using Order = Webx.Web.Data.Entities.Order;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using IronPdf;
 
 namespace Webx.Web.Controllers
 {
@@ -39,6 +40,7 @@ namespace Webx.Web.Controllers
         private readonly IMailHelper _mailHelper;
         private readonly ITemplateHelper _templateHelper;
         private readonly IBrandRepository _brandRepository;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
         private string _paypalEnvironment = "sandbox";//live
         private string _clientId = "AQwGKp_-N9JykoPO628Q-eEhyTOiWANtO-tSKu56sAcq-gM_0gHJ6ciqY3g0e58HyMgC-f3MvdUJjuYN";
@@ -53,7 +55,8 @@ namespace Webx.Web.Controllers
             IPdfHelper pdfHelper,
             IMailHelper mailHelper,
             ITemplateHelper templateHelper,
-            IBrandRepository brandRepository
+            IBrandRepository brandRepository,
+            IWebHostEnvironment hostingEnvironment
             )
         {
             _userHelper = userHelper;
@@ -66,6 +69,7 @@ namespace Webx.Web.Controllers
             _mailHelper = mailHelper;
             _templateHelper = templateHelper;
             _brandRepository = brandRepository;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         
@@ -477,44 +481,62 @@ namespace Webx.Web.Controllers
             //return View("_InvoicePDF",model);
             //return View();
 
-            // Iron Pdf
-            //var html = await _templateHelper.RenderAsync("_InvoicePDF", model);
-
-            //var Renderer = new IronPdf.HtmlToPdf();
-            //var PDF = Renderer.RenderHtmlAsPdf(html);
-            ////Renderer.PrintOptions.Foter = new HtmlHeaderFooter() {HtmlFragment = "page {page} of {total-pages}" };
-
-            //var OutputPath = "C:\\ProjectsCET69\\HtmlToPDF.pdf";
-            //PDF.SaveAs(OutputPath);
-            //return View();
-            // Iron Pdf
-
-
-
-            // puppeteer
+            //Iron Pdf
             var html = await _templateHelper.RenderAsync("_InvoicePDF", model);
 
-            await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions
-            {
-                Headless = true,
-                ExecutablePath = PuppeteerExtensions.ExecutablePath
-            });
+            var Renderer = new IronPdf.HtmlToPdf();
+            var PDF = Renderer.RenderHtmlAsPdf(html);
+            //Renderer.PrintOptions.Foter = new HtmlHeaderFooter() {HtmlFragment = "page {page} of {total-pages}" };
+            
+            string invoices = Path.Combine(_hostingEnvironment.WebRootPath, "Invoices");
+            string filePath = Path.Combine(invoices, $"Invoice-{model.Id}.pdf");
+
+            var OutputPath = filePath;
+            PDF.SaveAs(OutputPath);
+            byte[] pdfbytes = System.IO.File.ReadAllBytes(OutputPath);
+            DeletePdf(filePath);
+            return File(pdfbytes, "application/pdf", $"Invoice-{model.Id}.pdf");
+
+            //return View();
+            //Iron Pdf
+
+            //var Renderer = new ChromePdfRenderer();
+            //using var PDF = Renderer.RenderHtmlFileAsPdf("Assets/MyHTML.html");
+            //PDF.SaveAs("MyPdf.pdf");
+
+            // puppeteer
+            //var html = await _templateHelper.RenderAsync("_InvoicePDF", model);
+
+            //await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions
+            //{
+            //    Headless = true,
+            //    ExecutablePath = PuppeteerExtensions.ExecutablePath
+            //});
 
 
-            await using var page = await browser.NewPageAsync();
-            await page.EmulateMediaTypeAsync(MediaType.Screen);
-            await page.SetContentAsync(html);
+            //await using var page = await browser.NewPageAsync();
+            //await page.EmulateMediaTypeAsync(MediaType.Screen);
+            //await page.SetContentAsync(html);
 
 
-            var pdfContent = await page.PdfStreamAsync(new PdfOptions
-            {
-                Format = PaperFormat.A4,
-                PrintBackground = true
-            });
+            //var pdfContent = await page.PdfStreamAsync(new PdfOptions
+            //{
+            //    Format = PaperFormat.A4,
+            //    PrintBackground = true
+            //});
 
-            return File(pdfContent, "application/pdf", $"Invoice-{model.Id}.pdf");
+            //return File(pdfContent, "application/pdf", $"Invoice-{model.Id}.pdf");
 
             //return View("_InvoicePDF",model);
+        }
+
+        public void DeletePdf(string path)
+        {
+            FileInfo file = new FileInfo(path);
+            if (file.Exists)
+            {
+                file.Delete();
+            }
         }
 
 
