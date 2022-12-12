@@ -39,12 +39,13 @@ namespace Webx.Web.Data
             await AddServicesAsync();
             await AddStoresAsync();
             await AddStocksAsync();
-            await AddAppointmentsAsync();      
+            await AddAppointmentsAsync();    
             await AddOrdersAsync();
             await AddOrdersDetailsAsync();
             await AddProductReviews();
 
         }
+
 
         private async Task AddProductReviews()
         {
@@ -97,6 +98,7 @@ namespace Webx.Web.Data
             return new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
+
 
         private async Task AddOrdersDetailsAsync()
         {

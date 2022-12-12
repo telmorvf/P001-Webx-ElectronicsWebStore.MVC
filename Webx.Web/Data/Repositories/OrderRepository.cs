@@ -132,6 +132,7 @@ namespace Webx.Web.Data.Repositories
         public async Task<List<OrderWithDetailsViewModel>> GetAllCustomerOrdersAsync(string customerId)
         {
             List<OrderWithDetailsViewModel> ordersWithDetails = new List<OrderWithDetailsViewModel>();
+
             List<Order> orders = await _context.Orders.Include(o => o.Customer)
                 .Include(o => o.Store)
                 .Include(o => o.Appointment)
@@ -139,6 +140,7 @@ namespace Webx.Web.Data.Repositories
                 .Where(o => o.Customer.Id == customerId)
                 .ToListAsync();
             
+
 
             foreach(var order in orders)
             {
@@ -327,6 +329,12 @@ namespace Webx.Web.Data.Repositories
             return list;
         }
 
+        public async Task<Status> GetOrderStatusByNameAsync(string orderStatusName)
+        {
+            return await _context.Statuses.Where(os => os.Name == orderStatusName).FirstOrDefaultAsync();
+        }
+
+
         public async Task<List<ChartSalesViewModel>> GetYearSalesByMonthAsync(int year)
         {
             DateTime requestedYearDate = new DateTime(year, DateTime.UtcNow.Month, DateTime.UtcNow.Day);
@@ -350,6 +358,7 @@ namespace Webx.Web.Data.Repositories
             }
 
             return list;
-        }
+          }
+                    
     }
 }
