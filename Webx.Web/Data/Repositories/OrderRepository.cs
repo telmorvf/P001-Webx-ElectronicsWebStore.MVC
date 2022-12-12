@@ -329,10 +329,10 @@ namespace Webx.Web.Data.Repositories
             return list;
         }
 
-        public async Task<Status> GetOrderStatusByNameAsync(string orderStatusName)
-        {
-            return await _context.Statuses.Where(os => os.Name == orderStatusName).FirstOrDefaultAsync();
-        }
+        //public async Task<Status> GetOrderStatusByNameAsync(string orderStatusName)
+        //{
+        //    return await _context.Statuses.Where(os => os.Name == orderStatusName).FirstOrDefaultAsync();
+        //}
 
 
         public async Task<List<ChartSalesViewModel>> GetYearSalesByMonthAsync(int year)
