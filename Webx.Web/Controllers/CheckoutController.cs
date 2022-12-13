@@ -14,9 +14,6 @@ using System;
 using System.Web;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using Syncfusion.EJ2.ImageEditor;
-using PuppeteerSharp.Media;
-using PuppeteerSharp;
-using Webx.Web.Extensions;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
@@ -476,12 +473,7 @@ namespace Webx.Web.Controllers
                 Order = order,
                 orderDetails = await _orderRepository.GetOrderDetailsAsync(order.Id)
             };
-
-            // Return to new HTML Window, and you print them if interested
-            //return View("_InvoicePDF",model);
-            //return View();
-
-            //Iron Pdf
+                        
             var html = await _templateHelper.RenderAsync("_InvoicePDF", model);
 
             var Renderer = new IronPdf.HtmlToPdf();
@@ -490,8 +482,7 @@ namespace Webx.Web.Controllers
             Renderer.RenderingOptions.MarginTop = 1;
             Renderer.RenderingOptions.MarginLeft= 1;
             Renderer.RenderingOptions.MarginRight = 1;
-            var PDF = Renderer.RenderHtmlAsPdf(html);
-            //Renderer.PrintOptions.Foter = new HtmlHeaderFooter() {HtmlFragment = "page {page} of {total-pages}" };
+            var PDF = Renderer.RenderHtmlAsPdf(html);            
             
             string invoices = Path.Combine(_hostingEnvironment.WebRootPath, "Invoices");
             string filePath = Path.Combine(invoices, $"Invoice-{model.Id}.pdf");
@@ -501,38 +492,7 @@ namespace Webx.Web.Controllers
             byte[] pdfbytes = System.IO.File.ReadAllBytes(OutputPath);
             DeletePdf(filePath);
             return File(pdfbytes, "application/pdf", $"Invoice-{model.Id}.pdf");
-
-            //return View();
-            //Iron Pdf
-
-            //var Renderer = new ChromePdfRenderer();
-            //using var PDF = Renderer.RenderHtmlFileAsPdf("Assets/MyHTML.html");
-            //PDF.SaveAs("MyPdf.pdf");
-
-            // puppeteer
-            //var html = await _templateHelper.RenderAsync("_InvoicePDF", model);
-
-            //await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions
-            //{
-            //    Headless = true,
-            //    ExecutablePath = PuppeteerExtensions.ExecutablePath
-            //});
-
-
-            //await using var page = await browser.NewPageAsync();
-            //await page.EmulateMediaTypeAsync(MediaType.Screen);
-            //await page.SetContentAsync(html);
-
-
-            //var pdfContent = await page.PdfStreamAsync(new PdfOptions
-            //{
-            //    Format = PaperFormat.A4,
-            //    PrintBackground = true
-            //});
-
-            //return File(pdfContent, "application/pdf", $"Invoice-{model.Id}.pdf");
-
-            //return View("_InvoicePDF",model);
+                        
         }
 
         public void DeletePdf(string path)

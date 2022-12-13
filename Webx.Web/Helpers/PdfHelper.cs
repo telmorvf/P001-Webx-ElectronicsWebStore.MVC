@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PuppeteerSharp.Media;
-using PuppeteerSharp;
 using System.IO;
 using System.Threading.Tasks;
-using Webx.Web.Extensions;
 using Webx.Web.Models;
 using Microsoft.AspNetCore.Hosting;
 
@@ -34,32 +31,10 @@ namespace Webx.Web.Helpers
                 Renderer.RenderingOptions.MarginRight = 1;
                 var PDF = Renderer.RenderHtmlAsPdf(html);
 
-                //await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions
-                //{
-                //    Headless = true,
-                //    ExecutablePath = PuppeteerExtensions.ExecutablePath
-                //});
-                //await using var page = await browser.NewPageAsync();
-                //await page.EmulateMediaTypeAsync(MediaType.Screen);
-                //await page.SetContentAsync(html);
-                //var pdfContent = await page.PdfStreamAsync(new PdfOptions
-                //{
-                //    Format = PaperFormat.A4,
-                //    PrintBackground = true
-                //});                     
-            
-
                 string invoices = Path.Combine(_hostingEnvironment.WebRootPath, "Invoices");
                 string filePath = Path.Combine(invoices, $"Invoice-{model.Id}.pdf");
                 var OutputPath = filePath;
                 PDF.SaveAs(OutputPath);
-                //byte[] pdfbytes = System.IO.File.ReadAllBytes(OutputPath);
-
-
-                //using (Stream filestream = new FileStream(filePath, FileMode.Create))
-                //{
-                //    await pdfbytes.CopyToAsync(filestream);
-                //}
 
                 return filePath;
             }

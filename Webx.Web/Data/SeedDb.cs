@@ -485,7 +485,7 @@ namespace Webx.Web.Data
                     "Asus", "Corsair", "MSI", 
                     "Cooler Master", "Intel", "WebX",
                     "Samsung", "LG", "Apple",
-                    "Canon", "Sony", "Siemens",
+                    "AMD", "Sony", "Siemens",
                     "Lenovo", "Microsoft"
                 };
                 Guid[] images = new Guid[14] { 
