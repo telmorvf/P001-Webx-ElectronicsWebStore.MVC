@@ -35,23 +35,10 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
     <PackageReference Include="PayPalCheckoutSdk" Version="1.0.4" />
-    <PackageReference Include="PuppeteerSharp" Version="8.0.0" />
     <PackageReference Include="SixLabors.ImageSharp" Version="2.1.3" />
     <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="20.3.0.47" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
     <PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="itextsharp">
-      <HintPath>wwwroot\iTextSharp\itextsharp.dll</HintPath>
-    </Reference>
-    <Reference Include="itextsharp.pdfa">
-      <HintPath>wwwroot\iTextSharp\itextsharp.pdfa.dll</HintPath>
-    </Reference>
-    <Reference Include="itextsharp.xtra">
-      <HintPath>wwwroot\iTextSharp\itextsharp.xtra.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

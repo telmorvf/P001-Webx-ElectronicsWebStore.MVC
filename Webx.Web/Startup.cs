@@ -15,7 +15,6 @@ using Microsoft.IdentityModel.Tokens;
 using Webx.Web.Data;
 using Webx.Web.Data.Entities;
 using Webx.Web.Data.Repositories;
-using Webx.Web.Extensions;
 using Webx.Web.Helpers;
 
 
@@ -175,8 +174,6 @@ namespace Webx.Web
             app.UseAuthentication();
 
             app.UseAuthorization();
-
-            app.PreparePuppeteerAsync(env).GetAwaiter().GetResult();
 
             app.UseNotyf();
 
