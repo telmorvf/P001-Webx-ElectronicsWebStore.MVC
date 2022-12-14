@@ -208,8 +208,8 @@ namespace Webx.Web.Data.Repositories
             if (checker.Date.AddMinutes(5) < DateTime.UtcNow)
             {
 
-                var ordersCreated = await _context.Orders.Include(o => o.Status).Where(o => o.Status.Name == "Order Created").ToListAsync();
-                var orderShipped = await _context.Orders.Include(o => o.Status).Where(o => o.Status.Name == "Order Shipped").ToListAsync();
+                var ordersCreated = await _context.Orders.Include(o => o.Status).Include(o => o.Customer).Where(o => o.Status.Name == "Order Created").ToListAsync();
+                var orderShipped = await _context.Orders.Include(o => o.Status).Include(o => o.Customer).Where(o => o.Status.Name == "Order Shipped").ToListAsync();
 
 
                 foreach(var order in ordersCreated)

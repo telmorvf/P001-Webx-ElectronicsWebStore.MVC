@@ -1,9 +1,10 @@
-﻿@model Webx.Web.Models.ShopViewModel
+﻿@using System.Globalization
+@model Webx.Web.Models.ShopViewModel
 
 @{
     ViewData["Title"] = "WebX";
     Layout = "~/Views/Shared/_Layout.cshtml";
-   
+    CultureInfo ci = new CultureInfo("en-gb");
 }
 
 
@@ -131,7 +132,7 @@
                                     {
                                         <li>Order ID: @Model.Invoices[0].Id </li>
                                     }                                
-                                    <li>Order Date: @DateTime.UtcNow.ToString("dddd, dd MMMM yyyy") </li>
+                                    <li>Order Date: @DateTime.UtcNow.ToString("dddd, dd MMMM yyyy",ci) </li>
                                     <li>Order Total: @Model.CartGrandTotal</li>
                                 </ul>
                             </div>

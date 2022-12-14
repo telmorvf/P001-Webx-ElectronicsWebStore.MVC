@@ -261,7 +261,8 @@ namespace Webx.Web.Controllers
                         }                       
 
                         ViewBag.Success = "You can now login into the system.";
-                        return View(model);
+                        _toastNotification.Success("Password added with success! You can now login into the system.");
+                        return RedirectToAction("Login");
                     }
                     else
                     {

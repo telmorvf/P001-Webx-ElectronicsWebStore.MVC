@@ -460,6 +460,7 @@ namespace Webx.Web.Controllers
                 WishList = await _productRepository.GetOrStartWishListAsync()
             };
 
+            _toastNotification.Success($"{product.Name} was added to the cart with success.");
             return PartialView("_CartDropDownPartial", model);
         }
 
@@ -1019,7 +1020,7 @@ namespace Webx.Web.Controllers
             return Json(result);
         }
 
-        [Authorize(Roles = "Admin, Product Manager, Technician")]
+        //[Authorize(Roles = "Admin, Product Manager, Technician")]
         public async Task<IActionResult> ProductInfo(int? id)
         {
             if(id == null)

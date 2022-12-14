@@ -211,12 +211,11 @@
                                                     <span class="label label-theme">@Decimal.Truncate(item.Product.Discount)% Off</span>
                                                 </div>
                                             }
-                                    
+                                            @**@ 
                                             <div class="cart-wrap">
                                                 <ul>
                                                     <li>
-                                                        <a href="#" onclick="AddtoCart(@item.Product.Id)" class="addtocart-btn" 
-                                                            data-bs-toggle="modal" data-bs-target="#addtocart">
+                                                        <a href="#" onclick="AddtoCart(@item.Product.Id)" data-bs-toggle="modal" data-bs-target="#addtocart" @*class="addtocart-btn"*@>
                                                             <i data-feather="shopping-bag"></i>
                                                         </a>
                                                     </li>

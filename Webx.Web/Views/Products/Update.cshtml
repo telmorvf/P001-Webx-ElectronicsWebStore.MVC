@@ -232,7 +232,7 @@
                 @if (Model.Images.Count() > 0)
                 {
                     int imageCounter = 0;
-                    <div id="productSlideShow" class="carousel carousel-dark slide carousel-fade" data-bs-ride="carousel">
+                    <div id="productSlideShow" class="carousel carousel-dark slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000">
 
                         <div class="carousel-indicators">
                             @foreach (var item in Model.Images)
