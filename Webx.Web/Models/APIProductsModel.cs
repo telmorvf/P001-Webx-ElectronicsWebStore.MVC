@@ -16,6 +16,10 @@ namespace Webx.Web.Models
 
         public string Category { get; set; }
 
+        public int Quantity { get; set; }
+
+        public int MinimumQuantity { get; set; }
+
         public Guid ImageId { get; set; }
 
         public string ImageFullPath => ImageId == Guid.Empty
