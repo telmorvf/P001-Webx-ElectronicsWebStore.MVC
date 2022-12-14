@@ -495,6 +495,8 @@ namespace Webx.Web.Data.Repositories
 
             foreach (var product in products)
             {
+                var stock = await _context.Stocks.Where(s => s.ProductId == product.Id && s.StoreId == 3).FirstOrDefaultAsync();
+
                 list.Add(new APIProductsModel
                 {
                     Id = product.Id,
@@ -503,6 +505,8 @@ namespace Webx.Web.Data.Repositories
                     Category = product.Category.Name,
                     Description = product.Description,
                     Price = product.Price,
+                    Quantity = stock.Quantity,
+                    MinimumQuantity = stock.MinimumQuantity,
                     ImageId = product.Images.ElementAt(0).ImageId,
                 });
             }
