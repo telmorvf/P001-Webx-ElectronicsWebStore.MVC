@@ -52,10 +52,12 @@ namespace Webx.Web.Data.Repositories
             Random r = new Random();
 
             var thisMonthOrders = await _context.OrderDetails
-                .Include(o => o.Order)
+                //.Include(o => o.Order)
                 .Include(o => o.Product)
                 .ThenInclude(o => o.Category)
-                .Where(o => o.Order.OrderDate.Month == DateTime.UtcNow.Month && o.Product.Category.Name != "Services")
+                //.Where(o => o.Order.OrderDate.Month == DateTime.UtcNow.Month && o.Product.Category.Name != "Services")
+                .Where(o => o.Product.Category.Name != "Services")
+                //.Where(o => o.Product.Category.Name != "Services" && o.Product.Id == 5)
                 .ToListAsync();
 
             var categories = await _context.Categories.ToListAsync();
@@ -73,6 +75,7 @@ namespace Webx.Web.Data.Repositories
                         if (order.Product.Category.Name == category.Name)
                         {
                             quantity++;
+                            
                         }
                     }
                     //}
@@ -90,7 +93,7 @@ namespace Webx.Web.Data.Repositories
 
             }
 
-            return list.OrderBy(l => l.Quantity).Take(5).ToList();
+            return list.OrderByDescending(l => l.Quantity).Take(5).ToList();
         }
     }
 }

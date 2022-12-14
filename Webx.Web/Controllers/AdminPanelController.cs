@@ -71,7 +71,7 @@ namespace Webx.Web.Controllers
 
             //Most sold Service
             var categories = await _categoryRepository.GetMostSoldCategoriesData();
-            ViewBag.mostSoldCategory = categories.Last().Name;
+            ViewBag.mostSoldCategory = categories.First().Name;
 
             return View();
         }
