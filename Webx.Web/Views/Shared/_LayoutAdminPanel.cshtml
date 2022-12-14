@@ -259,7 +259,7 @@
                             </li>
 
                                                     }
-                        @if ((this.User.Identity.IsAuthenticated) && ((this.User.IsInRole("Admin")) || (this.User.IsInRole("Product Manager")) || (this.User.IsInRole("Technician"))  ))
+                        @if ((this.User.Identity.IsAuthenticated) && ((this.User.IsInRole("Admin")) || (this.User.IsInRole("Product Manager")) ))
                         {
 
                             <li class="nav-header">
@@ -305,7 +305,7 @@
                                 </ul>
                             </li>
                         }
-                        @if ((this.User.Identity.IsAuthenticated) && ((this.User.IsInRole("Admin")) || (this.User.IsInRole("Product Manager")) || (this.User.IsInRole("Technician"))))
+                        @if ((this.User.Identity.IsAuthenticated) && ((this.User.IsInRole("Admin")) || (this.User.IsInRole("Product Manager")) ))
                         {
                             <li class="nav-item">
                                 <!--           Stock Alerts            -->
@@ -352,7 +352,7 @@
                               </a>
                           </li>
                         }
-                        @if ((this.User.Identity.IsAuthenticated) && ((this.User.IsInRole("Admin")) || (this.User.IsInRole("Product Manager")) || (this.User.IsInRole("Technician"))))
+                        @if ((this.User.Identity.IsAuthenticated) && ((this.User.IsInRole("Admin")) || (this.User.IsInRole("Product Manager")) ))
                         {
                             <li class="nav-item">
                                 <a asp-area="" asp-action="ViewAll" asp-controller="Store" asp-route-isActive="true" class="nav-link">
