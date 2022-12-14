@@ -280,7 +280,8 @@ namespace Webx.Web.Data.Repositories
             {
                 var unshippedOrders = await _context.Orders
                     .Include(o => o.Status)
-                    .Where(o => o.Status.Name == statusItem && o.OrderDate.Month == month && o.OrderDate.Year == DateTime.UtcNow.Year)
+                    //.Where(o => o.Status.Name == statusItem && o.OrderDate.Month == month && o.OrderDate.Year == DateTime.UtcNow.Year)
+                    .Where(o => o.Status.Name == statusItem)
                     .ToListAsync();
 
                 var newStatusItem = "";
