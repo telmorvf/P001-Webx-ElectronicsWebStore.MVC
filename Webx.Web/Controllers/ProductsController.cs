@@ -470,7 +470,7 @@ namespace Webx.Web.Controllers
          return View();
          }
 
-        [Authorize(Roles = "Admin, Product Manager, Technician")]
+        [Authorize(Roles = "Admin, Product Manager")]
         public async Task<IActionResult> ViewAll(bool isService)
        {
             IEnumerable<Product> products;
@@ -683,7 +683,7 @@ namespace Webx.Web.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin, Product Manager, Technician")]
+        [Authorize(Roles = "Admin, Product Manager")]
         public async Task<IActionResult> ImageCards(int? id)
         {
             var product = await _productRepository.GetProductByIdAsync(id.Value);
@@ -954,7 +954,7 @@ namespace Webx.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Product Manager, Technician")]
+        [Authorize(Roles = "Admin, Product Manager")]
         [Route("Products/ProductDetails")]
         public async Task<JsonResult> ProductDetails(int? Id)
         {

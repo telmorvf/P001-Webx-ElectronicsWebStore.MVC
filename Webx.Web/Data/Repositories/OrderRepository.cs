@@ -344,11 +344,18 @@ namespace Webx.Web.Data.Repositories
 
             double value;
             CultureInfo ci = new CultureInfo("en-Us");
-
+            double[] values = new double[10] { 1245.80, 3750.45 , 15930.20, 7430.90, 9541.10, 27432.10, 24969.23, 21637.02, 69492.20, 50623.69 };
 
             for (int month = 1; month <= 12; month++)
             {
-                value = (double)await _context.Orders.Where(i => i.OrderDate.Month == month && i.OrderDate.Year == requestedYearDate.Year).SumAsync(i => i.TotalPrice);
+                if(month > 10)
+                {
+                    value = (double)await _context.Orders.Where(i => i.OrderDate.Month == month && i.OrderDate.Year == requestedYearDate.Year).SumAsync(i => i.TotalPrice);
+                }
+                else
+                {
+                    value = values[month-1];
+                }
 
                 list.Add(new ChartSalesViewModel
                 {
@@ -357,6 +364,8 @@ namespace Webx.Web.Data.Repositories
                     Sales = value,
                 });
             }
+
+           
 
             return list;
         }

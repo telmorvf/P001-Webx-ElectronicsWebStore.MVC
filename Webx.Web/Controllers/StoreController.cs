@@ -36,7 +36,7 @@ namespace Webx.Web.Controllers
             _productRepository = productRepository;
         }
 
-        [Authorize(Roles = "Admin, Product Manager, Technician")]
+        [Authorize(Roles = "Admin, Product Manager")]
         public async Task<IActionResult> ViewAll(bool isActive)
         {
             IEnumerable<Store> stores;
@@ -204,7 +204,7 @@ namespace Webx.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Product Manager, Technician")]
+        [Authorize(Roles = "Admin, Product Manager")]
         [Route("Store/StoreDetails")]
         public async Task<JsonResult> StoreDetails(int? Id)
         {

@@ -121,9 +121,8 @@
    function confirmAppointment(orderId,day,month,year) {
        debugger; 
 
-       let orderDate = new Date(year,month-1,day+3);
-       console.log(orderDate);
-
+       let orderDate = new Date(year,month-1,day);
+       
        var dialog = document.getElementById("dialog").ej2_instances[0];
 
        if (appointmentEnd === "" || appointmentEnd === undefined || appointmentEnd === null) {           
@@ -141,7 +140,7 @@
 
        if (appointmentStart < orderDate) {
            dialog.header = "Booking too early"
-           dialog.content = "The appointment must be at least three days apart from the day of the order.";
+           dialog.content = "The appointment has to be done after the order date";
            dialog.show();
            return;
        }
@@ -204,7 +203,7 @@
                     - To make the appointment choose the desired day and select the desired period.<br/><br/>
                     - It is not possible to make appointments in periods outside the store's opening hours.<br/><br/>                    
                     - The appointment must have a period of two hours.<br/><br/>
-                    - The appointment must be at least three days apart from the day of the order.
+                    - The appointment has to be done after the order date
                    </p>
                </div>
                <div class="col-md-1"></div>
