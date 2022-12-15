@@ -123,7 +123,7 @@ namespace Webx.Web.Data.Repositories
         {
             var unshippedOrders = await _context.Orders
                 .Include(o => o.Status)
-                .Where(o => o.Status.Name != "Order Closed" && o.Status.Name != "Order Shipped" && o.Status.Name != "Pending Appointment" && o.Status.Name != "Ongoing")
+                .Where(o => o.Status.Name != "Order Closed" && o.Status.Name != "Order Shipped" && o.Status.Name != "Pending Appointment" && o.Status.Name != "Ongoing" && o.Status.Name != "Appointment Done")
                 .ToListAsync();
 
             return unshippedOrders.Count;

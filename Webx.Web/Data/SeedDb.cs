@@ -27,22 +27,22 @@ namespace Webx.Web.Data
         {
             await _context.Database.EnsureCreatedAsync();
 
-            await AddStatusesAsync();
-            await CheckCreatedRoles();
-            await AddAdminsAsync();
-            await AddTechniciansAsync();
-            await AddProductManagersAsync();
-            await AddCustomersAsync();
-            await AddBrandsAsync();
-            await AddCategoriesAsync();
-            await AddProductsAsync();
-            await AddServicesAsync();
-            await AddStoresAsync();
-            await AddStocksAsync();
-            await AddAppointmentsAsync();    
-            await AddOrdersAsync();
-            await AddOrdersDetailsAsync();
-            await AddProductReviews();
+            //await AddStatusesAsync();
+            //await CheckCreatedRoles();
+            //await AddAdminsAsync();
+            //await AddTechniciansAsync();
+            //await AddProductManagersAsync();
+            //await AddCustomersAsync();
+            //await AddBrandsAsync();
+            //await AddCategoriesAsync();
+            //await AddProductsAsync();
+            //await AddServicesAsync();
+            //await AddStoresAsync();
+            //await AddStocksAsync();
+            //await AddAppointmentsAsync();    
+            //await AddOrdersAsync();
+            //await AddOrdersDetailsAsync();
+            //await AddProductReviews();
 
         }
 
